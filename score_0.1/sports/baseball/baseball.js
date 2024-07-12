@@ -216,7 +216,7 @@ function createTableRow(game) {
                 ${game.gameStatus === 'READY' 
                     ? `선발) ${game.teams.away.startPitcher?.name.length > 5 
                         ? game.teams.away.startPitcher?.name.substring(0, 5) + '..' 
-                        : game.teams.away.startPitcher?.name}` 
+                        : '미정'}` 
                     : awayScore}
             </span>
             </div>
@@ -229,7 +229,7 @@ function createTableRow(game) {
                 ${game.gameStatus === 'READY' 
                     ? `선발) ${game.teams.home.startPitcher?.name.length > 5 
                         ? game.teams.home.startPitcher?.name.substring(0, 5) + '..' 
-                        : game.teams.home.startPitcher?.name}` 
+                        : '미정'}` 
                     : homeScore}
             </span>
             </div>

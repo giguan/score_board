@@ -147,7 +147,7 @@
 }
 
 .game-row-wrap .team-info .tr .td.highlight {
-    color: red;
+    color: red !important;
     font-size:1.1em;
 }
 

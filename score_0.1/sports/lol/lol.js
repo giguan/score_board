@@ -127,76 +127,76 @@ function createTableRow(game) {
     gameRow.setAttribute('data-game-id', game.id);
 
     gameRow.innerHTML = `
-        <div class="team-info">
-            <div class="tr th">
-                <span class="td" >${game.leagueName}</span>
-                <span class="td" >${game.gtime.substring(0,5)}</span>
-                <span class="td" >${
-                    game.gameStatus == 1 ? '시작전' : game.gameStatus == 2 ? '진행중': '종료'}</span>
-            </div>
-            <div class="tr">
-                <div class="td">
-                    <img width="55" height="55" src="./../../assets/images/named_images/${game.away.img_path.split('/')[4]}">
+                <div class="team-info">
+                    <div class="tr th">
+                        <span class="td" >${game.leagueName}</span>
+                        <span class="td" >${game.gtime.substring(0,5)}</span>
+                        <span class="td" >${
+                            game.gameStatus == 1 ? '시작전' : game.gameStatus == 2 ? '진행중': '종료'}</span>
+                    </div>
+                    <div class="tr">
+                        <div class="td">
+                            <img width="55" height="55" src="./../../assets/images/named_images/${game.away.img_path.split('/')[4]}">
+                        </div>
+                        <span class="td" >${game.away.name_en}</span>
+                        <span class="td ${game.awayScore > game.homeScore ? 'highlight' : '' }">${game.awayScore}</span>
+                    </div>
+                    <div class="tr">
+                        <div class="td">
+                            <img width="55" height="55"  src="./../../assets/images/named_images/${game.home.img_path.split('/')[4]}">
+                        </div>
+                        <span class="td" >${game.home.name_en}</span>
+                        <span class="td ${game.homeScore > game.awayScore ? 'highlight' : ''}">${game.homeScore}</span>
+                    </div>
+                    <div class="tr th">
+                        <span class="td" ></span>
+                        <span class="td" ></span>
+                        <span class="td" ></span>
+                    </div>
                 </div>
-                <span class="td" >${game.away.name_en}</span>
-                <span class="td ${game.awayScore > game.homeScore ? 'highlight' : '' }">${game.awayScore}</span>
-            </div>
-            <div class="tr">
-                <div class="td">
-                    <img width="55" height="55"  src="./../../assets/images/named_images/${game.home.img_path.split('/')[4]}">
-                </div>
-                <span class="td" >${game.home.name_en}</span>
-                <span class="td ${game.homeScore > game.awayScore ? 'highlight' : ''}">${game.homeScore}</span>
-            </div>
-            <div class="tr th">
-                <span class="td" ></span>
-                <span class="td" ></span>
-                <span class="td" ></span>
-            </div>
-        </div>
 
-        <div class="score">
-            <div class="tr th ${getStatusClass(game.gameStatus)}">
-                ${
-                    `
-                        <span class="td">순위</span>
-                        <span class="td">경기</span>
-                        <span class="td">승</span>
-                        <span class="td">패</span>
-                        <span class="td">승률</span>
-                    `
-                }
-            </div>
-            <div class="tr">
-                ${
-                    `
-                        <span class="td">${game.away.rank}</span>
-                        <span class="td">${game.away.stat.game_count}</span>
-                        <span class="td">${game.away.stat.win}</span>
-                        <span class="td">${game.away.stat.lose}</span>
-                        <span class="td">${(game.away.stat.win / game.away.stat.game_count).toFixed(3)}</span>
-                    ` 
-                }
-            </div>
-            <div class="tr">
-            ${
-                `
-                    <span class="td">${game.home.rank}</span>
-                    <span class="td">${game.home.stat.game_count}</span>
-                    <span class="td">${game.home.stat.win}</span>
-                    <span class="td">${game.home.stat.lose}</span>
-                    <span class="td">${(game.home.stat.win / game.home.stat.game_count).toFixed(3)}</span>
-                ` 
-            }
-            </div>
-            <div class="tr th">
-            ${
-                `
-                    
-                ` 
-            }
-            </div>
-        </div>
+                <div class="score">
+                    <div class="tr th ${getStatusClass(game.gameStatus)}">
+                        ${
+                            `
+                                <span class="td">순위</span>
+                                <span class="td">경기</span>
+                                <span class="td">승</span>
+                                <span class="td">패</span>
+                                <span class="td">승률</span>
+                            `
+                        }
+                    </div>
+                    <div class="tr">
+                        ${
+                            `
+                                <span class="td">${game.away.rank}</span>
+                                <span class="td">${game.away.stat.game_count}</span>
+                                <span class="td">${game.away.stat.win}</span>
+                                <span class="td">${game.away.stat.lose}</span>
+                                <span class="td">${(game.away.stat.win / game.away.stat.game_count).toFixed(3)}</span>
+                            ` 
+                        }
+                    </div>
+                    <div class="tr">
+                    ${
+                        `
+                            <span class="td">${game.home.rank}</span>
+                            <span class="td">${game.home.stat.game_count}</span>
+                            <span class="td">${game.home.stat.win}</span>
+                            <span class="td">${game.home.stat.lose}</span>
+                            <span class="td">${(game.home.stat.win / game.home.stat.game_count).toFixed(3)}</span>
+                        ` 
+                    }
+                    </div>
+                    <div class="tr th">
+                    ${
+                        `
+                            
+                        ` 
+                    }
+                    </div>
+                </div>
     `;
 
     return gameRow;
