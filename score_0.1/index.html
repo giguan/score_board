@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스포츠 점수 메인</title>
+
+    <!--stylesheet-->
+    <link rel="stylesheet" href="./assets/styles/style.css">
+    <link rel="stylesheet" href="./assets/styles/common.css">
+    
+    <!--font - Noto Sans KR-->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- axios -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <!-- full calendar -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js"></script>
+</head>
+<body>
+    <div class="background-container">
+        <img src="./assets/images/background.jpg" alt="Background Image" class="background-image">
+    </div>
+    <div class="container">
+        <header>
+            <div class="header-container">
+                <div class="logo-container" style="display:flex; align-items: center;">
+                    <!-- <img src="./assets/images/goat_tv_logo.webp" alt="Goat Score Logo" class="logo"> -->
+                    <span style="font-family: Orbitron-Bold; font-size: 22px;">GOAT&nbsp;SCORE</span>
+                </div>
+            </div>
+        </header>
+        <nav>
+            <ul class="tabs">
+                <li><a href="/score_0.1/index.html" class="tab-link active"><img src="./assets/images/tabmenu_logo/main.png" alt="Home"> 주요경기</a></li>
+                <li><a href="/score_0.1/sports/soccer/index.html" class="tab-link"><img src="./assets/images/tabmenu_logo/soccer.png" alt="Football"> 축구</a></li>
+                <li><a href="/score_0.1/sports/baseball/index.html" class="tab-link"><img src="./assets/images/tabmenu_logo/baseball.png" alt="Baseball"> 야구</a></li>
+                <li><a href="/score_0.1/sports/basketball/index.html" class="tab-link"><img src="./assets/images/tabmenu_logo/basketball.png" alt="Basketball"> 농구</a></li>
+                <li><a href="/score_0.1/sports/volleyball/index.html" class="tab-link"><img src="./assets/images/tabmenu_logo/volleyball.png" alt="Volleyball"> 배구</a></li>
+                <!-- <li><a href="/score_0.1/sports/rugby/index.html" class="tab-link"><img src="./assets/images/tabmenu_logo/rugby.png" alt="American Football"> 미식축구</a></li> -->
+                <li><a href="/score_0.1/sports/lol/index.html" class="tab-link"><img src="./assets/images/tabmenu_logo/lol.png" alt="LOL"> LOL</a></li>
+                <!-- 다른 스포츠 페이지 링크 추가 -->
+            </ul>
+        </nav>
+        <main>
+            <div class="date-navigation">
+                <button class="nav-btn" id="prev-day">◀</button>
+                <span class="date-display"></span>
+                <button class="nav-btn" id="next-day">▶</button>
+                <button class="nav-btn" id="show-calendar-btn">달력</button>
+                <button class="nav-btn" id="today-day">오늘</button>
+            </div>
+            
+            <div class="filters">
+                <span>전체(<span id="total-game-cnt">0</span>)</span>
+                <span>대기중(<span id="ready-game-cnt">0</span>)</span>
+                <span>진행중(<span id="inprogress-game-cnt">0</span>)</span>
+                <span>종료(<span id="final-game-cnt">0</span>)</span>
+            </div>
+            <hr class="divider">
+            <section class="content">
+                <div id="calendar-container">
+                    <button id="close-calendar-btn"></button>
+                    <div id="calendar"></div>
+                </div>
+                <div class="table-container">
+                    <div id="loading-spinner" class="loading-spinner"></div> <!-- 로딩 스피너 추가 -->
+                    
+                    <!-- 오류 메시지 표시 영역 추가 -->
+                    <div id="error-message" class="error-message" style="display: none;"></div>
+                    
+                    <table class="score-table">
+                        <thead>
+                            <tr>
+                                <th>리그명</th>
+                                <th>시간</th>
+                                <th class="team-column">홈팀</th>
+                                <th class="score-column">홈 점수</th>
+                                <th>상태</th>
+                                <th class="score-column">원정 점수</th>
+                                <th class="team-column">원정팀</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gameDataBody">
+                            <!-- 동적으로 데이터가 추가됩니다 -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+        <footer>
+            <p>&copy; Copyright ⓒ 2024 by <strong>Goat-Score</strong> All Pictures cannot be copied without permission..</p>
+        </footer>
+    </div>
+
+    <script src="scripts/common.js"></script>
+    <script src="scripts/main.js"></script>
+</body>
+</html>

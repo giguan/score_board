@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>경기 요약</title>
+    <link rel="stylesheet" href="style.css">
+    <!--font - Noto Sans KR-->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- axios -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo-container">
+                <img src="../assets/images/goat_tv_logo.webp" alt="네임드 로고" class="logo">
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <div class="game-summary">
+            <header class="game-header">
+                <div class="team home">
+                    <img id="homeLogo"src="team1_logo.png" alt="팀 1 로고">
+                    <h2 id="homeName"></h2>
+                    <p id="homeRanking"></p>
+                </div>
+                <div class="score">
+                    <h1 class="score-team1"></h1>
+                    <span class="period"></span>
+                    <h1 class="score-team2"></h1>
+                </div>
+                <div class="team away">
+                    <img id="awayLogo" src="team2_logo.png" alt="팀 2 로고">
+                    <h2 id="awayName"></h2>
+                    <p id="awayRanking"></p>
+                </div>
+            </header>
+            <table class="scoreboard">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>1</th>
+                        <th>2</th>
+                        <th>3</th>
+                        <th>4</th>
+                        <th>5</th>
+                        <th>6</th>
+                        <th>7</th>
+                        <th>8</th>
+                        <th>9</th>
+                        <th>R</th>
+                        <th>H</th>
+                        <th>E</th>
+                        <th>B</th>
+                    </tr>
+                </thead>
+                <tbody class="scoreBoard">
+                    
+                </tbody>
+            </table>
+        </div>
+        <div class="tabs">
+            <a href="#" class="tab-link active" data-tab="summary-content">전력</a>
+            <a href="#" class="tab-link" data-tab="odds">배당</a>
+            <a href="#" class="tab-link" data-tab="lineup">라인업</a>
+            <a href="#" class="tab-link" data-tab="broadcast">중계</a>
+            <a href="#" class="tab-link" data-tab="record">기록</a>
+        </div>
+        <div id="summary-content" class="tab-content active">
+
+            <div class="match-history">
+                <h3>상대전적</h3>
+
+                <div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>경기일</th>
+                                <th>홈팀</th>
+                                <th>점수</th>
+                                <th>원정팀</th>
+                                <th>결과</th>
+                            </tr>
+                        </thead>
+                        <tbody class="relative-record">
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="recent-games">
+                <h3>최근 5경기</h3>
+
+                <!-- 탭 메뉴 추가 -->
+                <div class="tab-menu">
+                    <a href="#" class="tab-link-sub active" data-tab="tab1">home</a>
+                    <a href="#" class="tab-link-sub" data-tab="tab2">away</a>
+                </div>
+
+                <div id="tab1" class="tab-sub-content active">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>경기일</th>
+                                <th>홈팀</th>
+                                <th>점수</th>
+                                <th>원정팀</th>
+                                <th>결과</th>
+                            </tr>
+                        </thead>
+                        <tbody class="recent-games-home">
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div id="tab2" class="tab-sub-content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>경기일</th>
+                                <th>홈팀</th>
+                                <th>점수</th>
+                                <th>원정팀</th>
+                                <th>결과</th>
+                            </tr>
+                        </thead>
+                        <tbody class="recent-games-away">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    
+        <div id="odds" class="tab-content">
+            <div class="odds-history">
+                <h3>배당 현황</h3>
+                <!-- 탭 메뉴 추가 -->
+                <div class="tab-menu">
+                    <a href="#" class="tab-link-odds active" data-tab="oddsTab1">일반</a>
+                    <a href="#" class="tab-link-odds" data-tab="oddsTab2">핸디캡</a>
+                    <a href="#" class="tab-link-odds" data-tab="oddsTab3">언더/오버</a>
+                </div>
+
+                <div id="oddsTab1" class="tab-odds-content active">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>기준</th>
+                                <th>승</th>
+                                <th>무</th>
+                                <th>패</th>
+                            </tr>
+                        </thead>
+                        <tbody class="odds-record-normal">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="oddsTab2" class="tab-odds-content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>기준</th>
+                                <th>승</th>
+                                <th>무</th>
+                                <th>패</th>
+                            </tr>
+                        </thead>
+                        <tbody class="odds-record-handi">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="oddsTab3" class="tab-odds-content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>기준</th>
+                                <th>승</th>
+                                <th>무</th>
+                                <th>패</th>
+                            </tr>
+                        </thead>
+                        <tbody class="odds-record-unOver">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="lineup" class="tab-content">
+            <div class="lineup-history">
+                <!-- 탭 메뉴 추가 -->
+                <div class="tab-menu">
+                    <a href="#" class="tab-link-lineup active" data-tab="lineupTab1">Home</a>
+                    <a href="#" class="tab-link-lineup" data-tab="lineupTab2">Away</a>
+                </div>
+            </div>
+
+            <div id="lineupTab1" class="tab-lineup-content active">
+                <div class="lineup-history">
+                    <h3>투수</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>선수명</th>
+                                <th>승</th>
+                                <th>패</th>
+                                <th>세이브</th>
+                                <th>홀드</th>
+                                <th>평균자책</th>
+                            </tr>
+                        </thead>
+                        <tbody class="lineup-home-picther">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="lineup-history">
+                    <h3>타자</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>타순</th>
+                                <th>선수명</th>
+                                <th>타율</th>
+                                <th>포지션</th>
+                            </tr>
+                        </thead>
+                        <tbody class="lineup-home-betters">
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>    
+
+            <div id="lineupTab2" class="tab-lineup-content">
+                <div class="lineup-history">
+                    <div>
+                        <h3>투수</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>선수명</th>
+                                    <th>승</th>
+                                    <th>패</th>
+                                    <th>세이브</th>
+                                    <th>홀드</th>
+                                    <th>평균자책</th>
+                                </tr>
+                            </thead>
+                            <tbody class="lineup-away-picther">
+                            </tbody>
+                        </table>
+                    </div>
+        
+                    <div>
+                        <h3>타자</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>타순</th>
+                                    <th>선수명</th>
+                                    <th>타율</th>
+                                    <th>포지션</th>
+                                </tr>
+                            </thead>
+                            <tbody class="lineup-away-betters">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="broadcast" class="tab-content">
+            <div class="odds-history">
+                <h3>중계 현황</h3>
+                <!-- 탭 메뉴 추가 -->
+                현재 진행중인 중계가 없습니다.
+            </div>
+        </div>
+
+
+        <div id="record" class="tab-content">
+            <div class="record-history">
+                <!-- 탭 메뉴 추가 -->
+                <div class="tab-menu">
+                    <a href="#" class="tab-link-record active" data-tab="recordTab1">Home</a>
+                    <a href="#" class="tab-link-record" data-tab="recordTab2">Away</a>
+                </div>
+            </div>
+
+            <div id="recordTab1" class="tab-record-content active">
+                <div class="record-history">
+                    <div id="recordTab1">
+                        <div>
+                            <h3>투수기록</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>선수명</th>
+                                        <th>이닝</th>
+                                        <th>투구수</th>
+                                        <th>피안타</th>
+                                        <th>피홈런</th>
+                                        <th>볼넷</th>
+                                        <th>삼진</th>
+                                        <th>실점</th>
+                                        <th>자책점</th>
+                                        <th>오늘 평자책</th>
+                                        <th>시즌 평자책</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="record-home-picther">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="record-history">
+                    <div id="recordTab1">
+                        <div>
+                            <h3>타자기록</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>타순</th>
+                                        <th>선수명</th>
+                                        <th>포지션</th>
+                                        <th>타수</th>
+                                        <th>득점</th>
+                                        <th>안타</th>
+                                        <th>타점</th>
+                                        <th>홈런</th>
+                                        <th>볼넷</th>
+                                        <th>삼진</th>
+                                        <th>사구</th>
+                                        <th>오늘타율</th>
+                                        <th>시즌타율</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="record-home-betters">
+                                </tbody>
+                            </table>
+                        </div>
+        
+                    </div>
+                </div>
+            </div>
+
+            <div id="recordTab2" class="tab-record-content">
+                <div class="record-history">
+                    <div id="recordTab2">
+                        <div>
+                            <h3>투수기록</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>선수명</th>
+                                        <th>이닝</th>
+                                        <th>투구수</th>
+                                        <th>피안타</th>
+                                        <th>피홈런</th>
+                                        <th>볼넷</th>
+                                        <th>삼진</th>
+                                        <th>실점</th>
+                                        <th>자책점</th>
+                                        <th>오늘 평자책</th>
+                                        <th>시즌 평자책</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="record-away-picther">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="record-history">
+                    <div id="recordTab2">
+                        <div>
+                            <h3>타자기록</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>타순</th>
+                                        <th>선수명</th>
+                                        <th>포지션</th>
+                                        <th>타수</th>
+                                        <th>득점</th>
+                                        <th>안타</th>
+                                        <th>타점</th>
+                                        <th>홈런</th>
+                                        <th>볼넷</th>
+                                        <th>삼진</th>
+                                        <th>사구</th>
+                                        <th>오늘타율</th>
+                                        <th>시즌타율</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="record-away-betters">
+                                </tbody>
+                            </table>
+                        </div>
+        
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        </div>
+        
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>
