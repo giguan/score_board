@@ -114,7 +114,7 @@ async function getGameData() {
         // 새로운 게임 요소를 추가
         body.append(fragment);
     } catch(error) {
-        alert(error);
+        console.log(error);
     } finally {
         loadingSpinner.style.display = 'none'; // 로딩 스피너 숨김
         intervalCheck = false;
