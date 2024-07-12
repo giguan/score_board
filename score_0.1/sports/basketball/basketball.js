@@ -1,14 +1,18 @@
 /** 전역변수 - 초기 데이터 오늘임 (선택 일자로 계속 인터벌 돌려야해서) */
 let requestDate = getCurrentDate();
 
-document.addEventListener('DOMContentLoaded', async function() {
-    // 초기 데이터 로드
-    await getGameData();
 
-    // 30초마다 데이터 갱신
-    setInterval(async () => {
-        await getGameData();
-    }, 5000);
+let intervalCheck = false;
+
+async function fetchDataPeriodically() {
+    intervalCheck = true;
+    await getGameData();
+    setTimeout(fetchDataPeriodically, 5000);
+}
+
+document.addEventListener('DOMContentLoaded', async function() {
+    await getGameData();
+    fetchDataPeriodically();
 
     getFullCalendar()
 });
@@ -65,8 +69,13 @@ async function getGameData() {
     // 날짜를 변경할때마다 바뀐 날짜 적용 
     document.querySelector('.date-display').innerHTML = requestDate;
 
-    // const loadingSpinner = document.getElementById('loading-spinner');
+    const loadingSpinner = document.getElementById('loading-spinner');
     // loadingSpinner.style.display = 'block'; // 로딩 스피너 표시
+    if(!intervalCheck) {
+        loadingSpinner.style.display = 'block'; // 로딩 스피너 표시
+    } else {
+        loadingSpinner.style.display = 'none';
+    }
 
     try {
         const res = await axios.get(dataUrl);
@@ -108,6 +117,7 @@ async function getGameData() {
         alert(error);
     } finally {
         loadingSpinner.style.display = 'none'; // 로딩 스피너 숨김
+        intervalCheck = false;
     }
 }
 

@@ -1,80 +1,20 @@
 /** 전역변수 - 초기 데이터 오늘임 (선택 일자로 계속 인터벌 돌려야해서) */
 let requestDate = getCurrentDate();
 
-document.addEventListener('DOMContentLoaded', async function() {
-    // 초기 데이터 로드
-    await getGameData();
+let intervalCheck = false;
 
-    // 30초마다 데이터 갱신
-    setInterval(async () => {
-        await getGameData();
-    }, 5000);
+async function fetchDataPeriodically() {
+    intervalCheck = true;
+    await getGameData();
+    setTimeout(fetchDataPeriodically, 5000);
+}
+
+document.addEventListener('DOMContentLoaded', async function() {
+    await getGameData();
+    fetchDataPeriodically();
 
     // FullCalendar 초기화
-    var calendarEl = document.getElementById('calendar');
-    var showCalendarBtn = document.getElementById('show-calendar-btn');
-    var closeCalendarBtn = document.getElementById('close-calendar-btn');
-    var calendarContainer = document.getElementById('calendar-container');
-
-    if (calendarEl) {
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: ''
-            },
-            height: 600,
-            aspectRatio: 1.35,
-            locale: 'ko',
-            buttonText: {
-                today: '오늘'
-            },
-            dateClick: (info) => {
-                requestDate = info.dateStr;
-                getGameData();
-                calendarContainer.style.display = 'none';
-            }
-        });
-
-        showCalendarBtn.addEventListener('click', function() {
-            if (calendarContainer.style.display === 'none' || calendarContainer.style.display === '') {
-                calendarContainer.style.display = 'block';
-                calendar.render();
-            } else {
-                calendarContainer.style.display = 'none';
-            }
-        });
-
-        closeCalendarBtn.addEventListener('click', function() {
-            calendarContainer.style.display = 'none';
-        });
-    } else {
-        console.error('캘린더 요소를 찾을 수 없습니다.');
-    }
-
-    
-    // 날짜 변경 버튼 초기화
-    const prevDayBtn = document.getElementById('prev-day');
-    const nextDayBtn = document.getElementById('next-day');
-    const todayDayBtn = document.getElementById('today-day');
-
-    if (prevDayBtn && nextDayBtn && todayDayBtn) {
-        prevDayBtn.addEventListener('click', () => {
-            requestDate = adjustDate(requestDate, -1);
-            getGameData();
-        });
-
-        nextDayBtn.addEventListener('click', () => {
-            requestDate = adjustDate(requestDate, +1);
-            getGameData();
-        });
-
-        todayDayBtn.addEventListener('click', () => {
-            requestDate = getCurrentDate();
-            getGameData();
-        });
-    }
+    getFullCalendar()
 });
 
 function countEntries(data) {
@@ -127,8 +67,12 @@ async function getGameData() {
     // 날짜를 변경할때마다 바뀐 날짜 적용 
     document.querySelector('.date-display').innerHTML = requestDate;
 
-    // const loadingSpinner = document.getElementById('loading-spinner');
-    // loadingSpinner.style.display = 'block'; // 로딩 스피너 표시
+    const loadingSpinner = document.getElementById('loading-spinner');
+    if(!intervalCheck) {
+        loadingSpinner.style.display = 'block'; // 로딩 스피너 표시
+    } else {
+        loadingSpinner.style.display = 'none';
+    }
 
     try {
         const res = await axios.get(dataUrl);
@@ -172,12 +116,11 @@ async function getGameData() {
         console.log(error);
     } finally {
         loadingSpinner.style.display = 'none'; // 로딩 스피너 숨김
+        intervalCheck = false;
     }
 }
 
 function createTableRow(game) {
-
-    console.log(game)
 
     const gameRow = document.createElement('div');
     gameRow.classList.add('game-row');

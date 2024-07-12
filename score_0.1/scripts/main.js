@@ -5,13 +5,17 @@ let requestDate = getCurrentDate();
 /** 전역변수 - 불러온 게임 데이터 정렬 */
 const sortedGameData = [];
 
-document.addEventListener('DOMContentLoaded', async function() {
+let intervalCheck = false;
 
+async function fetchDataPeriodically() {
+    intervalCheck = true;
     await getGameData();
+    setTimeout(fetchDataPeriodically, 5000);
+}
 
-    setInterval(async () => {
-        await getGameData()
-    }, 5000);
+document.addEventListener('DOMContentLoaded', async function() {
+    await getGameData();
+    fetchDataPeriodically();
 
     // Full calendar 관련
     getFullCalendar()
@@ -152,7 +156,11 @@ async function getGameData() {
     const loadingSpinner = document.getElementById('loading-spinner');
     const tbody = document.getElementById('gameDataBody');
 
-    // loadingSpinner.style.display = 'block'; // 로딩 스피너 표시
+    if(!intervalCheck) {
+        loadingSpinner.style.display = 'block'; // 로딩 스피너 표시
+    } else {
+        loadingSpinner.style.display = 'none';
+    }
 
     try {
         const res = await axios.get(dataUrl);
@@ -194,5 +202,6 @@ async function getGameData() {
         console.log('get data error.....');
     } finally {
         loadingSpinner.style.display = 'none'; // 로딩 스피너 숨김
+        intervalCheck = false;
     }
 }
