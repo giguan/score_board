@@ -15,7 +15,7 @@ async function fetchDataPeriodically() {
 
 document.addEventListener('DOMContentLoaded', async function() {
     await getGameData();
-    fetchDataPeriodically();
+    // fetchDataPeriodically();
 
     // Full calendar 관련
     getFullCalendar()
@@ -117,7 +117,7 @@ function getPeriodText(game) {
 function createTableRow(game) {
 
     const row = document.createElement('div');
-    row.className = 'scoreRow';
+    row.className = 'scoreRow jumping-text';
     row.style.cursor = 'pointer';
 
     const homeScore = game.teams.home.periodData.reduce((total, current) => total + current.score, 0);

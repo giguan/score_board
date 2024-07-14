@@ -55,7 +55,6 @@
     flex: 1;
     padding: 0 10px;
     overflow: hidden;
-    text-overflow: ellipsis;
     white-space: nowrap;
     text-align: center;
 }
@@ -73,7 +72,7 @@
     display: inline-block;
     width: 60px;
     text-align: center;
-    padding: 2px 8px;
+    padding: 2px 4px;
     border-radius: 5px;
     font-weight: bold;
     color: white;
@@ -134,7 +133,7 @@
     padding: 10px;
     border-radius: 10px;
     margin-top: 10px;
-    width: 98%; /* 전체 폭을 차지하도록 설정 */
+    width: 97%; /* 전체 폭을 차지하도록 설정 */
 }
 
 /* 탭 메뉴 스타일 */
@@ -390,5 +389,25 @@
         flex: 1;
         display: flex;
         justify-content: center;
+    }
+}
+
+
+/** 이거 그냥 예시 main.js create에 클래스 제거해야함 */
+.jumping-text {
+    /* font-size: 24px; */
+    transition: all 0.2s ease;
+}
+
+.jumping-text:hover {
+    animation: jump 0.6s infinite;
+}
+
+@keyframes jump {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
     }
 }
