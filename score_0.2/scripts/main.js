@@ -31,6 +31,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
     });
 
+    document.querySelectorAll('.collapse-content').forEach(content => {
+        content.style.display = 'none';
+    });
+
 });
 
 /**
@@ -96,8 +100,6 @@ function countEntries(data) {
     counts.sortedGameData = sortedGameDataArray;
     counts.sortedGameDataByStatus = sortedGameData; // 상태별 배열 추가
 
-    console.log("counts",counts)
-
     return counts;
 }
 
@@ -114,40 +116,227 @@ function getPeriodText(game) {
 
 function createTableRow(game) {
 
-    const tr = document.createElement('tr');
-    tr.id = game.id;
-    tr.style.cursor = 'pointer';
+    const row = document.createElement('div');
+    row.className = 'scoreRow';
+    row.style.cursor = 'pointer';
+
     const homeScore = game.teams.home.periodData.reduce((total, current) => total + current.score, 0);
     const awayScore = game.teams.away.periodData.reduce((total, current) => total + current.score, 0);
-
-
-    // 상세 탭 잠시제거
-    // tr.addEventListener('click', () => {
-    //     window.open(`./popup/index.html?sportsType=${game.sportsType}&id=${game.id}`, '_blank', 'width=1100, height=800')
-    // });
-
-
+    
     let homeScoreClass = '';
     let awayScoreClass = '';
-
+    
     if (homeScore > awayScore) {
         homeScoreClass = 'highlight';
     } else if (homeScore < awayScore) {
         awayScoreClass = 'highlight';
     }
+    const gameRow = document.createElement('div');
+    gameRow.className = 'row';
+    gameRow.id = `game-${game.id}`;
+    gameRow.onclick = () => toggleCollapse(gameRow);
 
-    tr.innerHTML = `
-        <td class="tr-icon league-icon"><img src=${getSportsIcon(game.sportsType)} alt="리그 아이콘"> ${game.league.name.length > 4 ? game.league.name.substring(0,4) + "..." : game.league.name }</td>
-        <td class="time-column">${formatDateTime(game.startDatetime).split(' ')[1]}</td>
-        <td class="team-column"><img class="team-icon" src="./assets/images/small_logo/${game.teams.home.imgPath.split('/')[4]}" alt="홈팀 아이콘"> ${game.teams.home.name}</td>
-        <td class="score-column ${homeScoreClass}">${homeScore}</td>
-        <td><span class="status ${getStatusClass(game.gameStatus)}">${game.gameStatus === 'IN_PROGRESS' ? getPeriodText(game) : getStatusText(game.gameStatus)}</span></td>
-        <td class="score-column ${awayScoreClass}">${awayScore}</td>
-        <td class="team-column"><img class="team-icon" src="./assets/images/small_logo/${game.teams.away.imgPath.split('/')[4]}" alt="원정팀 아이콘"> ${game.teams.away.name}</td>
+    gameRow.innerHTML = `
+        <div class="cell tr-icon league-icon"><img src=${getSportsIcon(game.sportsType)} alt="리그 아이콘"> ${game.league.name.length > 4 ? game.league.name.substring(0, 4) + "..." : game.league.name}</div>
+        <div class="cell">${formatDateTime(game.startDatetime).split(' ')[1]}</div>
+        <div class="cell team-column"><img class="team-icon" src="./assets/images/small_logo/${game.teams.home.imgPath.split('/')[4]}" alt="홈팀 아이콘"> ${game.teams.home.name}</div>
+        <div class="cell score-column ${homeScoreClass}">${homeScore}</div>
+        <div class="cell"><span class="status ${getStatusClass(game.gameStatus)}">${game.gameStatus === 'IN_PROGRESS' ? getPeriodText(game) : getStatusText(game.gameStatus)}</span></div>
+        <div class="cell score-column ${awayScoreClass}">${awayScore}</div>
+        <div class="cell team-column"><img class="team-icon" src="./assets/images/small_logo/${game.teams.away.imgPath.split('/')[4]}" alt="원정팀 아이콘"> ${game.teams.away.name}</div>
     `;
 
-    return tr;
+    const prevCollapse = document.querySelector(`#collapse-${game.id}`)
+
+    const collapseContent = document.createElement('div');
+    collapseContent.className = 'collapse-content';
+    collapseContent.id = `collapse-${game.id}`;
+    if (prevCollapse) {
+        collapseContent.style.display = prevCollapse.style.display || 'none';
+        const prevActiveTab = prevCollapse.querySelector('.tab.active');
+        if (prevActiveTab) {
+            const prevActiveTabId = prevActiveTab.getAttribute('onclick').split(',')[1].trim().replace(/['\)]/g, '');
+            collapseContent.innerHTML = `
+                <div class="tab-menu">
+                    <div class="tab ${prevActiveTabId === 'tab1-' + game.id ? 'active' : ''}" onclick="showTabContent(this, 'tab1-${game.id}')">승/패</div>
+                    <div class="tab ${prevActiveTabId === 'tab2-' + game.id ? 'active' : ''}" onclick="showTabContent(this, 'tab2-${game.id}')">핸디캡</div>
+                    <div class="tab ${prevActiveTabId === 'tab3-' + game.id ? 'active' : ''}" onclick="showTabContent(this, 'tab3-${game.id}')">언더/오버</div>
+                </div>
+                <div id="tab1-${game.id}" class="tab-content ${prevActiveTabId === 'tab1-' + game.id ? 'active' : ''}">
+                    <div class="odds-section">
+                        <div class="odds-type">승패</div>
+                        <div class="odds-values">
+                            <div class="odds-item">
+                                <span>홈</span>
+                                <span class="odds-red">${game.odds?.domesticWinLoseOdds[0] ? game.odds?.domesticWinLoseOdds[0].odds : '-'}</span>
+                            </div>
+                            <div class="odds-item">
+                                <span>무승부</span>
+                                <span>-</span>
+                            </div>
+                            <div class="odds-item">
+                                <span>원정</span>
+                                <span class="odds-blue">${game.odds?.domesticWinLoseOdds[1] ? game.odds?.domesticWinLoseOdds[1].odds : '-'}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="tab2-${game.id}" class="tab-content ${prevActiveTabId === 'tab2-' + game.id ? 'active' : ''}">
+                    <div class="odds-section">
+                        <div class="odds-type">
+                            핸디캡 (기준
+                            ${game?.odds?.domesticHandicapOdds[0] ? (`
+                                <span class=${game.odds.domesticHandicapOdds[0]?.optionValue < 0  ? 'minus' : 'normal'}>
+                                    <span>${game.odds.domesticHandicapOdds[0].optionValue}</span>
+                                </span>
+                            `) : (
+                                `<span class="normal">-</div>`
+                            )}
+                            )
+                        </div>
+                        <div class="odds-values">
+                            <div class="odds-item">
+                                <span>홈</span>
+                                <span class="odds-red">${game?.odds.domesticHandicapOdds[0] ? game?.odds.domesticHandicapOdds[0].odds : '-'}</span>
+                            </div>
+                            <div class="odds-item">
+                                <span>무승부</span>
+                                <span>-</span>
+                            </div>
+                            <div class="odds-item">
+                                <span>원정</span>
+                                <span class="odds-blue">${game?.odds.domesticHandicapOdds[1] ? game?.odds.domesticHandicapOdds[1].odds : '-'}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="tab3-${game.id}" class="tab-content ${prevActiveTabId === 'tab3-' + game.id ? 'active' : ''}">
+                    <div class="odds-section">
+                        <div class="odds-type">
+                            언더/오버 (기준
+                            ${game?.odds?.domesticUnderOverOdds[0] ? (
+                                `<span class=${game.odds.domesticUnderOverOdds[0]?.optionValue < 0 ? 'minus' : 'normal'}>
+                                    <span>${game.odds.domesticUnderOverOdds[0].optionValue}</span>
+                                </span>`
+                            ) : (
+                                `<span class="normal">-</div>`
+                            )}
+                            )
+                        </div>
+                        <div class="odds-values">
+                            <div class="odds-item">
+                                <span>언더</span>
+                                <span class="odds-red">${game?.odds.domesticUnderOverOdds[0] ? game?.odds.domesticUnderOverOdds[0].odds : '-'}</span>
+                            </div>
+                            <div class="odds-item">
+                                <span>무승부</span>
+                                <span>-</span>
+                            </div>
+                            <div class="odds-item">
+                                <span>오버</span>
+                                <span class="odds-blue">${game?.odds.domesticUnderOverOdds[1] ? game?.odds.domesticUnderOverOdds[1].odds : '-'}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            collapseContent.style.display = 'none';
+        }
+    } else {
+        collapseContent.style.display = 'none';
+        collapseContent.innerHTML = `
+            <div class="tab-menu">
+                <div class="tab active" onclick="showTabContent(this, 'tab1-${game.id}')">승/패</div>
+                <div class="tab" onclick="showTabContent(this, 'tab2-${game.id}')">핸디캡</div>
+                <div class="tab" onclick="showTabContent(this, 'tab3-${game.id}')">언더/오버</div>
+            </div>
+            <div id="tab1-${game.id}" class="tab-content active">
+                    <div class="odds-section">
+                        <div class="odds-type">승패</div>
+                        <div class="odds-values">
+                            <div class="odds-item">
+                                <span>홈</span>
+                                <span class="odds-red">${game.odds?.domesticWinLoseOdds[0] ? game.odds?.domesticWinLoseOdds[0].odds : '-'}</span>
+                            </div>
+                            <div class="odds-item">
+                                <span>무승부</span>
+                                <span>-</span>
+                            </div>
+                            <div class="odds-item">
+                                <span>원정</span>
+                                <span class="odds-blue">${game.odds?.domesticWinLoseOdds[1] ? game.odds?.domesticWinLoseOdds[1].odds : '-'}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="tab2-${game.id}" class="tab-content">
+                    <div class="odds-section">
+                        <div class="odds-type">
+                            핸디캡 (기준
+                            ${game?.odds?.domesticHandicapOdds[0] ? (
+                                `<span class=${game.odds.domesticHandicapOdds[0]?.optionValue < 0 ? 'minus' : 'normal'}>
+                                    <span>${game.odds.domesticHandicapOdds[0].optionValue}</span>
+                                </span>`
+                            ) : (
+                                `<span class="normal">-</div>`
+                            )}
+                            )
+                        </div>
+                        <div class="odds-values">
+                            <div class="odds-item">
+                                <span>홈</span>
+                                <span class="odds-red">${game?.odds.domesticHandicapOdds[0] ? game?.odds.domesticHandicapOdds[0].odds : '-'}</span>
+                            </div>
+                            <div class="odds-item">
+                                <span>무승부</span>
+                                <span>-</span>
+                            </div>
+                            <div class="odds-item">
+                                <span>원정</span>
+                                <span class="odds-blue">${game?.odds.domesticHandicapOdds[1] ? game?.odds.domesticHandicapOdds[1].odds : '-'}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="tab3-${game.id}" class="tab-content">
+                    <div class="odds-section">
+                        <div class="odds-type">
+                            언더/오버 (기준
+                            ${game?.odds?.domesticUnderOverOdds[0] ? (
+                                `<span class=${game.odds.domesticUnderOverOdds[0]?.optionValue < 0 ? 'minus' : 'normal'}>
+                                    <span>${game.odds.domesticUnderOverOdds[0].optionValue}</span>
+                                </span>`
+                            ) : (
+                                `<span>-</span>`
+                            )}
+                            )
+                        </div>
+                        <div class="odds-values">
+                            <div class="odds-item">
+                                <span>언더</span>
+                                <span class="odds-red">${game?.odds.domesticUnderOverOdds[0] ? game?.odds.domesticUnderOverOdds[0].odds : '-'}</span>
+                            </div>
+                            <div class="odds-item">
+                                <span>무승부</span>
+                                <span>-</span>
+                            </div>
+                            <div class="odds-item">
+                                <span>오버</span>
+                                <span class="odds-blue">${game?.odds.domesticUnderOverOdds[1] ? game?.odds.domesticUnderOverOdds[1].odds : '-'}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        `;
+    }
+
+    row.appendChild(gameRow);
+    row.appendChild(collapseContent);
+
+    return row;
 }
+
 function getSportsIcon(sportsType) {
 
     switch(sportsType) {
@@ -163,6 +352,25 @@ function getSportsIcon(sportsType) {
 
 }
 
+function toggleCollapse(element) {
+    const nextElement = element.nextElementSibling;
+    if (nextElement && nextElement.classList.contains('collapse-content')) {
+        nextElement.style.display = nextElement.style.display === 'none' ? 'block' : 'none';
+    }
+}
+
+function showTabContent(tab, tabId) {
+    const tabMenu = tab.parentNode;
+    const tabContents = tabMenu.parentNode.querySelectorAll('.tab-content');
+
+    tabMenu.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tabContents.forEach(content => content.classList.remove('active'));
+
+    tab.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+}
+
+
 function getActiveButtonId() {
     const activeButton = document.querySelector('.filters span.active');
     return activeButton ? activeButton.id : null;
@@ -175,7 +383,7 @@ async function getGameData() {
     document.querySelector('.date-display').innerHTML = requestDate;
 
     const loadingSpinner = document.getElementById('loading-spinner');
-    const tbody = document.getElementById('gameDataBody');
+    const tbody = document.getElementById('score-table');
 
     if(!intervalCheck) {
         loadingSpinner.style.display = 'block'; // 로딩 스피너 표시
@@ -186,8 +394,6 @@ async function getGameData() {
     try {
         const res = await axios.get(dataUrl);
         const gameInfo = countEntries(res.data);
-
-        console.log("gameInfo : ",gameInfo);
 
         // DOM 업데이트 최소화
         const totalGameCnt = document.getElementById('total-game-cnt');
@@ -201,47 +407,85 @@ async function getGameData() {
         finalGameCnt.innerHTML = gameInfo.final;
 
         // DocumentFragment 사용하여 DOM 조작 최적화
-        const fragment = document.createDocumentFragment();
-
+        
         if(getActiveButtonId() === "total-button") {
-            gameInfo?.sortedGameData?.forEach((game) => {
-                const row = createTableRow(game);
+            const fragment = document.createDocumentFragment();
+
+            if(gameInfo?.sortedGameData.length > 0) {
+                gameInfo?.sortedGameData?.forEach((game) => {
+                    const row = createTableRow(game);
+                    fragment.appendChild(row);
+                });
+            } else {
+                const row = createTableErrorRow();
                 fragment.appendChild(row);
-            });
+            }
+
+            tbody.innerHTML = ``;
+            tbody.appendChild(fragment);
         } else if (getActiveButtonId() === "ready-button") {
-            gameInfo?.sortedGameDataByStatus?.READY?.forEach((game) => {
-                const row = createTableRow(game);
+            const fragment = document.createDocumentFragment();
+
+            if(gameInfo?.sortedGameDataByStatus?.READY.length > 0) {
+                gameInfo?.sortedGameDataByStatus?.READY?.forEach((game) => {
+                    const row = createTableRow(game);
+                    fragment.appendChild(row);
+                })
+            } else {
+                const row = createTableErrorRow();
                 fragment.appendChild(row);
-            })
+            }
+
+            tbody.innerHTML = ``;
+            tbody.appendChild(fragment);
         } else if (getActiveButtonId() === "inprogress-button") {
-            gameInfo?.sortedGameDataByStatus?.IN_PROGRESS?.forEach((game) => {
-                const row = createTableRow(game);
+            const fragment = document.createDocumentFragment();
+            
+            if(gameInfo?.sortedGameDataByStatus?.IN_PROGRESS.length > 0) {
+                gameInfo?.sortedGameDataByStatus?.IN_PROGRESS?.forEach((game) => {
+                    const row = createTableRow(game);
+                    fragment.appendChild(row);
+                })
+            } else {
+                const row = createTableErrorRow();
                 fragment.appendChild(row);
-            })
+            }
+            
+            tbody.innerHTML = ``;
+            tbody.appendChild(fragment);
         } else if (getActiveButtonId() === "final-button") {
-            gameInfo?.sortedGameDataByStatus?.FINAL?.forEach((game) => {
-                const row = createTableRow(game);
+            const fragment = document.createDocumentFragment();
+
+            if(gameInfo?.sortedGameDataByStatus?.FINAL.length > 0) {
+                gameInfo?.sortedGameDataByStatus?.FINAL?.forEach((game) => {
+                    const row = createTableRow(game);
+                    fragment.appendChild(row);
+                })
+            } else {
+                const row = createTableErrorRow();
                 fragment.appendChild(row);
-            })
+            }
+
+            tbody.innerHTML = ``;
+            tbody.appendChild(fragment);
         }
 
-        tbody.innerHTML = '';
-        tbody.appendChild(fragment);
     } catch (error) {
-        // 오류 메시지 표시
-        const errorMessage = document.createElement('tr');
-        errorMessage.className = 'error-message';
-        const errorTd = document.createElement('td');
-        errorTd.colSpan = 7; // 테이블의 전체 열을 차지하도록 설정
-        errorTd.textContent = error.response && error.response.status === 404 
-            ? '데이터가 없습니다.' 
-            : '알 수 없는 오류가 발생했습니다.';
-        errorMessage.appendChild(errorTd);
-        tbody.appendChild(errorMessage);
-
-        console.log('get data error.....');
+        console.log("goat-score error message: ", error)
     } finally {
         loadingSpinner.style.display = 'none'; // 로딩 스피너 숨김
         intervalCheck = false;
     }
+}
+
+function createTableErrorRow() {
+    const row = document.createElement('div');
+    row.className = 'errorRow';
+    row.style.cursor = 'pointer';
+
+    row.innerHTML = `
+        일정된 경기가 없습니다.
+    `;
+
+    return row;
 }

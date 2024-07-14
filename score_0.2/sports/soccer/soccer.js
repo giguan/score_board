@@ -5,7 +5,6 @@ let requestDate = getCurrentDate();
 /** 전역변수 - 불러온 게임 데이터 정렬 */
 const sortedGameData = [];
 
-
 let intervalCheck = false;
 document.addEventListener('DOMContentLoaded', async function() {
 
@@ -17,8 +16,24 @@ document.addEventListener('DOMContentLoaded', async function() {
     }, 5000);
 
     // Full calendar 관련
-    getFullCalendar()
+    getFullCalendar();
+
+    const filterButtons = document.querySelectorAll('.filters span');
+            
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            filterButtons.forEach(btn => btn.classList.remove('active')); // 모든 버튼에서 'active' 클래스 제거
+            button.classList.add('active'); // 클릭된 버튼에 'active' 클래스 추가
+
+            getGameData();
+        });
+    });
 });
+
+function getActiveButtonId() {
+    const activeButton = document.querySelector('.filters span.active');
+    return activeButton ? activeButton.id : null;
+}
 
 /** 
  * 1. 총 게임 수 반환 및 데이터 정제
@@ -61,14 +76,16 @@ function countEntries(data) {
     counts.inProgress = inProgress;
     counts.cancel = cancel;
 
-    const sortedsortedGameData = [
+    const sortedGameDataArray = [
         ...sortedGameData.IN_PROGRESS,
         ...sortedGameData.READY,
         ...sortedGameData.CANCEL,
         ...sortedGameData.FINAL
     ];
 
-    counts.sortedGameData = sortedsortedGameData;  // Include sorted data in counts
+    counts.sortedGameData = sortedGameDataArray;
+    counts.sortedGameDataByStatus = sortedGameData; // 상태별 배열 추가
+
     return counts;
 }
 
@@ -85,7 +102,10 @@ function getPeriodText(game) {
 
 function createTableRow(game) {
 
-    const tr = document.createElement('tr');
+    const row = document.createElement('div');
+    row.className = 'scoreRow';
+    row.style.cursor = 'pointer';
+
     const homeScore = game.teams.home.periodData.reduce((total, current) => total + current.score, 0);
     const awayScore = game.teams.away.periodData.reduce((total, current) => total + current.score, 0);
 
@@ -98,17 +118,24 @@ function createTableRow(game) {
         awayScoreClass = 'highlight';
     }
 
-    tr.innerHTML = `
-        <td class="tr-icon league-icon"> ${game.league.name.length > 4 ? game.league.name.substring(0,5) + ".." : game.league.name }</td>
-        <td>${formatDateTime(game.startDatetime).split(' ')[1]}</td>
-        <td class="team-column">${game.teams.home.name.length > 11 ? game.teams.home.name.substring(0,11) + ".." : game.teams.home.name }</td>
-        <td class="score-column ${homeScoreClass}">${homeScore}</td>
-        <td><span class="status ${getStatusClass(game.gameStatus)}">${game.gameStatus === 'IN_PROGRESS' ? getPeriodText(game) : getStatusText(game.gameStatus)}</span></td>
-        <td class="score-column ${awayScoreClass}">${awayScore}</td>
-        <td class="team-column">${game.teams.away.name.length > 11 ? game.teams.away.name.substring(0,11) + ".." : game.teams.away.name }</td></td>
+    const gameRow = document.createElement('div');
+    gameRow.className = 'row';
+    gameRow.id = `game-${game.id}`;
+    gameRow.onclick = () => toggleCollapse(gameRow);
+
+    gameRow.innerHTML = `
+        <div class="cell tr-icon league-icon">${game.league.name.length > 4 ? game.league.name.substring(0,5) + ".." : game.league.name }</div>
+        <div class="cell">${formatDateTime(game.startDatetime).split(' ')[1]}</div>
+        <div class="cell team-column">${game.teams.home.name}</div>
+        <div class="cell score-column ${homeScoreClass}">${homeScore}</div>
+        <div class="cell"><span class="status ${getStatusClass(game.gameStatus)}">${game.gameStatus === 'IN_PROGRESS' ? getPeriodText(game) : getStatusText(game.gameStatus)}</span></div>
+        <div class="cell score-column ${awayScoreClass}">${awayScore}</div>
+        <div class="cell team-column">${game.teams.away.name}</div>
     `;
 
-    return tr;
+    row.appendChild(gameRow);
+
+    return row;
 }
 
 async function getGameData() {
@@ -118,7 +145,7 @@ async function getGameData() {
     document.querySelector('.date-display').innerHTML = requestDate;
 
     const loadingSpinner = document.getElementById('loading-spinner');
-    const tbody = document.getElementById('gameDataBody');
+    const tbody = document.getElementById('score-table');
     // loadingSpinner.style.display = 'block'; // 로딩 스피너 표시
 
     if(!intervalCheck) {
@@ -143,29 +170,84 @@ async function getGameData() {
         inProgressGameCnt.innerHTML = gameInfo.inProgress;
         finalGameCnt.innerHTML = gameInfo.final;
 
-        // DocumentFragment 사용하여 DOM 조작 최적화
-        const fragment = document.createDocumentFragment();
-        
-        gameInfo?.sortedGameData?.forEach((game) => {
-            const row = createTableRow(game);
-            fragment.appendChild(row);
-        });
+        if(getActiveButtonId() === "total-button") {
+            const fragment = document.createDocumentFragment();
 
-        tbody.innerHTML = ''; // 기존 데이터 초기화
-        tbody.appendChild(fragment);
+            if(gameInfo?.sortedGameData.length > 0) {
+                gameInfo?.sortedGameData?.forEach((game) => {
+                    const row = createTableRow(game);
+                    fragment.appendChild(row);
+                });
+            } else {
+                const row = createTableErrorRow();
+                fragment.appendChild(row);
+            }
+
+            tbody.innerHTML = ``;
+            tbody.appendChild(fragment);
+        } else if (getActiveButtonId() === "ready-button") {
+            const fragment = document.createDocumentFragment();
+
+            if(gameInfo?.sortedGameDataByStatus?.READY.length > 0) {
+                gameInfo?.sortedGameDataByStatus?.READY?.forEach((game) => {
+                    const row = createTableRow(game);
+                    fragment.appendChild(row);
+                })
+            } else {
+                const row = createTableErrorRow();
+                fragment.appendChild(row);
+            }
+
+            tbody.innerHTML = ``;
+            tbody.appendChild(fragment);
+        } else if (getActiveButtonId() === "inprogress-button") {
+            const fragment = document.createDocumentFragment();
+            
+            if(gameInfo?.sortedGameDataByStatus?.IN_PROGRESS.length > 0) {
+                gameInfo?.sortedGameDataByStatus?.IN_PROGRESS?.forEach((game) => {
+                    const row = createTableRow(game);
+                    fragment.appendChild(row);
+                })
+            } else {
+                const row = createTableErrorRow();
+                fragment.appendChild(row);
+            }
+            
+            tbody.innerHTML = ``;
+            tbody.appendChild(fragment);
+        } else if (getActiveButtonId() === "final-button") {
+            const fragment = document.createDocumentFragment();
+
+            if(gameInfo?.sortedGameDataByStatus?.FINAL.length > 0) {
+                gameInfo?.sortedGameDataByStatus?.FINAL?.forEach((game) => {
+                    const row = createTableRow(game);
+                    fragment.appendChild(row);
+                })
+            } else {
+                const row = createTableErrorRow();
+                fragment.appendChild(row);
+            }
+
+            tbody.innerHTML = ``;
+            tbody.appendChild(fragment);
+        }
+
     } catch (error) {
-        // 오류 메시지 표시
-        const errorMessage = document.createElement('tr');
-        errorMessage.className = 'error-message';
-        const errorTd = document.createElement('td');
-        errorTd.colSpan = 7; // 테이블의 전체 열을 차지하도록 설정
-        errorTd.textContent = error.response && error.response.status === 404 
-            ? '데이터가 없습니다.' 
-            : '알 수 없는 오류가 발생했습니다.';
-        errorMessage.appendChild(errorTd);
-        tbody.appendChild(errorMessage);
+        console.log("goat-score error message: ", error)
     } finally {
         loadingSpinner.style.display = 'none'; // 로딩 스피너 숨김
         intervalCheck = false;
     }
+}
+
+function createTableErrorRow() {
+    const row = document.createElement('div');
+    row.className = 'errorRow';
+    row.style.cursor = 'pointer';
+
+    row.innerHTML = `
+        일정된 경기가 없습니다.
+    `;
+
+    return row;
 }
