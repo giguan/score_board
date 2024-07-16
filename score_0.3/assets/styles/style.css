@@ -1,0 +1,416 @@
+.table-container {
+    flex: 1;
+    overflow-y: auto;
+    background: linear-gradient(135deg, rgba(27, 28, 35, 0.8), rgba(37, 38, 44, 0.9));
+    border-radius: 10px;
+    width: 100%;
+    position: relative;
+}
+
+.table-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    z-index: -1;
+    box-shadow: 0 10px 20px rgba(233, 71, 32, 0.1), 0 6px 6px rgba(233, 71, 32, 0.05);
+    background: linear-gradient(135deg, rgba(233, 71, 32, 0.1), rgba(233, 71, 32, 0.05));
+}
+
+/* 기본 스타일 설정 */
+.score-table {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: transparent;
+}
+
+.score-table .row {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    background: linear-gradient(135deg, #1D212A, #2B2C33);
+    border-radius: 10px;
+    box-shadow: 0 10px 15px rgba(233, 71, 32, 0.1), 0 6px 6px rgba(233, 71, 32, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: white;
+    font-size: 0.9em;
+    cursor: pointer;
+}
+
+.score-table .row:nth-child(odd) {
+    background: linear-gradient(135deg, #2B2C33, #1D212A);
+}
+
+.score-table .row:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 20px rgba(233, 71, 32, 0.15), 0 10px 10px rgba(233, 71, 32, 0.1);
+}
+
+.score-table .cell {
+    flex: 1;
+    padding: 0 10px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.score-table .cell.team-column {
+    flex: 2;
+}
+
+.score-table .cell.score-column {
+    flex: 0.3;
+}
+
+.score-table .cell.tr-icon.league-icon {
+    flex: 1.5;
+    text-align: left;
+}
+
+.score-table .cell.time-column {
+    flex: 0.3;
+}
+
+/* 상태별 스타일 */
+.status {
+    display: inline-block;
+    width: 60px;
+    text-align: center;
+    padding: 2px 4px;
+    border-radius: 5px;
+    font-weight: bold;
+    color: white;
+}
+
+.status.in-progress {
+    background-color: #E94720;
+}
+
+.status.ready {
+    background-color: rgba(233, 71, 32, 0.5);
+    color: #333333;
+}
+
+.status.finished {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.status.cancel {
+    background-color: #757575;
+    color: white;
+}
+
+.status.postponed {
+    background-color: #80ad2b;
+    color: white;
+}
+
+.status.cut {
+    background-color: #2b6ead;
+    color: white;
+}
+
+/* 기본 이미지 필터 제거 */
+.score-table .cell img {
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    margin-right: 8px;
+    filter: none;
+}
+
+/* 리그명 이미지 흰색으로 변경 */
+.score-table .cell.league-icon img {
+    filter: brightness(0) invert(1);
+}
+
+.team-icon {
+    filter: none !important;
+}
+
+/* 점수 강조 스타일 */
+.highlight {
+    font-weight: bold;
+    color: #E94720;
+}
+
+/* Collapse 스타일 */
+.collapse-content {
+    display: none;
+    background-color: #2c2c2c;
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: 10px;
+    width: 97%; /* 전체 폭을 차지하도록 설정 */
+}
+
+/* 탭 메뉴 스타일 */
+.tab-menu {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 10px;
+    width: 100%; /* 전체 폭을 차지하도록 설정 */
+}
+
+.tab-menu .tab {
+    flex: 1;
+    padding: 10px;
+    cursor: pointer;
+    background-color: #3a3a3a;
+    border-radius: 5px;
+    color: white;
+    text-align: center;
+    margin: 0 5px;
+}
+
+.tab-menu .tab.active {
+    background-color: rgba(233, 71, 32, 0.4);
+}
+
+.tab-content {
+    display: none;
+    width: 100%; /* 전체 폭을 차지하도록 설정 */
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.game-detail {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    color: white;
+}
+
+.game-detail .team {
+    text-align: center;
+}
+
+.game-detail .team img {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 5px;
+}
+
+.game-detail .score {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.game-detail .score .home-score.highlight {
+    color: red;
+}
+
+.game-detail .score .away-score.highlight {
+    color: blue;
+}
+
+.game-detail .score .vs {
+    margin: 0 10px;
+}
+
+.odds-section {
+    margin-bottom: 20px;
+    background-color: #3a3a3a;
+    padding: 15px;
+    color: #E94720;
+
+    border-radius: 10px;
+}
+
+.odds-section .odds-type {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #E94720;
+    text-align: center;
+    font-size: 1.1em;
+}
+
+.minus span {
+    color: red !important;
+}
+
+.normal span {
+    color: #4CA35C !important;
+}
+
+.odds-values {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.odds-values .odds-item {
+    flex: 1;
+    text-align: center;
+    background-color: #2c2c2c;
+    margin: 0 10px;
+    padding: 10px;
+    border-radius: 10px;
+    color: white;
+}
+
+.odds-red {
+    color: #E94720;
+}
+
+.odds-blue {
+    color: #4CA35C;
+}
+
+/* Add this to your CSS file */
+.errorRow {
+    background-color: #FF9728;
+    color: #721c24;
+    border: 1px solid #FF9728;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+    .table-container {
+        overflow-y: scroll;
+    }
+
+    .score-table {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        width: 100%;
+    }
+
+    .score-table .row {
+        position: relative;
+        width: 80%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start; /* 좌측 정렬로 변경 */
+        background: linear-gradient(135deg, #1D212A, #2B2C33);
+        border-radius: 10px;
+        box-shadow: 0 10px 15px rgba(233, 71, 32, 0.1), 0 6px 6px rgba(233, 71, 32, 0.05);
+        padding: 15px;
+        margin-bottom: 10px;
+        color: white;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        overflow: hidden;
+    }
+
+    .score-table .cell {
+        display: block; /* 각 셀을 블록 요소로 변경 */
+        padding: 5px 0;
+    }
+
+    .score-table .cell.team-column {
+        width: 100%;
+        text-align: right;
+    }
+
+    .score-table .cell,
+    .score-table .cell:nth-child(5) {
+        width: 100%;
+        text-align: center;
+        font-size: 1.2em;
+    }
+
+    .score-table .cell.score-column {
+        width: 100%;
+        text-align: center; /* 텍스트 우측 정렬 */
+    }
+
+    .score-table .cell:before {
+        content: attr(data-label);
+        font-weight: bold;
+        margin-right: 10px;
+        display: inline-block;
+    }
+
+    .score-table .cell.team-column img {
+        width: 35px;
+        height: 35px;
+    }
+
+    .score-table .row .cell.tr-icon {
+        width: 70%;
+        text-align: left;
+        font-size: 1.2em;
+        white-space: nowrap; /* 줄바꿈 없이 한 줄로 표시 */
+        text-overflow: ellipsis; /* 넘치는 텍스트 생략 표시 (...) */
+        
+    }
+
+    .score-table .row .cell:nth-child(2) {
+        font-size: 1.2em;
+        position: absolute;
+        width: 80%;
+        text-align: right;
+    }
+
+    .status {
+        width: auto;
+    }
+
+
+    .collapse-content {
+        display: none;
+        background-color: #2c2c2c;
+        padding: 3px;
+        border-radius: 3px;
+        margin-top: 3px;
+        width: 90%; /* 전체 폭을 차지하도록 설정 */
+    }
+
+    .score-table .cell.team-column {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .score-table {
+        grid-template-columns: 1fr;
+    }
+
+    .score-table .row .cell:nth-child(2) {
+        position: absolute;
+        width: 80%;
+        text-align: right;
+    }
+
+    .score-table .row {
+        width: 80%;
+    }
+
+    .collapse-content {
+        display: none;
+        background-color: #2c2c2c;
+        padding: 3px;
+        border-radius: 3px;
+        margin-top: 3px;
+        width: 86%; /* 전체 폭을 차지하도록 설정 */
+    }
+
+    .score-table .cell.team-column {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+    }
+    
+    .score-table .cell.tr-icon.league-icon {
+        width: 50%;
+    }
+
+}
+
