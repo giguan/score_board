@@ -107,6 +107,11 @@
     color: white;
 }
 
+.status.cut {
+    background-color: #2b6ead;
+    color: white;
+}
+
 /* 기본 이미지 필터 제거 */
 .score-table .cell img {
     width: 20px;

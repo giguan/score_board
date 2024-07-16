@@ -82,8 +82,6 @@ function countEntries(data) {
 
 function createField(game) {
 
-    console.log(game);
-
     const statusClass = getStatusClass(game.gameStatus);
 
     switch(statusClass) {
@@ -149,6 +147,18 @@ function createField(game) {
                 </div>
                 <div class="field ${statusClass}"></div>
             `
+        case 'postponed' : 
+            return `
+                <div class="field-cover">
+                    <div class="circle-wrap">
+                        <img src="./../../assets/images/cancle.png"/>
+                    </div>
+                </div>
+                <div class="field-text">
+                    <div class="sub-text">경기 취소</div>
+                </div>
+                <div class="field ${statusClass}"></div>
+            `
     }
 
 }
@@ -189,8 +199,8 @@ function createTableRow(game) {
                 <span class="td" >${game.teams.away.name}</span>
                 <span class="td ${awayScore > homeScore ? 'highlight' : ''}">
                 ${game.gameStatus === 'READY' 
-                    ? `선발) ${game.teams.away.startPitcher?.name.length > 5 
-                        ? game.teams.away.startPitcher?.name.substring(0, 5) + '..' 
+                    ? `선발) ${game.teams.away.startPitcher 
+                        ? game.teams.away.startPitcher?.name.length > 5 ? game.teams.away.startPitcher?.name.substring(0, 5) + '..' : game.teams.away.startPitcher?.name
                         : '미정'}` 
                     : awayScore}
             </span>
@@ -202,16 +212,23 @@ function createTableRow(game) {
                 <span class="td" >${game.teams.home.name}</span>
                 <span class="td ${homeScore > awayScore ? 'highlight' : ''}">
                 ${game.gameStatus === 'READY' 
-                    ? `선발) ${game.teams.home.startPitcher?.name.length > 5 
-                        ? game.teams.home.startPitcher?.name.substring(0, 5) + '..' 
+                    ? `선발) ${game.teams.home.startPitcher 
+                        ? game.teams.home.startPitcher?.name.length > 5 ? game.teams.home.startPitcher?.name.substring(0, 5) + '..' : game.teams.home.startPitcher?.name
                         : '미정'}` 
                     : homeScore}
             </span>
             </div>
-            <div class="tr th">
-                <span class="td" ></span>
-                <span class="td" ></span>
-                <span class="td" ></span>
+            <div class="tr th odds">
+                ${game.oddsFlag 
+                    ? `<span class="td">승/패 - ${game.odds.domesticWinLoseOdds.length > 0 ? game.odds.domesticWinLoseOdds[0].odds +"/"+ game.odds.domesticWinLoseOdds[0].odds : ``}</span>
+                <span class="td">핸디(${game.odds.domesticHandicapOdds.length > 0 ? game.odds.domesticHandicapOdds[0].optionValue + ") " + game.odds.domesticHandicapOdds[0]?.odds +"/"+ game.odds.domesticHandicapOdds[1]?.odds : ``}</span>
+                <span class="td">언/오(${game.odds.domesticUnderOverOdds.length > 0 ? game.odds.domesticUnderOverOdds[0]?.optionValue + ") " + game.odds.domesticUnderOverOdds[0]?.odds +"/"+ game.odds.domesticUnderOverOdds[1]?.odds : ``}</span>
+                `
+                    : `<span class="td">승/패 -</span>
+                <span class="td">핸디 - </span>
+                <span class="td">언/오 - </span>
+                `                    
+                }
             </div>
         </div>
 
@@ -324,7 +341,9 @@ function createTableRow(game) {
                     <span class="td" style="color: #000"></span>
                     <span class="td" style="color: #000"></span>
                 `
-                : ``
+                : `
+                    <span class="td" style="color: #fcc">${game.broadcast? game.broadcast.playText: ''}</span>
+                `
             }
             </div>
         </div>

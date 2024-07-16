@@ -45,6 +45,8 @@ function getStatusText(status) {
             return '취소';
         case 'POSTPONED':
             return '연기';
+        case 'CUT':
+            return '중단';
         default:
             return '알 수 없음';
     }
@@ -62,6 +64,8 @@ function getStatusClass(status) {
             return 'cancel';
         case 'POSTPONED':
             return 'postponed';
+        case 'CUT':
+            return 'cut'
         default:
             return '';
     }

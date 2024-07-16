@@ -78,81 +78,6 @@ function countEntries(data) {
     return counts;;
 }
 
-
-// async function getGameData() {
-//     const dataUrl = `https://sports-api.named.com/v1.0/esports/lol/games?date=${requestDate}&status=ALL`;
-
-//     // 날짜를 변경할때마다 바뀐 날짜 적용 
-//     document.querySelector('.date-display').innerHTML = requestDate;
-
-//     const loadingSpinner = document.getElementById('loading-spinner');
-//     if(!intervalCheck) {
-//         loadingSpinner.style.display = 'block'; // 로딩 스피너 표시
-//     } else {
-//         loadingSpinner.style.display = 'none';
-//     }
-
-//     try {
-//         const res = await axios.get(dataUrl);
-//         const gameInfo = countEntries(res.data);
-    
-//         // DOM 업데이트 최소화
-//         const totalGameCnt = document.getElementById('total-game-cnt');
-//         const readyGameCnt = document.getElementById('ready-game-cnt');
-//         const inProgressGameCnt = document.getElementById('inprogress-game-cnt');
-//         const finalGameCnt = document.getElementById('final-game-cnt');
-        
-//         totalGameCnt.innerHTML = gameInfo.total;
-//         readyGameCnt.innerHTML = gameInfo.ready;
-//         inProgressGameCnt.innerHTML = gameInfo.inProgress;
-//         finalGameCnt.innerHTML = gameInfo.final;
-
-//         const body = document.querySelector('.game-row-wrap');
-
-//         if(getActiveButtonId() === "total-button") {
-//             const fragment = document.createDocumentFragment();
-
-//             gameInfo?.sortedGameData?.forEach((game) => {
-//                 const row = createTableRow(game);
-//                 fragment.appendChild(row);
-//             });
-
-//             body.innerHTML = ``;
-//             body.appendChild(fragment);
-//         } else if (getActiveButtonId() === "ready-button") {
-//             const fragment = document.createDocumentFragment();
-//             gameInfo?.sortedGameDataByStatus?.READY?.forEach((game) => {
-//                 const row = createTableRow(game);
-//                 fragment.appendChild(row);
-//             })
-//             body.innerHTML = ``;
-//             body.appendChild(fragment);
-//         } else if (getActiveButtonId() === "inprogress-button") {
-//             const fragment = document.createDocumentFragment();
-//             gameInfo?.sortedGameDataByStatus?.IN_PROGRESS?.forEach((game) => {
-//                 const row = createTableRow(game);
-//                 fragment.appendChild(row);
-//             })
-//             body.innerHTML = ``;
-//             body.appendChild(fragment);
-//         } else if (getActiveButtonId() === "final-button") {
-//             const fragment = document.createDocumentFragment();
-//             gameInfo?.sortedGameDataByStatus?.FINAL?.forEach((game) => {
-
-//                 const row = createTableRow(game);
-//                 fragment.appendChild(row);
-//             })
-//             body.innerHTML = ``;
-//             body.appendChild(fragment);
-//         }
-//     } catch(error) {
-//         console.log(error);
-//     } finally {
-//         loadingSpinner.style.display = 'none'; // 로딩 스피너 숨김
-//         intervalCheck = false;
-//     }
-// }
-
 function createTableRow(game) {
 
     const gameRow = document.createElement('div');
@@ -181,10 +106,17 @@ function createTableRow(game) {
                         <span class="td" >${game.home.name_en}</span>
                         <span class="td ${game.homeScore > game.awayScore ? 'highlight' : ''}">${game.homeScore}</span>
                     </div>
-                    <div class="tr th">
-                        <span class="td" ></span>
-                        <span class="td" ></span>
-                        <span class="td" ></span>
+                    <div class="tr th odds">
+                        ${game.oddsFlag 
+                            ? `<span class="td">승/패 - ${game.odds.domesticWinLoseOdds.length > 0 ? game.odds.domesticWinLoseOdds[0].odds +"/"+ game.odds.domesticWinLoseOdds[0].odds : ``}</span>
+                        <span class="td">핸디(${game.odds.domesticHandicapOdds.length > 0 ? game.odds.domesticHandicapOdds[0].optionValue + ") " + game.odds.domesticHandicapOdds[0]?.odds +"/"+ game.odds.domesticHandicapOdds[1]?.odds : ``}</span>
+                        <span class="td">언/오(${game.odds.domesticUnderOverOdds.length > 0 ? game.odds.domesticUnderOverOdds[0]?.optionValue + ") " + game.odds.domesticUnderOverOdds[0]?.odds +"/"+ game.odds.domesticUnderOverOdds[1]?.odds : ``}</span>
+                        `
+                            : `<span class="td">승/패 -</span>
+                        <span class="td">핸디 - </span>
+                        <span class="td">언/오 - </span>
+                        `                    
+                        }
                     </div>
                 </div>
 

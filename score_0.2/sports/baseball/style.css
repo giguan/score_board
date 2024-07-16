@@ -13,6 +13,13 @@
     overflow: hidden; /* border-radius 적용 시 자식 요소가 둥글게 보이도록 설정 */
     margin: 10px 0 10px 0;
     border: 1px solid #444444; /* 표의 구분선을 추가 */
+    
+}
+
+.game-row-wrap .game-row:hover {
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    transform: translateY(-5px);
+    box-shadow: 0 15px 20px rgba(233, 71, 32, 0.15), 0 10px 10px rgba(233, 71, 32, 0.1);
 }
 
 .game-row-wrap .game-row .field-wrap {
@@ -38,7 +45,9 @@
 }
 
 .game-row-wrap .game-row .field-wrap .field.finished,
-.game-row-wrap .game-row .field-wrap .field.cancel {
+.game-row-wrap .game-row .field-wrap .field.cancel,
+.game-row-wrap .game-row .field-wrap .field.postponed
+ {
     filter: grayscale();
 }
 
@@ -129,8 +138,8 @@
 }
 
 .game-row-wrap .team-info .tr img{
-    width: 55px;
-    height: 55px;
+    width: 53px;
+    height: 53px;
     padding: 5px;
     background-color: #444444; /* 이미지 배경색을 어둡게 변경 */
 }
@@ -175,6 +184,10 @@
     background-color: #2b2c34; /* 기존의 #F1F1F1 대신 어두운 색상으로 변경 */
     text-align: center;
     border: 1px solid #555555; /* 테두리 추가 */
+}
+
+.game-row-wrap .team-info .tr.th.odds {
+    font-size: 0.7em;
 }
 
 .game-row-wrap .score .tr .td{
@@ -233,7 +246,7 @@
 }
 
 .game-row-wrap .game-row .score .tr .td.current {
-    background-color: rgba(233, 71, 32, 0.1);
+    background-color: rgba(233, 71, 32, 0.3);
 }
 
 .game-row-wrap .game-row .team-info .tr.th .td,

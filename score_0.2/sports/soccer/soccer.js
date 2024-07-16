@@ -102,6 +102,8 @@ function getPeriodText(game) {
 
 function createTableRow(game) {
 
+    console.log(game.gameStatus)
+
     const row = document.createElement('div');
     row.className = 'scoreRow';
     row.style.cursor = 'pointer';
