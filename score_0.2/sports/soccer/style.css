@@ -59,12 +59,17 @@
     text-align: center;
 }
 
-.score-table .cell.team-column {
-    flex: 2;
+.score-table .cell.score-column {
+    flex: 0.3;
 }
 
-.score-table .cell.score-column {
-    flex: 1;
+.score-table .cell.tr-icon.league-icon {
+    flex: 1.5;
+    text-align: left;
+}
+
+.score-table .cell.time-column {
+    flex: 0.3;
 }
 
 /* 상태별 스타일 */
@@ -388,5 +393,9 @@
         flex: 1;
         display: flex;
         justify-content: center;
+    }
+    
+    .score-table .cell.tr-icon.league-icon {
+        width: 50%;
     }
 }

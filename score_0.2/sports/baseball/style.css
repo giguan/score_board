@@ -151,6 +151,10 @@
     font-size:1.1em;
 }
 
+.game-row-wrap .game-row .team-info .tr.th .td{
+    font-size: 1em;
+}
+
 .game-row-wrap .game-row .team-info .tr.th,
 .game-row-wrap .game-row .score .tr.th {
     height: 33px;

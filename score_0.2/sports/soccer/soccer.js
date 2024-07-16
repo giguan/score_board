@@ -124,8 +124,8 @@ function createTableRow(game) {
     gameRow.onclick = () => toggleCollapse(gameRow);
 
     gameRow.innerHTML = `
-        <div class="cell tr-icon league-icon">${game.league.name.length > 4 ? game.league.name.substring(0,5) + ".." : game.league.name }</div>
-        <div class="cell">${formatDateTime(game.startDatetime).split(' ')[1]}</div>
+        <div class="cell tr-icon league-icon">${game.league.shortName}</div>
+        <div class="cell time-column">${formatDateTime(game.startDatetime).split(' ')[1]}</div>
         <div class="cell team-column">${game.teams.home.name}</div>
         <div class="cell score-column ${homeScoreClass}">${homeScore}</div>
         <div class="cell"><span class="status ${getStatusClass(game.gameStatus)}">${game.gameStatus === 'IN_PROGRESS' ? getPeriodText(game) : getStatusText(game.gameStatus)}</span></div>

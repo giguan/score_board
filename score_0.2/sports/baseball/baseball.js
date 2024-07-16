@@ -82,6 +82,8 @@ function countEntries(data) {
 
 function createField(game) {
 
+    console.log(game);
+
     const statusClass = getStatusClass(game.gameStatus);
 
     switch(statusClass) {
@@ -106,21 +108,35 @@ function createField(game) {
             </div>
             <div class="field ${statusClass}"></div>`
         case 'finished' :
-            return `
-                <div class="field-cover">
-                    <div class="circle-wrap">
-                        <img src="${game.result === 'WIN' 
-                                ? `./../../assets/images/named_images/${game.teams.home.imgPath.split('/')[4]}` 
-                                : `./../../assets/images/named_images/${game.teams.away.imgPath.split('/')[4]}`}"
-                        alt="Team Logo">
+            if(game.result === 'DRAW') {
+                return `
+                    <div class="field-cover">
+                        <div class="circle-wrap">
+                            <img src="./../../assets/images/tie.png" alt="Team Logo">
+                        </div>
                     </div>
-                </div>
-                <div class="field-text">
-                    <div class="main-text">${game.result === 'WIN' ? game.teams.home.name : game.teams.away.name}</div>
-                    <div class="sub-text">경기 승리</div>
-                </div>
-                <div class="field ${statusClass}"></div>
-                `
+                    <div class="field-text">
+                        <div class="sub-text">무승부</div>
+                    </div>
+                    <div class="field ${statusClass}"></div>  
+                    `
+            } else {
+                return `
+                    <div class="field-cover">
+                        <div class="circle-wrap">
+                            <img src="${game.result === 'WIN' 
+                                    ? `./../../assets/images/named_images/${game.teams.home.imgPath.split('/')[4]}` 
+                                    : `./../../assets/images/named_images/${game.teams.away.imgPath.split('/')[4]}`}"
+                            alt="Team Logo">
+                        </div>
+                    </div>
+                    <div class="field-text">
+                        <div class="main-text">${game.result === 'WIN' ? game.teams.home.name : game.teams.away.name}</div>
+                        <div class="sub-text">경기 승리</div>
+                    </div>
+                    <div class="field ${statusClass}"></div>
+                    `
+            }
         case 'cancel' :
             return `
                 <div class="field-cover">
@@ -203,7 +219,7 @@ function createTableRow(game) {
             <div class="tr th ${getStatusClass(game.gameStatus)}">
                 ${
                     game.gameStatus !== 'READY'
-                    ? Array.from({ length: 9 }, (_, index) => {
+                    ? Array.from({ length: 12 }, (_, index) => {
                         const period = game.teams.away.periodData[index] || { period: index+1, score: '' }; // 데이터가 없을 경우 빈 값으로 설정
                         if (game.period === index + 1) { // 현재 진행 중인 이닝을 강조
                             return `<span class="td current">${period.period}</span>`;
@@ -231,7 +247,7 @@ function createTableRow(game) {
             <div class="tr">
             ${
                 game.gameStatus !== 'READY' 
-                ? Array.from({ length: 9 }, (_, index) => {
+                ? Array.from({ length: 12 }, (_, index) => {
                     const period = game.teams.away.periodData[index] || { score: '' }; // 데이터가 없을 경우 빈 값으로 설정
                     if (game.period === index + 1) { // 현재 진행 중인 이닝을 강조
                         return `<span class="td current">${period.score}</span>`;
@@ -261,7 +277,7 @@ function createTableRow(game) {
             <div class="tr">
             ${
                 game.gameStatus !== 'READY' 
-                ? Array.from({ length: 9 }, (_, index) => {
+                ? Array.from({ length: 12 }, (_, index) => {
                     const period = game.teams.home.periodData[index] || { score: '' }; // 데이터가 없을 경우 빈 값으로 설정
                     if (game.period === index + 1) { // 현재 진행 중인 이닝을 강조
                         return `<span class="td current">${period.score}</span>`;
@@ -291,7 +307,7 @@ function createTableRow(game) {
             <div class="tr th">
             ${
                 game.gameStatus !== 'READY' 
-                ? Array.from({ length: 9 }, (_, index) => {
+                ? Array.from({ length: 12 }, (_, index) => {
 
                     let homeInningScore = isNaN(game.teams.home.periodData[index]?.score) ? 0 : game.teams.home.periodData[index]?.score;
                     let awayInningScore = isNaN(game.teams.away.periodData[index]?.score) ? 0 : game.teams.away.periodData[index]?.score;

@@ -149,6 +149,10 @@
     background-color: rgba(233, 71, 32, 0.1);
 }
 
+.game-row-wrap .game-row .team-info .tr.th .td{
+    font-size: 0.7em;
+}
+
 .game-row-wrap .game-row .team-info .tr.th .td,
 .game-row-wrap .game-row .score .tr.th .td
 {

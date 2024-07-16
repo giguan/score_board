@@ -151,7 +151,7 @@ function createTableRow(game) {
 
     gameRow.innerHTML = `
         <div class="cell tr-icon league-icon"><img src=${getSportsIcon(game.sportsType)} alt="리그 아이콘"> ${game.league.shortName}</div>
-        <div class="cell">${formatDateTime(game.startDatetime).split(' ')[1]}</div>
+        <div class="cell time-column">${formatDateTime(game.startDatetime).split(' ')[1]}</div>
         <div class="cell team-column"><img class="team-icon" src="./assets/images/small_logo/${game.teams.home.imgPath.split('/')[4]}" alt="홈팀 아이콘"> ${game.teams.home.name}</div>
         <div class="cell score-column ${homeScoreClass}">${homeScore}</div>
         <div class="cell"><span class="status ${getStatusClass(game.gameStatus)}">${game.gameStatus === 'IN_PROGRESS' ? getPeriodText(game) : getStatusText(game.gameStatus)}</span></div>
@@ -196,14 +196,14 @@ function createTableRow(game) {
                 </div>
                 <div id="tab2-${game.id}" class="tab-content ${prevActiveTabId === 'tab2-' + game.id ? 'active' : ''}">
                     <div class="odds-section">
-                        <div class="odds-type">
+                         <div class="odds-type">
                             핸디캡 (기준
-                            ${game?.odds?.domesticHandicapOdds[0] ? (`
-                                <span class=${game.odds.domesticHandicapOdds[0]?.optionValue < 0  ? 'minus' : 'normal'}>
+                            ${game?.odds?.domesticHandicapOdds[0] ? (
+                                `<span class=${game.odds.domesticHandicapOdds[0]?.optionValue < 0 ? 'minus' : 'normal'}>
                                     <span>${game.odds.domesticHandicapOdds[0].optionValue}</span>
-                                </span>
-                            `) : (
-                                `<span class="normal">-</div>`
+                                </span>`
+                            ) : (
+                                `<span class="normal">-</span>`
                             )}
                             )
                         </div>
@@ -232,7 +232,7 @@ function createTableRow(game) {
                                     <span>${game.odds.domesticUnderOverOdds[0].optionValue}</span>
                                 </span>`
                             ) : (
-                                `<span class="normal">-</div>`
+                                `<span class="normal">-</span>`
                             )}
                             )
                         </div>
@@ -292,7 +292,7 @@ function createTableRow(game) {
                                     <span>${game.odds.domesticHandicapOdds[0].optionValue}</span>
                                 </span>`
                             ) : (
-                                `<span class="normal">-</div>`
+                                `<span class="normal">-</span>`
                             )}
                             )
                         </div>
