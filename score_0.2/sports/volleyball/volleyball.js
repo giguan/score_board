@@ -157,7 +157,13 @@ function countEntries(data) {
 //     }
 // }
 
-function createField(game) {
+/**
+ * 
+ * 특이사항으로 배구는 result결과가 unknown으로 표시됨
+ * 승 표시는 homeScore awayScore비교를 통해 진행
+ * 1.27 한국 v-리그 올스타전 왜 무승부인지 판단이 필요함
+ */
+function createField(game, homeScore, awayScore) {
 
     const statusClass = getStatusClass(game.gameStatus);
 
@@ -186,14 +192,14 @@ function createField(game) {
             return `
                 <div class="field-cover">
                     <div class="circle-wrap">
-                        <img src="${game.result === 'WIN' 
+                        <img src="${homeScore > awayScore  
                                 ? `./../../assets/images/named_images/${game.teams.home.imgPath.split('/')[4]}` 
                                 : `./../../assets/images/named_images/${game.teams.away.imgPath.split('/')[4]}`}"
                         alt="Team Logo">
                     </div>
                 </div>
                 <div class="field-text">
-                    <div class="main-text">${game.result === 'WIN' ? game.teams.home.name : game.teams.away.name}</div>
+                    <div class="main-text">${homeScore > awayScore ? game.teams.home.name : game.teams.away.name}</div>
                     <div class="sub-text">경기 승리</div>
                 </div>
                 <div class="field ${statusClass}"></div>
@@ -233,7 +239,7 @@ function createTableRow(game) {
 
     gameRow.innerHTML = `
         <div class="field-wrap">
-            ${createField(game)}
+            ${createField(game, homeScore, awayScore)}
         </div>
 
         <div class="team-info">
@@ -385,6 +391,8 @@ async function getGameData() {
         const res = await axios.get(dataUrl);
         const gameInfo = countEntries(res.data);
     
+        console.log(gameInfo)
+
         // DOM 업데이트 최소화
         const totalGameCnt = document.getElementById('total-game-cnt');
         const readyGameCnt = document.getElementById('ready-game-cnt');

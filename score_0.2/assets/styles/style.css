@@ -64,7 +64,16 @@
 }
 
 .score-table .cell.score-column {
-    flex: 1;
+    flex: 0.3;
+}
+
+.score-table .cell.tr-icon.league-icon {
+    flex: 1.5;
+    text-align: left;
+}
+
+.score-table .cell.time-column {
+    flex: 0.3;
 }
 
 /* 상태별 스타일 */
@@ -328,9 +337,12 @@
     }
 
     .score-table .row .cell.tr-icon {
-        width: 100%;
+        width: 70%;
         text-align: left;
         font-size: 1.2em;
+        white-space: nowrap; /* 줄바꿈 없이 한 줄로 표시 */
+        text-overflow: ellipsis; /* 넘치는 텍스트 생략 표시 (...) */
+        
     }
 
     .score-table .row .cell:nth-child(2) {
@@ -390,24 +402,10 @@
         display: flex;
         justify-content: center;
     }
-}
-
-
-/** 이거 그냥 예시 main.js create에 클래스 제거해야함 */
-.jumping-text {
-    /* font-size: 24px; */
-    transition: all 0.2s ease;
-}
-
-.jumping-text:hover {
-    animation: jump 0.6s infinite;
-}
-
-@keyframes jump {
-    0%, 100% {
-        transform: translateY(0);
+    
+    .score-table .cell.tr-icon.league-icon {
+        width: 50%;
     }
-    50% {
-        transform: translateY(-10px);
-    }
+
 }
+
