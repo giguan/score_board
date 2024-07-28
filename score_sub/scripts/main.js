@@ -116,7 +116,9 @@ async function getGameData() {
 
     //야구의 경우 미국 대한민국 일본이 카테고리임
     const res = await axios.get('http://localhost:3000/proxy/match-list', {
-        date: requestDate
+        params: {
+            date: requestDate
+        }
     })
     .then(response => {
 
@@ -293,7 +295,7 @@ function createTableRow(game, index) {
                 <img src="https://24live.com${game.participants[0].countryImage}" alt="country logo"/>
             </div>
             <div class="league">${getChangeLeagueName(game.category_name)}</div>
-            <div class="game-time">${get}</div>
+            <div class="game-time">sss</div>
         </div>
         <div class="item-center">
             <div class="home">

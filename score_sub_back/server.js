@@ -19,29 +19,26 @@ app.use(cors({
 // 프록시 요청 핸들러
 app.get('/proxy/match-list', async (req, res, next) => {
 
-  const apiUrl = 'https://24live.com/api/match-list-data/19?lang=ko&type=all&subtournamentIds=121,78701,44034,45,12536,12535&sort=alpha&short=0&from=2024-07-27%2017:00:00&to=2024-07-28%2016:59:59';
+  const {date} = req.query;
+
+  const requestDate = new Date(date);
+
+  // fromDate는 요청한 날짜의 자정 (00:00:00)
+  const fromDate = new Date(requestDate);
+  fromDate.setHours(0, 0, 0, 0);
+
+  // toDate는 요청한 날짜의 마지막 시간 (23:59:59)
+  const toDate = new Date(requestDate);
+  toDate.setHours(23, 59, 59, 999);
+
+  const from = fromDate.toISOString().replace('T', ' ').split('.')[0];
+  const to = toDate.toISOString().replace('T', ' ').split('.')[0];
+
+  const apiUrl = `https://24live.com/api/match-list-data/19?lang=ko&type=all&subtournamentIds=121,78701,44034,45,12536,12535&sort=alpha&short=0&from=${from}&to=${to}`;
   
   try {
     const response = await axios.get(apiUrl);
     const matchList = response.data;
-
-    // for (const match of matchList) {
-    //   match.participants.forEach((item) => {
-    //     console.log(item)
-    //     try {
-    //       const imageResponse = axios.get(`https://24live.com${item.image}`, { responseType: 'arraybuffer' });
-          
-    //       console.log("@@@@@@@@@@",imageResponse)
-    //       item.imageResponse = `data:image/jpeg;base64,${Buffer.from(imageResponse.data).toString('base64')}`;
-
-    //     } catch (imageError) {
-    //       console.error(`Error fetching image for match ${item.name}:`, imageError.message);
-    //       item.imageData = null; // 이미지 로드 실패 시 null로 설정
-
-    //     }
-
-    //   })
-    // }
 
     res.send(matchList);
   } catch (error) {
