@@ -192,10 +192,13 @@ async function getGameData() {
 
 
         //not_started, end, ate
+        loadingSpinner.style.display = 'none'; // 로딩 스피너 숨김
+        intervalCheck = false;
     })
     .catch(error => {
       console.error('Error:', error);
-    });
+    })
+    ;
 }
 
 function countEntries(data) {
@@ -277,6 +280,11 @@ function getStatusText(state) {
     }
 }
 
+function getFormmatTime(time) {
+    const timePart = time.split('T')[1].split(':00+')[0];
+    return timePart;
+}
+
 function createTableRow(game, index) {
 
     const rowWrapper = document.createElement('div');
@@ -295,7 +303,7 @@ function createTableRow(game, index) {
                 <img src="https://24live.com${game.participants[0].countryImage}" alt="country logo"/>
             </div>
             <div class="league">${getChangeLeagueName(game.category_name)}</div>
-            <div class="game-time">sss</div>
+            <div class="game-time">${getFormmatTime(game.start_date)}</div>
         </div>
         <div class="item-center">
             <div class="home">
