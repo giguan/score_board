@@ -6,8 +6,8 @@
     <title>스포츠 점수 메인</title>
 
     <!--stylesheet-->
-    <link rel="stylesheet" href="./assets/styles/style.css">
-    <link rel="stylesheet" href="./assets/styles/common.css">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="../../assets/styles/common.css">
     
     <!--font - Noto Sans KR-->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
@@ -20,7 +20,7 @@
 </head>
 <body>
     <div class="background-container">
-        <img src="./assets/images/background.jpg" alt="Background Image" class="background-image">
+        <img src="../../assets/images/background.jpg" alt="Background Image" class="background-image">
     </div>
     <div class="container">
         <header>
@@ -31,32 +31,22 @@
                 </div>
             </div>
         </header>
-
-        <div class="video-wrap">
-            <!-- 이거 내가 생각해볼 때 고트tv 서버쪽에서 띄우면 가능할것같긴함 -->
-            <!-- <video src="https://goat-v.com//videos/1_v5.webm" width="640" height="360" controls autoplay loop muted></video> -->
-            <video src="blob:https://amggsp.com/2fa7843e-38c2-4ac7-bfa9-6870319d65cf" width="640" height="360" controls autoplay loop muted></video>
-            <!-- blob:https://amggsp.com/2fa7843e-38c2-4ac7-bfa9-6870319d65cf -->
-        </div>
-        
-
-
         <nav>
             <ul class="tabs">
-                <li><a href="/score_0.3/index.html" class="tab-link active"><img src="./assets/images/tabmenu_logo/main.png" alt="Home"> 주요경기</a></li>
-                <li><a href="/score_0.3/sports/soccer/index.html" class="tab-link"><img src="./assets/images/tabmenu_logo/soccer.png" alt="Football"> 축구</a></li>
-                <li><a href="/score_0.3/sports/baseball/index.html" class="tab-link"><img src="./assets/images/tabmenu_logo/baseball.png" alt="Baseball"> 야구</a></li>
-                <li><a href="/score_0.3/sports/basketball/index.html" class="tab-link"><img src="./assets/images/tabmenu_logo/basketball.png" alt="Basketball"> 농구</a></li>
-                <li><a href="/score_0.3/sports/volleyball/index.html" class="tab-link"><img src="./assets/images/tabmenu_logo/volleyball.png" alt="Volleyball"> 배구</a></li>
-                <!-- <li><a href="/score_0.1/sports/rugby/index.html" class="tab-link"><img src="./assets/images/tabmenu_logo/rugby.png" alt="American Football"> 미식축구</a></li> -->
-                <li><a href="/score_0.3/sports/lol/index.html" class="tab-link"><img src="./assets/images/tabmenu_logo/lol.png" alt="LOL"> LOL</a></li>
+                <li><a href="/score_0.2/index.html" class="tab-link"><img src="../../assets/images/tabmenu_logo/main.png" alt="Home"> 주요경기</a></li>
+                <li><a href="/score_0.2/sports/soccer/index.html" class="tab-link active"><img src="../../assets/images/tabmenu_logo/soccer.png" alt="Football"> 축구</a></li>
+                <li><a href="/score_0.2/sports/baseball/index.html" class="tab-link"><img src="../../assets/images/tabmenu_logo/baseball.png" alt="Baseball"> 야구</a></li>
+                <li><a href="/score_0.2/sports/basketball/index.html" class="tab-link"><img src="../../assets/images/tabmenu_logo/basketball.png" alt="Basketball"> 농구</a></li>
+                <li><a href="/score_0.2/sports/volleyball/index.html" class="tab-link"><img src="../../assets/images/tabmenu_logo/volleyball.png" alt="Volleyball"> 배구</a></li>
+                <!-- <li><a href="/score_0.1/sports/rugby/index.html" class="tab-link"><img src="../../assets/images/tabmenu_logo/rugby.png" alt="American Football"> 미식축구</a></li> -->
+                <li><a href="/score_0.2/sports/lol/index.html" class="tab-link"><img src="../../assets/images/tabmenu_logo/lol.png" alt="LOL"> LOL</a></li>
                 <!-- 다른 스포츠 페이지 링크 추가 -->
             </ul>
         </nav>
         <main>
             <div class="date-navigation">
                 <button class="nav-btn" id="prev-day">◀</button>
-                <span class="date-display"></span>
+                <span class="date-display">2024.07.05</span>
                 <button class="nav-btn" id="next-day">▶</button>
                 <button class="nav-btn" id="show-calendar-btn">달력</button>
                 <button class="nav-btn" id="today-day">오늘</button>
@@ -91,7 +81,7 @@
         </footer>
     </div>
 
-    <script src="scripts/common.js"></script>
-    <script src="scripts/main.js"></script>
+    <script src="../../scripts/common.js"></script>
+    <script src="./soccer.js"></script>
 </body>
 </html>
