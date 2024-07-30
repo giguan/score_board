@@ -1,297 +1,499 @@
-.game-row-wrap {
-    font-family: "Noto Sans KR";
-    background-color: #2b2c34; /* 기존의 #F1F1F1 대신 어두운 색상으로 변경 */
-    padding: 10px;
-    background-color: #16171d;
+.score-table {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.game-row-wrap .game-row {
-    width: 100%; 
-    height: 100%; 
+.list-item-wrapper {
+    margin: 10px 0;
+    border: 1px solid #000;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    width: 100%;
+    background-color: #1D1C22;
+}
+
+.list-item {
+    cursor: pointer;
     display: flex;
-    border-radius: 10px;
-    overflow: hidden; /* border-radius 적용 시 자식 요소가 둥글게 보이도록 설정 */
-    margin: 10px 0 10px 0;
-    border: 1px solid #444444; /* 표의 구분선을 추가 */
+    align-items: stretch;
+    padding: 10px;
+    background-color: #2c2c2c;
+    transition: background-color 0.3s;
+    position: relative; /* 삼각형 배치를 위한 상대 위치 설정 */
+}
+
+.list-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom right, rgba(180, 108, 108, 0.1) 50%, rgba(44, 44, 44, 0.1) 50.5%);
+    pointer-events: none; /* 클릭 이벤트가 배경 요소에 전달되지 않도록 설정 */
+}
+
+.list-item:hover {
+    background-color: #444;
+}
+
+.list-item .item-left, .list-item .item-center, .list-item .item-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size:1.3em;
+    font-weight: bold;
+}
+
+.item-left, .item-center, .item-right {
+    flex: 1;
+    text-align: center;
+    color: #fff;
+}
+
+.item-center {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.score-table .list-item .item-center .home .image-container,
+.score-table .list-item .item-center .away .image-container {
+    width: 60px;  /* 고정된 너비 */
+    height: 50px; /* 고정된 높이 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.score-table .list-item .item-left img {
+    width: 60px;  /* 최대 너비 설정 */
+    height: 50px; /* 최대 높이 설정 */
+    object-fit: contain; /* 원본 비율을 유지하며 크기 조정 */
     
 }
 
-.game-row-wrap .game-row:hover {
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
-    transform: translateY(-5px);
-    box-shadow: 0 15px 20px rgba(233, 71, 32, 0.15), 0 10px 10px rgba(233, 71, 32, 0.1);
+.score-table .list-item .item-center .home img,
+.score-table .list-item .item-center .away img
+{
+    width: 60px;  /* 최대 너비 설정 */
+    height: 50px; /* 최대 높이 설정 */
+    object-fit: contain; /* 원본 비율을 유지하며 크기 조정 */
 }
 
-.game-row-wrap .game-row .field-wrap {
-    position: relative;
+.item-center .home, .item-center .away {
     display: flex;
-}
-
-.game-row-wrap .game-row .field-wrap .field{
-    z-index: 1;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-image: url('../../assets/images/baseball/bg_in_progress.png');
-    background-size: cover; /* 이미지를 요소 크기에 맞게 확장 */
-    background-position: center; /* 이미지를 중앙에 배치 */
-    background-repeat: no-repeat; /* 이미지를 반복하지 않음 */
-    box-sizing: border-box;
-    background-color: #444444; /* 이미지 배경색을 어둡게 변경 */
-}
-
-.game-row-wrap .game-row .field-wrap .field.ready{
-    filter: grayscale(70%) brightness(1);
-}
-
-.game-row-wrap .game-row .field-wrap .field.finished,
-.game-row-wrap .game-row .field-wrap .field.cancel,
-.game-row-wrap .game-row .field-wrap .field.postponed
- {
-    filter: grayscale();
-}
-
-.game-row-wrap .game-row .field-wrap .field-cover{
-    flex:1;
-    position: absolute;
-    width: 100%;
-    height: 40%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 5;
-    display: flex;
-    justify-content: center;
     align-items: center;
-}
-
-.game-row-wrap .game-row .field-wrap .field-cover img {
-    width: 55px;
-    height: 55px;
-    /* background-color: #444444;  */
-}
-
-.game-row-wrap .game-row .field-wrap .field-text{
-    position: absolute;
+    justify-content: space-between;
     width: 100%;
-    height: 100%;
-    background-color: transparent;
-    z-index: 5;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
+    padding: 5px 0;
 }
 
-.game-row-wrap .game-row .field-wrap .field-text.ready{
-    height: 100%;
-}
-
-.game-row-wrap .game-row .field-wrap .field-text .main-text{
-    color: rgb(223, 78, 34);
-    text-align: center;
-    width: 100%;
-    font-size: 1.7em;
-    font-weight: bold;
-}
-
-.game-row-wrap .game-row .field-wrap .field-text .sub-text{
-    color: #000; /* 기존의 검은색 대신 어두운 회색으로 변경 */
-    text-align: center;
-    font-size: 1.5em;
-    width: 100%;
-    margin-bottom: 20px;
-    font-weight: bold;
-}
-
-.game-row-wrap .game-row .field-wrap .field-cover .circle-wrap {
-    width: 70px;
-    height: 70px;
-    border-radius: 50px;
-    background-color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.game-row-wrap .game-row {
-    width: 100%; 
-    height: 100%; 
-    display: flex;
-}
-
-.game-row-wrap .game-row .field-wrap {
-    flex: 0.23; 
-    width:100%; 
-    color: #fff;
-}
-
-.game-row-wrap .team-info {
-    flex: 0.37; 
-    width:100%; 
-    display: flex; 
-    flex-direction: column;
-}
-
-.game-row-wrap .team-info .tr{
-    flex: 0.3;
-    display: flex;
-    border-bottom: 1px solid #444444; /* 기존의 #DDDDDD 대신 어두운 색상으로 변경 */
-}
-
-.game-row-wrap .team-info .tr img{
-    width: 53px;
-    height: 53px;
+.score-table .list-item .item-center .home-score span,
+.score-table .list-item .item-center .away-score span {
+    border: 1px solid #797979;
     padding: 5px;
-    background-color: #444444; /* 이미지 배경색을 어둡게 변경 */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    background: linear-gradient(to bottom, #000000, #8b8b8b);
+    border-radius: 3px;
 }
 
-.game-row-wrap .team-info .tr .td{
-    flex:0.4; 
-    display: flex; 
-    justify-content: center; 
-    align-items: center;
+.score-table .list-item .item-center .home-score .current-period,
+.score-table .list-item .item-center .away-score .current-period {
     font-weight: bold;
-    font-size: 0.7em;
-    background-color: #444444; /* 기존의 #fff 대신 어두운 색상으로 변경 */
-    border: 1px solid #555555; /* 테두리 추가 */
+    color: #E94720;
 }
 
-.game-row-wrap .team-info .tr .td.highlight {
-    color: red !important;
-    font-size:1.1em;
+.collapse-content {
+    display: none;
+    flex-direction: column; /* 수직 배치 */
+    background-color: #2c2c2c;
+    border-radius: 8px; /* 추가 */
+    padding: 10px;
+    margin-top: 10px; /* 리스트 항목과 경계를 없애기 위해 마진 조정 */
+    border-top: none; /* 리스트 항목과 중복되지 않도록 위쪽 경계선 제거 */
 }
 
-.game-row-wrap .game-row .team-info .tr.th .td{
-    font-size: 1em;
+.tab-menu {
+    display: flex;
+    margin-bottom: 10px; /* 탭 메뉴와 콘텐츠 사이 간격 추가 */
 }
 
-.game-row-wrap .game-row .team-info .tr.th,
-.game-row-wrap .game-row .score .tr.th {
-    height: 33px;
-}
-
-.game-row-wrap .team-info .tr,
-.game-row-wrap .score .tr {
-    height: 66px;
-}
-
-.game-row-wrap .team-info .tr.th .td{
-    flex:1; 
-    display: flex; 
-    justify-content: center; 
-    align-items: center;
-    font-weight: bold;
-    font-size: 0.7em;
-    background-color: #2b2c34; /* 기존의 #F1F1F1 대신 어두운 색상으로 변경 */
-    text-align: center;
-    border: 1px solid #555555; /* 테두리 추가 */
-}
-
-.game-row-wrap .team-info .tr.th.odds {
-    font-size: 0.7em;
-}
-
-.game-row-wrap .score .tr .td{
-    background-color: #444444; /* 기존의 #fff 대신 어두운 색상으로 변경 */
-    font-weight: bold;
-    font-size:0.8em;
-    flex:1;
-    border: 1px solid #555555; /* 테두리 추가 */
-}
-
-.game-row-wrap .game-row .score .tr .td.broad {
-    font-size: 0.8em;
-}
-
-.game-row-wrap .game-row .score .tr.th.ready {
-    font-size: 0.7em;
-}
-
-.game-row-wrap .score .tr.th .td{
-    background-color: #2b2c34; /* 기존의 #f1f1f1 대신 어두운 색상으로 변경 */
-    border-left: 1px solid #555555; /* 기존의 #DDDDDD 대신 어두운 색상으로 변경 */
-    border-top: 1px solid #555555; /* 테두리 추가 */
-    font-weight: bolder;
-    font-size:1em;
-}
-
-.game-row-wrap .game-row .score {
-    flex: 0.5; 
-    width:100%; 
-    display: flex; 
-    flex-direction: column;
-}
-
-.game-row-wrap .game-row .score .tr {
-    width:100%; 
-    display:flex; 
-    align-items: center; 
-    text-align: center;
-}
-
-.game-row-wrap .game-row .score .tr.th,
-.game-row-wrap .game-row .score .tr {
-    background-color:#2b2c34; /* 기존의 #F1F1F1 대신 어두운 색상으로 변경 */
-    border-bottom: 1px solid #555555; /* 구분선을 추가 */
-}
-
-.game-row-wrap .game-row .score .td {
-    box-sizing: border-box;
-    height: 100%; 
-    border-left:1px solid #555555; /* 기존의 #DDDDDD 대신 어두운 색상으로 변경 */
-    border-bottom:1px solid #555555; /* 기존의 #DDDDDD 대신 어두운 색상으로 변경 */
-    border-top: 1px solid #555555; /* 테두리 추가 */
-    display: flex; 
-    align-items: center; 
-    justify-content: center;
-}
-
-.game-row-wrap .game-row .score .tr.th .td.current {
-    background-color: rgba(233, 71, 32, 0.4);
-}
-
-.game-row-wrap .game-row .score .tr .td.current {
-    background-color: rgba(233, 71, 32, 0.3);
-}
-
-.game-row-wrap .game-row .team-info .tr.th .td,
-.game-row-wrap .game-row .score .tr.th .td
-{
-    color: rgb(233, 71, 32);;
-}
-
-.game-row-wrap .game-row .team-info .tr .td,
-.game-row-wrap .game-row .score .tr .td
-{
-    color: #fff;
-}
-
-.errorRow {
-    background-color: #FF9728;
-    color: #721c24;
-    border: 1px solid #FF9728;
-    padding: 15px;
-    margin: 10px 0;
+.tab-menu button {
+    margin-right: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    background-color: #444;
+    color: white;
+    border: none;
     border-radius: 5px;
-    text-align: center;
+    transition: background-color 0.3s;
+}
+
+.tab-menu button:hover, .tab-menu button.active {
+    background-color: #E94720;
+}
+
+.tab-content {
+    display: none;
+    padding: 10px;
+    background-color: #2c2c2c;
+    border: 1px solid #999;
+    border-radius: 8px; /* 추가 */
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.score.highlight {
+    color: #E94720;
     font-weight: bold;
 }
 
-@media (max-width: 768px) {
+.triangle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 45px solid #E94720; /* 삼각형 색상 */
+    border-bottom: 45px solid transparent; /* 삼각형 투명색 */
+}
 
-    .game-row-wrap .game-row {
-        flex-direction: column;
+
+.triangle.in-progress{
+    border-left: 45px solid #E94720; /* 삼각형 색상 */
+    border-bottom: 45px solid transparent; /* 삼각형 투명색 */
+}
+
+.triangle.ready {
+    border-left: 45px solid #144bc4; /* 삼각형 색상 */
+    border-bottom: 45px solid transparent; /* 삼각형 투명색 */
+}
+
+.triangle.final {
+    border-left: 45px solid #3f1606; /* 삼각형 색상 */
+    border-bottom: 45px solid transparent; /* 삼각형 투명색 */
+}
+
+.triangle.postponed {
+    border-left: 45px solid #0d6385; /* 삼각형 색상 */
+    border-bottom: 45px solid transparent; /* 삼각형 투명색 */
+}
+
+.triangle-text {
+    position: absolute;
+    top: 6px;
+    left: -40px; /* 텍스트의 위치를 삼각형 안으로 조정 */
+    transform: rotate(-45deg); /* 텍스트를 대각선으로 회전 */
+    color: white; /* 텍스트 색상 */
+    font-size: 12px; /* 텍스트 크기 조정 */
+    white-space: nowrap; /* 텍스트가 한 줄에 표시되도록 설정 */
+}
+
+.period {
+    font-size: 1.1em;
+    background-color: #000;
+    border-radius: 10px;
+    padding: 7px 13px
+}
+
+.period.in-progress {
+    background-color: #E94720;
+}
+
+.period.ready {
+    background-color: #144bc4;
+}
+
+.period.final {
+    background-color: #3f1606;
+}
+
+.period.postponed {
+    background-color: #0d6385;
+}
+
+
+/* 반응형 스타일 설정 */
+@media (max-width: 1280px) {
+    .score-table {
+        padding: 0;
+        width: 100%;
     }
 
-    .game-row-wrap .game-row .field-wrap {
+    .score-table .list-item {
+        padding: 10 0;
+        display: flex;
+        align-items: stretch; /* 수정: 아이템의 높이를 동일하게 맞춤 */
+        width: 100%; /* 추가: 리스트 항목이 전체 너비를 사용하도록 설정 */
+        margin-bottom: 10px;
+    }
+
+    .score-table .list-item .item-left {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .score-table .list-item .item-center {
+        flex: 3; /* 비율을 조정하여 중앙 부분이 더 넓게 차지하도록 설정 */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .score-table .list-item .item-center .image-container {
+        flex:1
+    }
+
+    .score-table .list-item .item-center span {
+        flex:9;
+        font-size: 1.3em;
+        font-weight: bold;
+    }
+
+    .score-table .list-item .item-center .home .image-container,
+    .score-table .list-item .item-center .away .image-container {
+        width: 60px;  /* 고정된 너비 */
+        height: 50px; /* 고정된 높이 */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .score-table .list-item .item-left img {
+        width: 60px;  /* 최대 너비 설정 */
+        height: 50px; /* 최대 높이 설정 */
+        object-fit: contain; /* 원본 비율을 유지하며 크기 조정 */
+        
+    }
+
+    .score-table .list-item .item-center .home img,
+    .score-table .list-item .item-center .away img
+    {
+        width: 60px;  /* 최대 너비 설정 */
+        height: 50px; /* 최대 높이 설정 */
+        object-fit: contain; /* 원본 비율을 유지하며 크기 조정 */
+    }
+
+    .score-table .list-item .item-center .home-score,
+    .score-table .list-item .item-center .away-score {
         display: none;
     }
 
-    .game-row-wrap .game-row .team-info {
-        flex:1;
+    .score-table .list-item .item-right {
+        flex: 1;
+        text-align: center;
     }
 
-    .game-row-wrap .game-row .score {
-        flex:1;
+    .score-table .list-item img {
+        max-width: 100%; /* 이미지가 컨테이너를 벗어나지 않도록 설정 */
+        height: auto;    /* 이미지의 종횡비를 유지 */
+    }
+
+    .period {
+        border-radius: 10px;
+        font-size: 1.1em;
+        padding: 3px 10px;
+        margin: 5px;
+    }
+
+    .score {
+        font-size: 1.5em;
+    }
+}
+@media (max-width: 768px) {
+    .score-table {
+        padding: 0;
+        width: 100%;
+    }
+
+    .score-table .list-item {
+        padding: 10 0;
+        display: flex;
+        align-items: stretch; /* 수정: 아이템의 높이를 동일하게 맞춤 */
+        width: 100%; /* 추가: 리스트 항목이 전체 너비를 사용하도록 설정 */
+        margin-bottom: 10px;
+    }
+
+    .score-table .list-item .item-left {
+        flex: 1;
+        font-size: 1em;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .score-table .list-item .item-center {
+        flex: 3; /* 비율을 조정하여 중앙 부분이 더 넓게 차지하도록 설정 */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .score-table .list-item .item-center .image-container {
+        flex:1
+    }
+
+    .score-table .list-item .item-center span {
+        flex:9;
+        font-size: 1em;
+        font-weight: bold;
+    }
+
+    .score-table .list-item .item-center .home .image-container,
+    .score-table .list-item .item-center .away .image-container {
+        width: 60px;  /* 고정된 너비 */
+        height: 50px; /* 고정된 높이 */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .score-table .list-item .item-left img {
+        width: 60px;  /* 최대 너비 설정 */
+        height: 50px; /* 최대 높이 설정 */
+        object-fit: contain; /* 원본 비율을 유지하며 크기 조정 */
+        
+    }
+
+    .score-table .list-item .item-center .home img,
+    .score-table .list-item .item-center .away img
+    {
+        width: 60px;  /* 최대 너비 설정 */
+        height: 50px; /* 최대 높이 설정 */
+        object-fit: contain; /* 원본 비율을 유지하며 크기 조정 */
+    }
+
+    .score-table .list-item .item-center .home-score,
+    .score-table .list-item .item-center .away-score {
+        display: none;
+    }
+
+    .score-table .list-item .item-right {
+        flex: 1;
+        text-align: center;
+
+    }
+
+    .score-table .list-item img {
+        max-width: 100%; /* 이미지가 컨테이너를 벗어나지 않도록 설정 */
+        height: auto;    /* 이미지의 종횡비를 유지 */
+    }
+
+    .period {
+        border-radius: 10px;
+        font-size: 1em;
+        padding: 3px 7px;
+        margin: 5px;
+    }
+
+    .score {
+        font-size: 1.2em;
+    }
+
+}
+
+@media (max-width: 380px) {
+    .score-table {
+        padding: 0;
+        width: 100%;
+    }
+
+    .score-table .list-item {
+        padding: 10 0;
+        display: flex;
+        align-items: stretch; /* 수정: 아이템의 높이를 동일하게 맞춤 */
+        width: 100%; /* 추가: 리스트 항목이 전체 너비를 사용하도록 설정 */
+        margin-bottom: 10px;
+    }
+
+    .score-table .list-item .item-left {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        font-size: 0.7em
+    }
+
+    .score-table .list-item .item-center {
+        flex: 3; /* 비율을 조정하여 중앙 부분이 더 넓게 차지하도록 설정 */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .score-table .list-item .item-center .image-container {
+        flex:1
+    }
+
+    .score-table .list-item .item-center .home span,
+    .score-table .list-item .item-center .away span
+     {
+        flex:9;
+        font-weight: bold;
+        font-size: 0.7em;
+    }
+
+    .score-table .list-item .item-center .home .image-container,
+    .score-table .list-item .item-center .away .image-container {
+        width: 30px;  /* 고정된 너비 */
+        height: 25px; /* 고정된 높이 */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .score-table .list-item .item-left img {
+        max-width: 60px;  /* 최대 너비 설정 */
+        max-height: 30px; /* 최대 높이 설정 */
+        object-fit: contain; /* 원본 비율을 유지하며 크기 조정 */
+        
+    }
+
+    .score-table .list-item .item-center .home img,
+    .score-table .list-item .item-center .away img
+    {
+        max-width: 40px;  /* 최대 너비 설정 */
+        max-height: 30px; /* 최대 높이 설정 */
+        object-fit: contain; /* 원본 비율을 유지하며 크기 조정 */
+    }
+
+    .score-table .list-item .item-center .home-score,
+    .score-table .list-item .item-center .away-score {
+        display: none;
+    }
+
+    .score-table .list-item .item-right {
+        flex: 1;
+        text-align: center;
+    }
+
+    .score-table .list-item img {
+        max-width: 100%; /* 이미지가 컨테이너를 벗어나지 않도록 설정 */
+        height: auto;    /* 이미지의 종횡비를 유지 */
+    }
+
+    .period {
+        border-radius: 5px;
+        font-size: 0.7em;
+        padding: 2px 6px;
+        margin: 5px;
+    }
+
+    .score {
+        font-size: 1em;
     }
 
 }

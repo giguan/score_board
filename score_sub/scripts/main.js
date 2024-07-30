@@ -264,6 +264,8 @@ function getStatusClass(state) {
             return 'final'
         case 'not_started':
             return 'ready'
+        case 'postponed':
+            return 'postponed'
         default:
             return 'in-progress'
     }
@@ -275,6 +277,10 @@ function getStatusText(state) {
             return '종료'
         case 'not_started':
             return '대기'
+        case 'postponed':
+            return '연기'
+        case 'break':
+            return '임시중단'
         default:
             return '진행'
     }
@@ -283,6 +289,35 @@ function getStatusText(state) {
 function getFormmatTime(time) {
     const timePart = time.split('T')[1].split(':00+')[0];
     return timePart;
+}
+
+function getStateToPeriod(state) {
+
+    switch(state) {
+        case 'first_inning' :
+            return '1'
+        case 'second_inning' :
+            return '2'
+        case 'third_inning' :
+            return '3'
+        case 'fourth_inning' :
+            return '4'
+        case 'fifth_inning' :
+            return '5'
+        case 'sixth_inning' :
+            return '6'
+        case 'seventh_inning' :
+            return '7'
+        case 'eighth_inning' :
+            return '8'
+        case 'ninth_inning' :
+            return '9'
+        case 'extra-time':
+            return '연장'
+        default :
+            return '--'
+    }
+
 }
 
 function createTableRow(game, index) {
@@ -311,17 +346,54 @@ function createTableRow(game, index) {
                     <img src="https://24live.com${game.participants[0].image}" alt="home logo"/>
                 </div>
                 <span>${game.participants[0].name}</span>
+                <div class="home-score">
+                    ${
+                        game.score.periods.map((period) => {
+                            if(period.home_team !== null) {
+                                if(game.code_state === period.trans_name.split('.')[2]) {
+                                    return `<span class="current-period">${period.home_team}</span>` 
+                                } else {
+                                    return `<span>${period.home_team}</span>`
+                                }
+                            } else {
+                                return `<span>0</span>`
+                            }
+                        }).join('')
+                    }
+                </div>
             </div>
             <div class="away">
                 <div class="image-container">
                     <img src="https://24live.com${game.participants[1].image}" alt="away logo"/>
                 </div>
                 <span>${game.participants[1].name}</span>
+                <div class="away-score">
+                ${
+                    game.score.periods.map((period) => {
+                        if(period.away_team !== null) {
+                            if(game.code_state === period.trans_name.split('.')[2]) {
+                                return `<span class="current-period">${period.away_team}</span>` 
+                            } else {
+                                return `<span>${period.away_team}</span>`
+                            }
+                        } else {
+                            return `<span>0</span>`
+                        }
+                    }).join('')
+                }
+                </div>   
             </div>
         </div>
         <div class="item-right">
             <div class="score ${game.score.home_team > game.score.away_team ? "highlight" : ""}">${game.score.home_team !== null | undefined ? game.score.home_team : "-"}</div>
-            <div><span class="period">${game.score.periods_count}회<span></div>
+            <div><span class="period ${getStatusClass(game.code_state)}">
+                ${game.code_state.indexOf('inning') > -1 ? `${getStateToPeriod(game.code_state)}회`
+                    : game.code_state.indexOf('ended') > -1 ? `종료`
+                    : game.code_state.indexOf('not_started') > -1 ? `대기`
+                    : game.code_state.indexOf('aet') > -1 ? `연장`
+                : '연기'
+                }
+            </span></div>
             <div class="score ${game.score.away_team > game.score.home_team ? "highlight" : ""}">${game.score.away_team !== null | undefined ? game.score.away_team : "-"}</div>
         </div>
     `;

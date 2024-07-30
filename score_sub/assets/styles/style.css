@@ -43,7 +43,9 @@
 .list-item .item-left, .list-item .item-center, .list-item .item-right {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
+    font-size:1.3em;
+    font-weight: bold;
 }
 
 .item-left, .item-center, .item-right {
@@ -90,6 +92,21 @@
     justify-content: space-between;
     width: 100%;
     padding: 5px 0;
+}
+
+.score-table .list-item .item-center .home-score span,
+.score-table .list-item .item-center .away-score span {
+    border: 1px solid #797979;
+    padding: 5px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    background: linear-gradient(to bottom, #000000, #8b8b8b);
+    border-radius: 3px;
+}
+
+.score-table .list-item .item-center .home-score .current-period,
+.score-table .list-item .item-center .away-score .current-period {
+    font-weight: bold;
+    color: #E94720;
 }
 
 .collapse-content {
@@ -150,18 +167,23 @@
 }
 
 
-.in-progress{
+.triangle.in-progress{
     border-left: 45px solid #E94720; /* 삼각형 색상 */
     border-bottom: 45px solid transparent; /* 삼각형 투명색 */
 }
 
-.ready {
+.triangle.ready {
     border-left: 45px solid #144bc4; /* 삼각형 색상 */
     border-bottom: 45px solid transparent; /* 삼각형 투명색 */
 }
 
-.final {
+.triangle.final {
     border-left: 45px solid #3f1606; /* 삼각형 색상 */
+    border-bottom: 45px solid transparent; /* 삼각형 투명색 */
+}
+
+.triangle.postponed {
+    border-left: 45px solid #0d6385; /* 삼각형 색상 */
     border-bottom: 45px solid transparent; /* 삼각형 투명색 */
 }
 
@@ -174,6 +196,30 @@
     font-size: 12px; /* 텍스트 크기 조정 */
     white-space: nowrap; /* 텍스트가 한 줄에 표시되도록 설정 */
 }
+
+.period {
+    font-size: 1.1em;
+    background-color: #000;
+    border-radius: 10px;
+    padding: 7px 13px
+}
+
+.period.in-progress {
+    background-color: #E94720;
+}
+
+.period.ready {
+    background-color: #144bc4;
+}
+
+.period.final {
+    background-color: #3f1606;
+}
+
+.period.postponed {
+    background-color: #0d6385;
+}
+
 
 /* 반응형 스타일 설정 */
 @media (max-width: 1280px) {
@@ -239,6 +285,11 @@
         object-fit: contain; /* 원본 비율을 유지하며 크기 조정 */
     }
 
+    .score-table .list-item .item-center .home-score,
+    .score-table .list-item .item-center .away-score {
+        display: none;
+    }
+
     .score-table .list-item .item-right {
         flex: 1;
         text-align: center;
@@ -247,6 +298,13 @@
     .score-table .list-item img {
         max-width: 100%; /* 이미지가 컨테이너를 벗어나지 않도록 설정 */
         height: auto;    /* 이미지의 종횡비를 유지 */
+    }
+
+    .period {
+        border-radius: 10px;
+        font-size: 1.1em;
+        padding: 3px 10px;
+        margin: 5px;
     }
 
     .score {
@@ -269,6 +327,7 @@
 
     .score-table .list-item .item-left {
         flex: 1;
+        font-size: 1em;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -288,7 +347,7 @@
 
     .score-table .list-item .item-center span {
         flex:9;
-        font-size: 1.3em;
+        font-size: 1em;
         font-weight: bold;
     }
 
@@ -316,9 +375,15 @@
         object-fit: contain; /* 원본 비율을 유지하며 크기 조정 */
     }
 
+    .score-table .list-item .item-center .home-score,
+    .score-table .list-item .item-center .away-score {
+        display: none;
+    }
+
     .score-table .list-item .item-right {
         flex: 1;
         text-align: center;
+
     }
 
     .score-table .list-item img {
@@ -326,14 +391,20 @@
         height: auto;    /* 이미지의 종횡비를 유지 */
     }
 
-    .score {
-        font-size: 1.5em;
+    .period {
+        border-radius: 10px;
+        font-size: 1em;
+        padding: 3px 7px;
+        margin: 5px;
     }
+
+    .score {
+        font-size: 1.2em;
+    }
+
 }
 
-
-
-@media (max-width: 375px) {
+@media (max-width: 380px) {
     .score-table {
         padding: 0;
         width: 100%;
@@ -352,6 +423,7 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
+        font-size: 0.7em
     }
 
     .score-table .list-item .item-center {
@@ -366,9 +438,12 @@
         flex:1
     }
 
-    .score-table .list-item .item-center span {
+    .score-table .list-item .item-center .home span,
+    .score-table .list-item .item-center .away span
+     {
         flex:9;
         font-weight: bold;
+        font-size: 0.7em;
     }
 
     .score-table .list-item .item-center .home .image-container,
@@ -395,6 +470,11 @@
         object-fit: contain; /* 원본 비율을 유지하며 크기 조정 */
     }
 
+    .score-table .list-item .item-center .home-score,
+    .score-table .list-item .item-center .away-score {
+        display: none;
+    }
+
     .score-table .list-item .item-right {
         flex: 1;
         text-align: center;
@@ -405,8 +485,15 @@
         height: auto;    /* 이미지의 종횡비를 유지 */
     }
 
+    .period {
+        border-radius: 5px;
+        font-size: 0.7em;
+        padding: 2px 6px;
+        margin: 5px;
+    }
+
     .score {
-        font-size: 1.3em;
+        font-size: 1em;
     }
 
 }

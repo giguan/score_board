@@ -20,10 +20,10 @@
 </head>
 <body>
     <div class="background-container">
-        <img src="../../assets/images/background.jpg" alt="Background Image" class="background-image">
+        <img src="./assets/images/background.jpg" alt="Background Image" class="background-image">
     </div>
     <div class="container">
-        <header>
+        <header>   
             <div class="header-container">
                 <div class="logo-container" style="display:flex; align-items: center;">
                     <!-- <img src="./assets/images/goat_tv_logo.webp" alt="Goat Score Logo" class="logo"> -->
@@ -33,20 +33,15 @@
         </header>
         <nav>
             <ul class="tabs">
-                <li><a href="/score_0.2/index.html" class="tab-link"><img src="../../assets/images/tabmenu_logo/main.png" alt="Home"> 주요경기</a></li>
-                <li><a href="/score_0.2/sports/soccer/index.html" class="tab-link active"><img src="../../assets/images/tabmenu_logo/soccer.png" alt="Football"> 축구</a></li>
-                <li><a href="/score_0.2/sports/baseball/index.html" class="tab-link"><img src="../../assets/images/tabmenu_logo/baseball.png" alt="Baseball"> 야구</a></li>
-                <li><a href="/score_0.2/sports/basketball/index.html" class="tab-link"><img src="../../assets/images/tabmenu_logo/basketball.png" alt="Basketball"> 농구</a></li>
-                <li><a href="/score_0.2/sports/volleyball/index.html" class="tab-link"><img src="../../assets/images/tabmenu_logo/volleyball.png" alt="Volleyball"> 배구</a></li>
-                <!-- <li><a href="/score_0.1/sports/rugby/index.html" class="tab-link"><img src="../../assets/images/tabmenu_logo/rugby.png" alt="American Football"> 미식축구</a></li> -->
-                <li><a href="/score_0.2/sports/lol/index.html" class="tab-link"><img src="../../assets/images/tabmenu_logo/lol.png" alt="LOL"> LOL</a></li>
-                <!-- 다른 스포츠 페이지 링크 추가 -->
+                <li><a href="/score_sub/sports/baseball/index.html" class="tab-link"><img src="../../assets/images/tabmenu_logo/baseball.png" alt="Baseball"> 야구</a></li>
+                <li><a href="/score_sub/sports/soccer/index.html" class="tab-link active"><img src="../../assets/images/tabmenu_logo/soccer.png" alt="Football"> 축구</a></li>
+                <li><a href="/score_sub/sports/basketball/index.html" class="tab-link"><img src="../../assets/images/tabmenu_logo/basketball.png" alt="Basketball"> 농구</a></li>
             </ul>
         </nav>
         <main>
             <div class="date-navigation">
                 <button class="nav-btn" id="prev-day">◀</button>
-                <span class="date-display">2024.07.05</span>
+                <span class="date-display"></span>
                 <button class="nav-btn" id="next-day">▶</button>
                 <button class="nav-btn" id="show-calendar-btn">달력</button>
                 <button class="nav-btn" id="today-day">오늘</button>
@@ -71,9 +66,8 @@
                     <div id="error-message" class="error-message" style="display: none;"></div>
                     
                     <div id="score-table" class="score-table">
-                        <!-- 동적으로 추가되는 행들은 JavaScript로 추가 -->
+
                     </div>
-                </div>
             </section>
         </main>
         <footer>

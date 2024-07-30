@@ -17,25 +17,29 @@ app.use(cors({
 
 
 // 프록시 요청 핸들러
-app.get('/proxy/match-list', async (req, res, next) => {
+app.get('/proxy/baseball/match-list', async (req, res, next) => {
 
   const {date} = req.query;
 
-  const requestDate = new Date(date);
+  const apiUrl = `https://24live.com/api/match-list-data/19?lang=ko&type=all&subtournamentIds=121,78701,44034,45,12536,12535&sort=alpha&short=0&from=${date} 00:00:00&to=${date} 23:59:59`;
+  try {
+    const response = await axios.get(apiUrl);
+    const matchList = response.data;
 
-  // fromDate는 요청한 날짜의 자정 (00:00:00)
-  const fromDate = new Date(requestDate);
-  fromDate.setHours(0, 0, 0, 0);
+    res.send(matchList);
+  } catch (error) {
+      next(error);
+  }
+});
 
-  // toDate는 요청한 날짜의 마지막 시간 (23:59:59)
-  const toDate = new Date(requestDate);
-  toDate.setHours(23, 59, 59, 999);
+app.get('/proxy/soccer/match-list', async (req, res, next) => {
 
-  const from = fromDate.toISOString().replace('T', ' ').split('.')[0];
-  const to = toDate.toISOString().replace('T', ' ').split('.')[0];
+  const {date} = req.query;
 
-  const apiUrl = `https://24live.com/api/match-list-data/19?lang=ko&type=all&subtournamentIds=121,78701,44034,45,12536,12535&sort=alpha&short=0&from=${from}&to=${to}`;
-  
+  const apiUrl = `https://24live.com/api/match-list-data/5?lang=ko&type=all&subtournamentIds=4404,32316,77303,77307&sort=alpha&short=0&from=${date} 00:00:00&to=${date} 23:59:59`;
+  // const apiUrl = `https://24live.com/api/match-list-category/5?lang=ko&type=all&sort=alpha&short=0&from=${date} 00:00:00&to=${date} 23:59:59`;
+  console.log(`api uri = ${apiUrl}`)
+
   try {
     const response = await axios.get(apiUrl);
     const matchList = response.data;
