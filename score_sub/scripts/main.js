@@ -79,7 +79,7 @@ const statusPriority = {
     'seventh_inning': 4,
     'sixth_inning': 5,
     'fifth_inning': 6,
-    'fourth_inning': 7,
+    'forth_inning': 7,
     'third_inning': 8,
     'second_inning': 9,
     'first_inning': 10,
@@ -115,7 +115,7 @@ async function getGameData() {
     const baseballCategory = ['미국', '대한민국', '일본']
 
     //야구의 경우 미국 대한민국 일본이 카테고리임
-    const res = await axios.get('http://localhost:3000/proxy/match-list', {
+    const res = await axios.get('http://localhost:3000/proxy/baseball/match-list', {
         params: {
             date: requestDate
         }
@@ -286,10 +286,27 @@ function getStatusText(state) {
     }
 }
 
+
 function getFormmatTime(time) {
-    const timePart = time.split('T')[1].split(':00+')[0];
-    return timePart;
+    // 시간 문자열을 Date 객체로 변환
+    const date = new Date(time);
+
+    // 5시간을 밀리초 단위로 변환 (5시간 * 60분 * 60초 * 1000밀리초)
+    const fiveHoursInMillis = 5 * 60 * 60 * 1000;
+
+    // 5시간 빼기 - 5시간 차이남
+    const newDate = new Date(date.getTime() - fiveHoursInMillis);
+
+    // ISO 8601 형식으로 변환 (날짜 및 시간 부분 유지)
+    const formattedDate = newDate.toISOString();
+
+    // 'T'와 '+00:00'을 포함한 시간 부분 추출하고 초를 제거
+    const timePart = formattedDate.split('T')[1].split('.')[0];
+    const timeWithoutSeconds = timePart.split(':').slice(0, 2).join(':');
+
+    return timeWithoutSeconds;
 }
+
 
 function getStateToPeriod(state) {
 
@@ -300,7 +317,7 @@ function getStateToPeriod(state) {
             return '2'
         case 'third_inning' :
             return '3'
-        case 'fourth_inning' :
+        case 'forth_inning' :
             return '4'
         case 'fifth_inning' :
             return '5'
@@ -321,6 +338,8 @@ function getStateToPeriod(state) {
 }
 
 function createTableRow(game, index) {
+
+    console.log(game)
 
     const rowWrapper = document.createElement('div');
     rowWrapper.className = 'list-item-wrapper';
