@@ -50,6 +50,22 @@ app.get('/proxy/soccer/match-list', async (req, res, next) => {
   }
 });
 
+app.get(`/proxy/basketball/match-list`, async (req, res, next) => {
+  const {date} = req.query;
+
+  const apiUrl = `https://24live.com/api/match-list-data/6?lang=ko&type=all&subtournamentIds=77321,77329,77327,86023,85681&sort=alpha&short=0&from=${date} 00:00:00&to=${date} 23:59:59`;
+
+  try {
+    const response = await axios.get(apiUrl);
+    const matchList = response.data;
+
+    res.send(matchList);
+  } catch (error) {
+      next(error);
+  }
+
+})
+
 app.use((err, req, res, next) => {
   console.error(err.stack); // 에러 스택을 콘솔에 출력
   res.status(500).json({ message: 'Internal Server Error', error: err.message }); // 클라이언트에 에러 메시지 전송

@@ -160,12 +160,197 @@
 .game-row-wrap .game-row .team-info .tr.th .td,
 .game-row-wrap .game-row .score .tr.th .td
 {
-    color: rgb(233, 71, 32);;
+    color: rgb(233, 71, 32);
 }
 
 .game-row-wrap .game-row .team-info .tr .td,
 .game-row-wrap .game-row .score .tr .td
 {
+    color: #fff;
+}
+
+.game-tabs {
+    display: flex;
+    justify-content: space-around;
+    background-color: #16171d;
+    border-bottom: 1px solid #444;
+}
+
+.game-tab-link {
+    background-color: #2b2c34;
+    color: #fff;
+    padding: 10px;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    transition: background-color 0.3s;
+    flex: 1; /* Ensure tabs equally share the space */
+    text-align: center;
+}
+
+.game-tab-link.active {
+    background-color: rgb(233, 71, 32);;
+}
+
+.game-tab-link:hover {
+    background-color: #444;
+}
+
+.game-tab-link:disabled {
+    background-color: #555;
+    color: #808080;
+    cursor: not-allowed;
+}
+
+.game-tab-content {
+    display: none;
+    padding: 20px;
+    background-color: #2b2c34;
+    border-top: 1px solid #444;
+    color: #d6d5d5
+}
+
+.game-tab-content.active {
+    display: block;
+}
+
+.game-tab-content.active.resize {
+    display: none;
+}
+
+.header-info, .team-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.header-info .team-info, .header-info .match-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.header-info .team-info span, .header-info .match-info span {
+    margin-right: 10px;
+}
+
+.header-info .team-logo {
+    display: flex;
+    align-items: center;
+}
+
+.header-info .team-logo img {
+    width: 40px;
+    height: 40px;
+    margin: 0 10px;
+}
+
+.team-stats .first-events span {
+    margin-right: 10px;
+}
+
+.game-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.teams {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.team {
+    width: 45%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.score {
+    font-size: 1.3em;
+}
+
+.score-detail-highlight {
+    color: red;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.team-header {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.positions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    font-size: 18px;
+    font-weight: bold;
+    color: #dd7a61;
+}
+
+.position {
+    margin: 5px 0;
+    text-align: center;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.player {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.player-name, .player-kda {
+    flex: 1;
+    text-align: center;
+}
+
+.player-champion img {
+    width: 30px;
+    height: 30px;
+}
+
+.bans {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.bans-header {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+    padding: 5px 70px;
+    color:rgb(233, 71, 32)
+}
+
+.ban-list {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.ban-list img {
+    width: 30px;
+    height: 30px;
+    margin: 0 5px;
+}
+
+.firstBtn {
+    border: 1px solid #9c9c9c;
+    padding: 3px 5px;
+}
+
+.firstBtn.on {
+    background-color: #E94720;
     color: #fff;
 }
 
@@ -178,6 +363,15 @@
     border-radius: 5px;
     text-align: center;
     font-weight: bold;
+}
+
+
+
+/* Media Query for responsiveness */
+@media (max-width: 1100px) {
+    .game-tabs, .game-tab-contents {
+        display: none;
+    }
 }
 
 @media (max-width: 768px) {
@@ -196,6 +390,14 @@
 
     .game-row-wrap .game-row .score {
         flex:1;
+    }
+
+    .game-tab-content {
+        display: none;
+    }
+
+    .game-tabs {
+        display: none;
     }
 
 }

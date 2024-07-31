@@ -1,6 +1,9 @@
-/** 전역변수 - 초기 데이터 오늘임 (선택 일자로 계속 인터벌 돌려야해서) */
+
+/** 전역변수 - 초기 데이터 오늘임 (계속 인터벌 돌려야해서) */
 let requestDate = getCurrentDate();
 
+/** 전역변수 - 불러온 게임 데이터 정렬 */
+const sortedGameData = [];
 
 let intervalCheck = false;
 
@@ -12,12 +15,13 @@ async function fetchDataPeriodically() {
 
 document.addEventListener('DOMContentLoaded', async function() {
     await getGameData();
-    fetchDataPeriodically();
+    // fetchDataPeriodically();
 
-    getFullCalendar();
+    // Full calendar 관련
+    getFullCalendar()
 
     const filterButtons = document.querySelectorAll('.filters span');
-
+            
     filterButtons.forEach(button => {
         button.addEventListener('click', () => {
             filterButtons.forEach(btn => btn.classList.remove('active')); // 모든 버튼에서 'active' 클래스 제거
@@ -27,18 +31,183 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
     });
 
+    // 초기화: collapse-content를 모두 숨기기
+    document.querySelectorAll('.collapse-content').forEach(content => {
+        content.style.display = 'none';
+    });
+
+    // 탭 메뉴 및 콘텐츠 토글 기능
+    document.querySelectorAll('.list-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+            console.log(item);
+
+            const collapseContent = item.nextElementSibling; // item의 다음 형제 요소로 collapse-content를 찾음
+            const isActive = collapseContent.style.display === 'block';
+
+            // 모든 collapse-content를 숨기기
+            document.querySelectorAll('.collapse-content').forEach(el => el.style.display = 'none');
+            
+            if (!isActive) {
+                collapseContent.style.display = 'block';
+
+                // 탭 메뉴 버튼 이벤트 설정
+                const tabMenu = collapseContent.querySelector('.tab-menu');
+                const tabContents = collapseContent.querySelectorAll('.tab-content');
+
+                tabMenu.querySelectorAll('button').forEach((button, index) => {
+                    button.addEventListener('click', () => {
+                        tabMenu.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+                        tabContents.forEach(content => content.classList.remove('active'));
+
+                        button.classList.add('active');
+                        tabContents[index].classList.add('active');
+                    });
+                });
+
+                // 첫 번째 탭을 기본 활성화 상태로 설정
+                tabMenu.querySelectorAll('button')[0].click();
+            }
+        });
+    });
+
 });
+
+const statusPriority = {
+    'aet': 1,
+    'ninth_inning': 2,
+    'eighth_inning': 3,
+    'seventh_inning': 4,
+    'sixth_inning': 5,
+    'fifth_inning': 6,
+    'fourth_inning': 7,
+    'third_inning': 8,
+    'second_inning': 9,
+    'first_inning': 10,
+    'not_started': 11,
+    'ended': 12
+};
+
+const sortMatches = (a, b) => {
+    const priorityA = statusPriority[a.code_state] || 13; // 기본 우선 순위 (모든 상태에 대해 정의되지 않은 경우)
+    const priorityB = statusPriority[b.code_state] || 13; // 기본 우선 순위
+    
+    return priorityA - priorityB;
+};
+
 function getActiveButtonId() {
     const activeButton = document.querySelector('.filters span.active');
     return activeButton ? activeButton.id : null;
 }
 
+async function getGameData() {
+    // 날짜를 변경할때마다 바뀐 날짜 적용 
+    document.querySelector('.date-display').innerHTML = requestDate;
+
+    const loadingSpinner = document.getElementById('loading-spinner');
+    const tbody = document.getElementById('score-table');
+
+    if(!intervalCheck) {
+        loadingSpinner.style.display = 'block'; // 로딩 스피너 표시
+    } else {
+        loadingSpinner.style.display = 'none';
+    }
+
+    const basketballCategory = ["국제", "USA", 'Philippines']
+
+    //야구의 경우 미국 대한민국 일본이 카테고리임
+    const res = await axios.get('http://localhost:3000/proxy/basketball/match-list', {
+        params: {
+            date: requestDate
+        }
+    })
+    .then(response => {
+
+        const data = response.data;
+        console.log(data)
+
+        const filteredData = response.data.filter(match => basketballCategory.includes(match.category_name));
+        filteredData.sort(sortMatches);
+        
+        const gameInfo = countEntries(filteredData);
+        console.log(gameInfo)
+
+        const totalGameCnt = document.getElementById('total-game-cnt');
+        const readyGameCnt = document.getElementById('ready-game-cnt');
+        const inProgressGameCnt = document.getElementById('inprogress-game-cnt');
+        const finalGameCnt = document.getElementById('final-game-cnt');
+
+        totalGameCnt.innerHTML = gameInfo.total;
+        readyGameCnt.innerHTML = gameInfo.ready;
+        inProgressGameCnt.innerHTML = gameInfo.inProgress;
+        finalGameCnt.innerHTML = gameInfo.final;
+
+        if(getActiveButtonId() === "total-button") {
+            const fragment = document.createDocumentFragment();
+
+            if(gameInfo.sortedGameData.length > 0) {
+                gameInfo.sortedGameData.forEach((game, index) => {
+                    const row = createTableRow(game, index);
+                    fragment.appendChild(row);
+                })
+            } 
+
+            tbody.innerHTML = ``;
+            tbody.appendChild(fragment);
+        } else if (getActiveButtonId() === "ready-button") {
+            const fragment = document.createDocumentFragment();
+
+            if(gameInfo.sortedGameDataByStatus.READY.length > 0) {
+                gameInfo.sortedGameDataByStatus.READY.forEach((game, index) => {
+                    const row = createTableRow(game, index);
+                    fragment.appendChild(row);
+                })
+            }
+
+            tbody.innerHTML = ``;
+            tbody.appendChild(fragment);
+        } else if (getActiveButtonId() === "inprogress-button") {
+            const fragment = document.createDocumentFragment();
+
+            if(gameInfo.sortedGameDataByStatus.IN_PROGRESS.length > 0) {
+                gameInfo.sortedGameDataByStatus.IN_PROGRESS.forEach((game, index) => {
+                    const row = createTableRow(game, index);
+                    fragment.appendChild(row);
+                })
+            }
+            
+            tbody.innerHTML = ``;
+            tbody.appendChild(fragment);
+        } else if (getActiveButtonId() === "final-button") {
+            const fragment = document.createDocumentFragment();
+
+            if(gameInfo.sortedGameDataByStatus.FINAL.length > 0) {
+                gameInfo.sortedGameDataByStatus.FINAL.forEach((game, index) => {
+                    const row = createTableRow(game, index);
+                    fragment.appendChild(row);
+                })
+            }
+
+            tbody.innerHTML = ``;
+            tbody.appendChild(fragment);
+        }
+
+
+        //not_started, end, ate
+        loadingSpinner.style.display = 'none'; // 로딩 스피너 숨김
+        intervalCheck = false;
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    })
+    ;
+}
+
 function countEntries(data) {
+    
+    console.log("@@",data)
 
     const counts = {};
-    let totalCount = data.length
-
-    let final = 0, ready = 0, inProgress = 0, cancel = 0;
+    let total = 0, ready = 0, inProgress = 0, final =0;
     const sortedGameData = {
         IN_PROGRESS: [],
         READY: [],
@@ -46,27 +215,24 @@ function countEntries(data) {
         FINAL: []
     };
 
-    data.forEach((item) => {
-        if (item.gameStatus === 'FINAL') {
-            final += 1;
-            sortedGameData.FINAL.push(item);
-        } else if (item.gameStatus === 'READY') {
-            ready += 1;
-            sortedGameData.READY.push(item);
-        } else if (item.gameStatus === 'IN_PROGRESS') {
-            inProgress += 1;
-            sortedGameData.IN_PROGRESS.push(item);
+    data.forEach((match) => {
+
+        if(match.code_state === 'ended') {
+            final++;
+            sortedGameData.FINAL.push(match);
+        } else if (match.code_state === 'not_started') {
+            ready++;
+            sortedGameData.READY.push(match);
         } else {
-            cancel += 1;
-            sortedGameData.CANCEL.push(item);
+            inProgress++;
+            sortedGameData.IN_PROGRESS.push(match);
         }
     })
 
-    counts.total = totalCount;
+    counts.total = data.length;
     counts.final = final;
     counts.ready = ready;
     counts.inProgress = inProgress;
-    counts.cancel = cancel;
 
     const sortedGameDataArray = [
         ...sortedGameData.IN_PROGRESS,
@@ -78,348 +244,198 @@ function countEntries(data) {
     counts.sortedGameData = sortedGameDataArray;
     counts.sortedGameDataByStatus = sortedGameData; // 상태별 배열 추가
 
-    return counts;
+    return counts
+
 }
 
+function getChangeLeagueName(name) {
 
-function createField(game) {
+    if (name === '미국') {
+        return 'MLB'
+    } else if (name === '대한민국') {
+        return 'KBO'
+    } else {
+        return 'NPB';
+    }
+    
 
-    const statusClass = getStatusClass(game.gameStatus);
+}
 
-    switch(statusClass) {
-        case 'in-progress':
-            return `
-            <div class="field-cover">
-                <div>
-                    <span>스코어만 표기 됩니다</span>
-                </div>
-            </div>
-            <div class="field"></div>`
-        case 'ready' : 
-            return `
-            <div class="field-cover">
-                <div>
-                    <span></span>
-                </div>
-            </div>
-            <div class="field-text ${statusClass}">
-                <div class="main-text">${formatDateTime(game.startDatetime).split(' ')[1]}</div>
-                <div class="sub-text">경기 시작</div>
-            </div>
-            <div class="field ${statusClass}"></div>`
-        case 'finished' :
-            return `
-                <div class="field-cover">
-                    <div class="circle-wrap">
-                        <img src="${game.result === 'WIN' 
-                                ? `./../../assets/images/named_images/${game.teams.home.imgPath.split('/')[4]}` 
-                                : `./../../assets/images/named_images/${game.teams.away.imgPath.split('/')[4]}`}"
-                        alt="Team Logo">
-                    </div>
-                </div>
-                <div class="field-text">
-                    <div class="main-text">${game.result === 'WIN' ? game.teams.home.name : game.teams.away.name}</div>
-                    <div class="sub-text">경기 승리</div>
-                </div>
-                <div class="field ${statusClass}"></div>
-                `
-        case 'cancel' :
-            return `
-                <div class="field-cover">
-                    <div class="circle-wrap">
-                            <img src="./../../assets/images/cancle.png"/>
-                    </div>
-                </div>
-                <div class="field-text">
-                    <div class="sub-text">경기 취소</div>
-                </div>
-                <div class="field ${statusClass}"></div>
-            `
+function getStatusClass(state) {
+    switch(state) {
+        case 'ended':
+            return 'final'
+        case 'not_started':
+            return 'ready'
+        case 'postponed':
+            return 'postponed'
+        default:
+            return 'in-progress'
+    }
+}
+
+function getStatusText(state) {
+    switch(state) {
+        case 'ended':
+            return '종료'
+        case 'not_started':
+            return '대기'
+        case 'postponed':
+            return '연기'
+        case 'break':
+            return '임시중단'
+        default:
+            return '진행'
+    }
+}
+
+function getFormmatTime(time) {
+    const timePart = time.split('T')[1].split(':00+')[0];
+    return timePart;
+}
+
+function getStateToPeriod(state) {
+
+    switch(state) {
+        case 'first_inning' :
+            return '1'
+        case 'second_inning' :
+            return '2'
+        case 'third_inning' :
+            return '3'
+        case 'fourth_inning' :
+            return '4'
+        case 'fifth_inning' :
+            return '5'
+        case 'sixth_inning' :
+            return '6'
+        case 'seventh_inning' :
+            return '7'
+        case 'eighth_inning' :
+            return '8'
+        case 'ninth_inning' :
+            return '9'
+        case 'extra-time':
+            return '연장'
+        default :
+            return '--'
     }
 
 }
 
-function createTableRow(game) {
+function createTableRow(game, index) {
 
-    const gameRow = document.createElement('div');
-    gameRow.classList.add('game-row');
-    gameRow.setAttribute('data-game-id', game.id);
+    const rowWrapper = document.createElement('div');
+    rowWrapper.innerHTML = `
+        <div class="league-name">${game.category_name} ${game.sub_tournament_name}</div>
+    `
+    rowWrapper.className = 'list-item-wrapper';
+    
+    const row = document.createElement('div');
+    row.className = 'list-item';
+    row.setAttribute('data-id', index+1)
 
-    const homeScore = game.teams.home.periodData.reduce((total, current) => total + current.score, 0);
-    const awayScore = game.teams.away.periodData.reduce((total, current) => total + current.score, 0);
-
-    let homeScoreClass = '';
-    let awayScoreClass = '';
-
-    if (homeScore > awayScore) {
-        homeScoreClass = 'highlight';
-    } else if (homeScore < awayScore) {
-        awayScoreClass = 'highlight';
-    }
-
-    gameRow.innerHTML = `
-        <div class="field-wrap">
-            ${createField(game)}
+    row.innerHTML = `
+        <div class="triangle ${getStatusClass(game.code_state)}">
+            <span class="triangle-text">${getStatusText(game.code_state)}</span>
         </div>
-
-        <div class="team-info">
-            <div class="tr th">
-                <span class="td" >${game.league.name}</span>
-                <span class="td" >${formatDateTime(game.startDatetime).split(' ')[1]}</span>
-                <span class="td" >${game.gameStatus === 'IN_PROGRESS' ? game.period + '쿼터' : getStatusText(game.gameStatus)}</span>
+        <div class="item-left">
+            <div class="image-container">
+                ${game.participants ? `<img src=https://24live.com${game.participants[0].countryImage} alt="country logo"/>` : ''}
             </div>
-            <div class="tr">
-                <div class="td">
-                    <img width="55" height="55" src="./../../assets/images/named_images/${game.teams.away.imgPath.split('/')[4]}">
+            <div class="league">${game.tournament_name ? game.tournament_name.split(' ')[0] : game.sub_tournament_name.split(' ')[0]}</div>
+            <div class="game-time">${getFormmatTime(game.start_date)}</div>
+        </div>
+        <div class="item-center">
+            <div class="home">
+                <div class="image-container">
+                    <img src="https://24live.com${game.participants[0].image}" alt="home logo"/>
                 </div>
-                <span class="td" >${game.teams.away.name}</span>
-                <span class="td ${awayScore > homeScore ? 'highlight' : '' }">${awayScore}</span>
-            </div>
-            <div class="tr">
-                <div class="td">
-                    <img width="55" height="55"  src="./../../assets/images/named_images/${game.teams.home.imgPath.split('/')[4]}">
+                <span>${game.participants[0].name}</span>
+                <div class="home-score">
+                    ${
+                        game.score.periods.map((period) => {
+                            if(period.home_team !== null) {
+                                if(game.code_state === period.trans_name.split('.')[2]) {
+                                    return `<span class="current-period">${period.home_team}</span>` 
+                                } else {
+                                    return `<span>${period.home_team}</span>`
+                                }
+                            } else {
+                                return `<span>0</span>`
+                            }
+                        }).join('')
+                    }
                 </div>
-                <span class="td" >${game.teams.home.name}</span>
-                <span class="td ${homeScore > awayScore ? 'highlight' : ''}">${homeScore}</span>
             </div>
-            <div class="tr th odds">
-                ${game.oddsFlag 
-                    ? `<span class="td">승/패 - ${game.odds.domesticWinLoseOdds.length > 0 ? game.odds.domesticWinLoseOdds[0].odds +"/"+ game.odds.domesticWinLoseOdds[0].odds : ``}</span>
-                <span class="td">핸디(${game.odds.domesticHandicapOdds.length > 0 ? game.odds.domesticHandicapOdds[0].optionValue + ") " + game.odds.domesticHandicapOdds[0]?.odds +"/"+ game.odds.domesticHandicapOdds[1]?.odds : ``}</span>
-                <span class="td">언/오(${game.odds.domesticUnderOverOdds.length > 0 ? game.odds.domesticUnderOverOdds[0]?.optionValue + ") " + game.odds.domesticUnderOverOdds[0]?.odds +"/"+ game.odds.domesticUnderOverOdds[1]?.odds : ``}</span>
-                `
-                    : `<span class="td">승/패 -</span>
-                <span class="td">핸디 - </span>
-                <span class="td">언/오 - </span>
-                `                    
+            <div class="away">
+                <div class="image-container">
+                    <img src="https://24live.com${game.participants[1].image}" alt="away logo"/>
+                </div>
+                <span>${game.participants[1].name}</span>
+                <div class="away-score">
+                ${
+                    game.score.periods.map((period) => {
+                        if(period.away_team !== null) {
+                            if(game.code_state === period.trans_name.split('.')[2]) {
+                                return `<span class="current-period">${period.away_team}</span>` 
+                            } else {
+                                return `<span>${period.away_team}</span>`
+                            }
+                        } else {
+                            return `<span>0</span>`
+                        }
+                    }).join('')
                 }
+                </div>   
             </div>
         </div>
-
-        <div class="score">
-            <div class="tr th ${getStatusClass(game.gameStatus)}">
-                ${
-                    game.gameStatus !== 'READY'
-
-                    ? Array.from({length: 5}, (_, index) => {
-                        const period = game.teams.away.periodData[index] || { period: index + 1, score: '' };
-
-                        if (index === 4 && !period.period) { // 5번째 데이터가 없을 경우 "연장" 출력
-                            return `<span class="td">연장</span>`;
-                        }
-
-                        if (game.period === index+1) { // 현재 진행 중인 이닝을 강조
-                            return `<span class="td current">${period.period > 4 ? "연장" : `${period.period}Q`}</span>`;
-                        } else {
-                            return `<span class="td">${period.period > 4 ? "연장" : `${period.period}Q`}</span>`;
-                        }
-                    }).join('') +
-                    `<span class="td">국내</span>`
-
-                    : `
-                        <span class="td">순위</span>
-                        <span class="td">승/패</span>
-                        <span class="td">승률</span>
-                        <span class="td">득점</span>
-                        <span class="td">야투</span>
-                        <span class="td">3점</span>
-                        <span class="td">자유투</span>
-                    `
+        <div class="item-right">
+            <div class="score ${game.score.home_team > game.score.away_team ? "highlight" : ""}">${game.score.home_team !== null | undefined ? game.score.home_team : "-"}</div>
+            <div><span class="period ${getStatusClass(game.code_state)}">
+                ${game.code_state.indexOf('inning') > -1 ? `${getStateToPeriod(game.code_state)}회`
+                    : game.code_state.indexOf('ended') > -1 ? `종료`
+                    : game.code_state.indexOf('not_started') > -1 ? `대기`
+                    : game.code_state.indexOf('aet') > -1 ? `연장`
+                : '연기'
                 }
-            </div>
-            <div class="tr">
-                ${
-
-                    game.gameStatus !== 'READY'
-
-                    ? Array.from({length: 5}, (_, index) => {
-                        const period = game.teams.away.periodData[index] || { score: '' };
-                        if (game.period === index + 1) { // 현재 진행 중인 이닝을 강조
-                            return `<span class="td current">${period.score}</span>`;
-                        } else {
-                            return `<span class="td">${period.score}</span>`;
-                        }
-                    }).join('') + `
-                    <span class="td">
-                        ${game.odds?.domesticUnderOverOdds.length > 0 
-                        ? game.odds?.domesticUnderOverOdds[0].odds
-                        : ''
-                        }
-                    </span>`
-
-                    : `
-                        <span class="td">${game.teams.away.seasonRecord.ranking}</span>
-                        <span class="td">${game.teams.away.seasonRecord.winCount} / ${game.teams.away.seasonRecord.defeatCount}</span>
-                        <span class="td">${game.teams.away.seasonRecord.winPercentage}</span>
-                        <span class="td">${game.teams.away.seasonRecord.ranking}</span>
-                        <span class="td">${game.teams.away.seasonRecord.fieldGoalSuccessRate}</span>
-                        <span class="td">${game.teams.away.seasonRecord.threePointShotSuccessRate}</span>
-                        <span class="td">${game.teams.away.seasonRecord.freeThrowSuccessRate}</span>
-                    ` 
-                }
-            </div>
-            <div class="tr">
-            ${
-
-                game.gameStatus !== 'READY'
-
-                ? Array.from({length: 5}, (_, index) => {
-                    const period = game.teams.home.periodData[index] || { score: '' };
-                    if (game.period === index + 1) { // 현재 진행 중인 이닝을 강조
-                        return `<span class="td current">${period.score}</span>`;
-                    } else {
-                        return `<span class="td">${period.score}</span>`;
-                    }
-                }).join('') + `
-                <span class="td">
-                    ${game.odds?.domesticUnderOverOdds.length > 0 
-                    ? game.odds?.domesticUnderOverOdds[0].odds
-                    : ''
-                    }
-                </span>`
-
-                : `
-                    <span class="td">${game.teams.home.seasonRecord.ranking}</span>
-                    <span class="td">${game.teams.home.seasonRecord.winCount} / ${game.teams.home.seasonRecord.defeatCount}</span>
-                    <span class="td">${game.teams.home.seasonRecord.winPercentage}</span>
-                    <span class="td">${game.teams.home.seasonRecord.ranking}</span>
-                    <span class="td">${game.teams.home.seasonRecord.fieldGoalSuccessRate}</span>
-                    <span class="td">${game.teams.home.seasonRecord.threePointShotSuccessRate}</span>
-                    <span class="td">${game.teams.home.seasonRecord.freeThrowSuccessRate}</span>
-                ` 
-            }
-            </div>
-            <div class="tr th">
-            ${
-
-                game.gameStatus !== 'READY'
-
-                ? Array.from({length: 5}, (_, index) => {
-                    let homeInningScore = isNaN(game.teams.home.periodData[index]?.score) ? 0 : game.teams.home.periodData[index]?.score;
-                    let awayInningScore = isNaN(game.teams.away.periodData[index]?.score) ? 0 : game.teams.away.periodData[index]?.score;
-
-                    if(index <= game.period-1 ) {
-                        return `<span class="td" style="color: #000">${homeInningScore + awayInningScore}</span>`;
-                    } else {
-                        return `<span class="td" style="color: #000"></span>`;
-                    }
-                }).join('') + `
-                <span class="td">
-                    ${homeScore + awayScore}
-                </span>`
-                : `
-                ` 
-            }
-            </div>
+            </span></div>
+            <div class="score ${game.score.away_team > game.score.home_team ? "highlight" : ""}">${game.score.away_team !== null | undefined ? game.score.away_team : "-"}</div>
         </div>
     `;
 
-    return gameRow;
-}
+    const collapse = document.createElement('div')
+    collapse.className = "collapse-content";
 
-async function getGameData() {
-    const dataUrl = `https://sports-api.named.com/v1.0/sports/basketball/games?date=${requestDate}&status=ALL`;
+    collapse.innerHTML = `
+        <div class="tab-menu">
+            <button class="tab-link" data-tab="tab1">Tab 1</button>
+            <button class="tab-link" data-tab="tab2">Tab 2</button>
+        </div>
+        <div class="tab-content" id="tab1">
+            <p>Content 1-1</p>
+        </div>
+        <div class="tab-content" id="tab2">
+            <p>Content 1-2</p>
+        </div>
+    `
 
-    // 날짜를 변경할때마다 바뀐 날짜 적용 
-    document.querySelector('.date-display').innerHTML = requestDate;
+    const gameStatus = document.createElement('div')
+    gameStatus.className = 'triangle';
 
-    const loadingSpinner = document.getElementById('loading-spinner');
+    rowWrapper.append(row)
+    rowWrapper.append(collapse)
+    // rowWrapper.append(gameStatus)
 
-    if(!intervalCheck) {
-        loadingSpinner.style.display = 'block'; // 로딩 스피너 표시
-    } else {
-        loadingSpinner.style.display = 'none';
-    }
 
-    try {
-        const res = await axios.get(dataUrl);
-        const gameInfo = countEntries(res.data);
-    
-        // DOM 업데이트 최소화
-        const totalGameCnt = document.getElementById('total-game-cnt');
-        const readyGameCnt = document.getElementById('ready-game-cnt');
-        const inProgressGameCnt = document.getElementById('inprogress-game-cnt');
-        const finalGameCnt = document.getElementById('final-game-cnt');
-        
-        totalGameCnt.innerHTML = gameInfo.total;
-        readyGameCnt.innerHTML = gameInfo.ready;
-        inProgressGameCnt.innerHTML = gameInfo.inProgress;
-        finalGameCnt.innerHTML = gameInfo.final;
+    return rowWrapper;
 
-        const body = document.querySelector('.game-row-wrap');
-
-        if(getActiveButtonId() === "total-button") {
-            const fragment = document.createDocumentFragment();
-
-            if(gameInfo?.sortedGameData.length > 0) {
-                gameInfo.sortedGameData.forEach((game) => {
-                    const row = createTableRow(game);
-                    fragment.appendChild(row);
-                });
-            } else {
-                const row = createTableErrorRow();
-                fragment.appendChild(row);
-            }
-
-            body.innerHTML = ``;
-            body.appendChild(fragment);
-        } else if (getActiveButtonId() === "ready-button") {
-            const fragment = document.createDocumentFragment();
-
-            if(gameInfo?.sortedGameDataByStatus.READY.length > 0) {
-                gameInfo.sortedGameDataByStatus.READY.forEach((game) => {
-                    const row = createTableRow(game);
-                    fragment.appendChild(row);
-                })
-            } else {
-                const row = createTableErrorRow();
-                fragment.appendChild(row);
-            }
-
-            body.innerHTML = ``;
-            body.appendChild(fragment);
-        } else if (getActiveButtonId() === "inprogress-button") {
-            const fragment = document.createDocumentFragment();
-
-            if(gameInfo?.sortedGameDataByStatus.IN_PROGRESS.length > 0) {
-                gameInfo.sortedGameDataByStatus.IN_PROGRESS?.forEach((game) => {
-                    const row = createTableRow(game);
-                    fragment.appendChild(row);
-                })
-            } else {
-                const row = createTableErrorRow();
-                fragment.appendChild(row);
-            }
-
-            body.innerHTML = ``;
-            body.appendChild(fragment);
-        } else if (getActiveButtonId() === "final-button") {
-            const fragment = document.createDocumentFragment();
-
-            if(gameInfo?.sortedGameDataByStatus.FINAL.length > 0) {
-                gameInfo?.sortedGameDataByStatus?.FINAL?.forEach((game) => {
-                    const row = createTableRow(game);
-                    fragment.appendChild(row);
-                })
-            } else {
-                const row = createTableErrorRow();
-                fragment.appendChild(row);
-            }
-            
-            body.innerHTML = ``;
-            body.appendChild(fragment);
-        }
-    } catch(error) {
-        console.log(error);
-    } finally {
-        loadingSpinner.style.display = 'none'; // 로딩 스피너 숨김
-        intervalCheck = false;
-    }
 }
 
 function createTableErrorRow() {
     const row = document.createElement('div');
     row.className = 'errorRow';
+    row.style.cursor = 'pointer';
 
     row.innerHTML = `
         일정된 경기가 없습니다.

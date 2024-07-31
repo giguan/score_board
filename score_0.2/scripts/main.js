@@ -136,19 +136,6 @@ function createTableRow(game) {
     gameRow.id = `game-${game.id}`;
     gameRow.onclick = () => toggleCollapse(gameRow);
 
-
-    console.log(game)
-
-    // gameRow.innerHTML = `
-    //     <div class="cell tr-icon league-icon"><img src=${getSportsIcon(game.sportsType)} alt="리그 아이콘"> ${game.league.name.length > 4 ? game.league.name.substring(0, 4) + "..." : game.league.name}</div>
-    //     <div class="cell">${formatDateTime(game.startDatetime).split(' ')[1]}</div>
-    //     <div class="cell team-column"><img class="team-icon" src="./assets/images/small_logo/${game.teams.home.imgPath.split('/')[4]}" alt="홈팀 아이콘"> ${game.teams.home.name}</div>
-    //     <div class="cell score-column ${homeScoreClass}">${homeScore}</div>
-    //     <div class="cell"><span class="status ${getStatusClass(game.gameStatus)}">${game.gameStatus === 'IN_PROGRESS' ? getPeriodText(game) : getStatusText(game.gameStatus)}</span></div>
-    //     <div class="cell score-column ${awayScoreClass}">${awayScore}</div>
-    //     <div class="cell team-column"><img class="team-icon" src="./assets/images/small_logo/${game.teams.away.imgPath.split('/')[4]}" alt="원정팀 아이콘"> ${game.teams.away.name}</div>
-    // `;
-
     gameRow.innerHTML = `
         <div class="cell tr-icon league-icon"><img src=${getSportsIcon(game.sportsType)} alt="리그 아이콘"> ${game.league.shortName}</div>
         <div class="cell time-column">${formatDateTime(game.startDatetime).split(' ')[1]}</div>
@@ -173,23 +160,23 @@ function createTableRow(game) {
                 <div class="tab-menu">
                     <div class="tab ${prevActiveTabId === 'tab1-' + game.id ? 'active' : ''}" onclick="showTabContent(this, 'tab1-${game.id}')">승/패</div>
                     <div class="tab ${prevActiveTabId === 'tab2-' + game.id ? 'active' : ''}" onclick="showTabContent(this, 'tab2-${game.id}')">핸디캡</div>
-                    <div class="tab ${prevActiveTabId === 'tab3-' + game.id ? 'active' : ''}" onclick="showTabContent(this, 'tab3-${game.id}')">언더/오버</div>
+                    <div class="tab ${prevActiveTabId === 'tab3-' + game.id ? 'active' : ''}" onclick="showTabContent(this, 'tab3-${game.id}')">U/O</div>
                 </div>
                 <div id="tab1-${game.id}" class="tab-content ${prevActiveTabId === 'tab1-' + game.id ? 'active' : ''}">
                     <div class="odds-section">
                         <div class="odds-type">승패</div>
                         <div class="odds-values">
                             <div class="odds-item">
-                                <span>홈</span>
-                                <span class="odds-red">${game.odds?.domesticWinLoseOdds[0] ? game.odds?.domesticWinLoseOdds[0].odds : '-'}</span>
+                                <div>홈</div>
+                                <div class="odds-red">${game.odds?.domesticWinLoseOdds[0] ? game.odds?.domesticWinLoseOdds[0].odds : '-'}</div>
                             </div>
                             <div class="odds-item">
-                                <span>무승부</span>
-                                <span>-</span>
+                                <div>무</div>
+                                <div>-</div>
                             </div>
                             <div class="odds-item">
-                                <span>원정</span>
-                                <span class="odds-blue">${game.odds?.domesticWinLoseOdds[1] ? game.odds?.domesticWinLoseOdds[1].odds : '-'}</span>
+                                <div>원정</div>
+                                <div class="odds-blue">${game.odds?.domesticWinLoseOdds[1] ? game.odds?.domesticWinLoseOdds[1].odds : '-'}</div>
                             </div>
                         </div>
                     </div>
@@ -209,16 +196,16 @@ function createTableRow(game) {
                         </div>
                         <div class="odds-values">
                             <div class="odds-item">
-                                <span>홈</span>
-                                <span class="odds-red">${game?.odds.domesticHandicapOdds[0] ? game?.odds.domesticHandicapOdds[0].odds : '-'}</span>
+                                <div>홈</div>
+                                <div class="odds-red">${game?.odds.domesticHandicapOdds[0] ? game?.odds.domesticHandicapOdds[0].odds : '-'}</div>
                             </div>
                             <div class="odds-item">
-                                <span>무승부</span>
-                                <span>-</span>
+                                <div>무</div>
+                                <div>-</div>
                             </div>
                             <div class="odds-item">
-                                <span>원정</span>
-                                <span class="odds-blue">${game?.odds.domesticHandicapOdds[1] ? game?.odds.domesticHandicapOdds[1].odds : '-'}</span>
+                                <div>원정</div>
+                                <div class="odds-blue">${game?.odds.domesticHandicapOdds[1] ? game?.odds.domesticHandicapOdds[1].odds : '-'}</div>
                             </div>
                         </div>
                     </div>
@@ -226,7 +213,7 @@ function createTableRow(game) {
                 <div id="tab3-${game.id}" class="tab-content ${prevActiveTabId === 'tab3-' + game.id ? 'active' : ''}">
                     <div class="odds-section">
                         <div class="odds-type">
-                            언더/오버 (기준
+                            U/O (기준
                             ${game?.odds?.domesticUnderOverOdds[0] ? (
                                 `<span class=${game.odds.domesticUnderOverOdds[0]?.optionValue < 0 ? 'minus' : 'normal'}>
                                     <span>${game.odds.domesticUnderOverOdds[0].optionValue}</span>
@@ -238,16 +225,16 @@ function createTableRow(game) {
                         </div>
                         <div class="odds-values">
                             <div class="odds-item">
-                                <span>언더</span>
-                                <span class="odds-red">${game?.odds.domesticUnderOverOdds[0] ? game?.odds.domesticUnderOverOdds[0].odds : '-'}</span>
+                                <div>언더</div>
+                                <div class="odds-red">${game?.odds.domesticUnderOverOdds[0] ? game?.odds.domesticUnderOverOdds[0].odds : '-'}</div>
                             </div>
                             <div class="odds-item">
-                                <span>무승부</span>
-                                <span>-</span>
+                                <div>무</div>
+                                <div>-</div>
                             </div>
                             <div class="odds-item">
-                                <span>오버</span>
-                                <span class="odds-blue">${game?.odds.domesticUnderOverOdds[1] ? game?.odds.domesticUnderOverOdds[1].odds : '-'}</span>
+                                <div>오버</div>
+                                <div class="odds-blue">${game?.odds.domesticUnderOverOdds[1] ? game?.odds.domesticUnderOverOdds[1].odds : '-'}</div>
                             </div>
                         </div>
                     </div>
@@ -262,23 +249,23 @@ function createTableRow(game) {
             <div class="tab-menu">
                 <div class="tab active" onclick="showTabContent(this, 'tab1-${game.id}')">승/패</div>
                 <div class="tab" onclick="showTabContent(this, 'tab2-${game.id}')">핸디캡</div>
-                <div class="tab" onclick="showTabContent(this, 'tab3-${game.id}')">언더/오버</div>
+                <div class="tab" onclick="showTabContent(this, 'tab3-${game.id}')">U / O</div>
             </div>
             <div id="tab1-${game.id}" class="tab-content active">
                     <div class="odds-section">
                         <div class="odds-type">승패</div>
                         <div class="odds-values">
                             <div class="odds-item">
-                                <span>홈</span>
-                                <span class="odds-red">${game.odds?.domesticWinLoseOdds[0] ? game.odds?.domesticWinLoseOdds[0].odds : '-'}</span>
+                                <div>홈</div>
+                                <div class="odds-red">${game.odds?.domesticWinLoseOdds[0] ? game.odds?.domesticWinLoseOdds[0].odds : '-'}</div>
                             </div>
                             <div class="odds-item">
-                                <span>무승부</span>
-                                <span>-</span>
+                                <div>무</div>
+                                <div>-</div>
                             </div>
                             <div class="odds-item">
-                                <span>원정</span>
-                                <span class="odds-blue">${game.odds?.domesticWinLoseOdds[1] ? game.odds?.domesticWinLoseOdds[1].odds : '-'}</span>
+                                <div>원정</div>
+                                <div class="odds-blue">${game.odds?.domesticWinLoseOdds[1] ? game.odds?.domesticWinLoseOdds[1].odds : '-'}</div>
                             </div>
                         </div>
                     </div>
@@ -298,16 +285,16 @@ function createTableRow(game) {
                         </div>
                         <div class="odds-values">
                             <div class="odds-item">
-                                <span>홈</span>
-                                <span class="odds-red">${game?.odds.domesticHandicapOdds[0] ? game?.odds.domesticHandicapOdds[0].odds : '-'}</span>
+                                <div>홈</div>
+                                <div class="odds-red">${game?.odds.domesticHandicapOdds[0] ? game?.odds.domesticHandicapOdds[0].odds : '-'}</div>
                             </div>
                             <div class="odds-item">
-                                <span>무승부</span>
-                                <span>-</span>
+                                <div>무</div>
+                                <div>-</div>
                             </div>
                             <div class="odds-item">
-                                <span>원정</span>
-                                <span class="odds-blue">${game?.odds.domesticHandicapOdds[1] ? game?.odds.domesticHandicapOdds[1].odds : '-'}</span>
+                                <div>원정</div>
+                                <div class="odds-blue">${game?.odds.domesticHandicapOdds[1] ? game?.odds.domesticHandicapOdds[1].odds : '-'}</div>
                             </div>
                         </div>
                     </div>
@@ -327,16 +314,16 @@ function createTableRow(game) {
                         </div>
                         <div class="odds-values">
                             <div class="odds-item">
-                                <span>언더</span>
-                                <span class="odds-red">${game?.odds.domesticUnderOverOdds[0] ? game?.odds.domesticUnderOverOdds[0].odds : '-'}</span>
+                                <div>언더</div>
+                                <div class="odds-red">${game?.odds.domesticUnderOverOdds[0] ? game?.odds.domesticUnderOverOdds[0].odds : '-'}</div>
                             </div>
                             <div class="odds-item">
-                                <span>무승부</span>
-                                <span>-</span>
+                                <div>무</div>
+                                <div>-</div>
                             </div>
                             <div class="odds-item">
-                                <span>오버</span>
-                                <span class="odds-blue">${game?.odds.domesticUnderOverOdds[1] ? game?.odds.domesticUnderOverOdds[1].odds : '-'}</span>
+                                <div>오버</div>
+                                <div class="odds-blue">${game?.odds.domesticUnderOverOdds[1] ? game?.odds.domesticUnderOverOdds[1].odds : '-'}</div>
                             </div>
                         </div>
                     </div>

@@ -26,6 +26,42 @@ document.addEventListener('DOMContentLoaded', async function() {
             getGameData();
         });
     });
+
+    window.addEventListener('resize', () => {
+        
+        const tabs = document.querySelectorAll('.game-tabs');
+        const contents = document.querySelectorAll('.game-tab-contents');
+        const activeTab = document.querySelector('.game-tab-link.active');
+        const activeContent = document.querySelector('.game-tab-content.active');
+
+        if (window.innerWidth < 1100) {
+            tabs.forEach((tab) => {
+                tab.style.display = 'none';
+            });
+
+            contents.forEach((content) => {
+                content.style.display = 'none';
+            });
+        } else {
+            tabs.forEach((tab) => {
+                tab.style.display = 'flex';
+            });
+
+            contents.forEach((content) => {
+                content.style.display = 'block';
+            });
+
+            if (activeTab) {
+                activeTab.classList.add('active');
+            }
+
+            if (activeContent) {
+                activeContent.classList.add('active');
+                activeContent.style.display = 'block';
+            }
+        }
+    });
+
 });
 
 function getActiveButtonId() {
@@ -80,6 +116,11 @@ function countEntries(data) {
 
 function createTableRow(game) {
 
+
+    const gameRowWrap = document.createElement('div')
+    gameRowWrap.classList.add('game-row-wrap');
+
+
     const gameRow = document.createElement('div');
     gameRow.classList.add('game-row');
     gameRow.setAttribute('data-game-id', game.id);
@@ -94,17 +135,17 @@ function createTableRow(game) {
                     </div>
                     <div class="tr">
                         <div class="td">
-                            <img width="55" height="55" src="./../../assets/images/named_images/${game.away.img_path.split('/')[4]}">
+                            <img width="55" height="55" src="./../../assets/images/named_images/${game.home.img_path.split('/')[4]}">
                         </div>
-                        <span class="td" >${game.away.name_en}</span>
-                        <span class="td ${game.awayScore > game.homeScore ? 'highlight' : '' }">${game.awayScore}</span>
+                        <span class="td" >${game.home.name_en}</span>
+                        <span class="td ${game.homeScore > game.awayScore ? 'highlight' : '' }">${game.homeScore}</span>
                     </div>
                     <div class="tr">
                         <div class="td">
-                            <img width="55" height="55"  src="./../../assets/images/named_images/${game.home.img_path.split('/')[4]}">
+                            <img width="55" height="55"  src="./../../assets/images/named_images/${game.away.img_path.split('/')[4]}">
                         </div>
-                        <span class="td" >${game.home.name_en}</span>
-                        <span class="td ${game.homeScore > game.awayScore ? 'highlight' : ''}">${game.homeScore}</span>
+                        <span class="td" >${game.away.name_en}</span>
+                        <span class="td ${game.awayScore > game.homeScore ? 'highlight' : ''}">${game.awayScore}</span>
                     </div>
                     <div class="tr th odds">
                         ${game.oddsFlag 
@@ -135,22 +176,22 @@ function createTableRow(game) {
                     <div class="tr">
                         ${
                             `
-                                <span class="td">${game.away.rank}</span>
-                                <span class="td">${game.away.stat.game_count}</span>
-                                <span class="td">${game.away.stat.win}</span>
-                                <span class="td">${game.away.stat.lose}</span>
-                                <span class="td">${(game.away.stat.win / game.away.stat.game_count).toFixed(3)}</span>
+                                <span class="td">${game.home.rank}</span>
+                                <span class="td">${game.home.stat.game_count}</span>
+                                <span class="td">${game.home.stat.win}</span>
+                                <span class="td">${game.home.stat.lose}</span>
+                                <span class="td">${(game.home.stat.win / game.home.stat.game_count).toFixed(3)}</span>
                             ` 
                         }
                     </div>
                     <div class="tr">
                     ${
                         `
-                            <span class="td">${game.home.rank}</span>
-                            <span class="td">${game.home.stat.game_count}</span>
-                            <span class="td">${game.home.stat.win}</span>
-                            <span class="td">${game.home.stat.lose}</span>
-                            <span class="td">${(game.home.stat.win / game.home.stat.game_count).toFixed(3)}</span>
+                            <span class="td">${game.away.rank}</span>
+                            <span class="td">${game.away.stat.game_count}</span>
+                            <span class="td">${game.away.stat.win}</span>
+                            <span class="td">${game.away.stat.lose}</span>
+                            <span class="td">${(game.away.stat.win / game.away.stat.game_count).toFixed(3)}</span>
                         ` 
                     }
                     </div>
@@ -164,7 +205,208 @@ function createTableRow(game) {
                 </div>
     `;
 
-    return gameRow;
+
+    gameRowWrap.appendChild(gameRow);
+
+
+    if (game.sets.length > 0) {
+        const tabs = document.createElement('div');
+        tabs.classList.add('game-tabs');
+
+        const tabContents = document.createElement('div');
+        tabContents.classList.add('game-tab-contents'); // Wrapper for tab contents
+
+        const tabNames = ['1세트', '2세트', '3세트', '4세트', '5세트'];
+        const positionsKr = [' ', '탑', '정글', '미드', '원딜', '서포트'];
+        const positions = ['TOP', 'JUNGLE', 'MID', 'AD', 'SUPPORT'];
+
+        // Get previously active tab and content if they exist
+        const activeTab = document.querySelector('.game-tab-link.active');
+        const activeContent = document.querySelector('.game-tab-content.active');
+
+        console.log(game)
+
+        tabNames.forEach((tabName, index) => {
+            const tab = document.createElement('button');
+            tab.classList.add('game-tab-link');
+            tab.textContent = tabName;
+            tab.setAttribute('data-tab', `game-${game.gidx}-set-${index + 1}`); // Set unique data-tab attribute for each tab
+
+            if (index >= game.sets.length) {
+                tab.disabled = true; // Disable tab if the set does not exist
+            } else {
+                tab.addEventListener('click', (event) => openTab(event, `game-${game.gidx}-set-${index + 1}`));
+                
+                if (activeTab && activeTab.getAttribute('data-tab') === `game-${game.gidx}-set-${index + 1}`) {
+                    tab.classList.add('active'); // Restore previously active tab
+                } else if (!activeTab && index === 0) {
+                    tab.classList.add('active'); // Set the first tab as active if none were active before
+                }
+            }
+            tabs.appendChild(tab);
+
+            const tabContent = document.createElement('div');
+            tabContent.classList.add('game-tab-content');
+            tabContent.setAttribute('data-tab', `game-${game.gidx}-set-${index + 1}`); // Set unique data-tab attribute for each tab content
+            
+            if (activeContent && activeContent.getAttribute('data-tab') === `game-${game.gidx}-set-${index + 1}`) {
+                tabContent.classList.add('active'); // Restore previously active content
+            } else if (!activeContent && index === 0) {
+                tabContent.classList.add('active'); // Set the first tab content as active if none were active before
+            }
+
+            if (index < game.sets.length) {
+                const sortedHomePlayers = game.sets[index].home.players.sort((a, b) => positions.indexOf(a.position) - positions.indexOf(b.position));
+                const sortedAwayPlayers = game.sets[index].away.players.sort((a, b) => positions.indexOf(a.position) - positions.indexOf(b.position));
+
+                let totalTime = game.sets[index].totalTime.split(':');
+                let hours = parseInt(totalTime[0], 10);
+                let minutes = parseInt(totalTime[1], 10);
+                let seconds = totalTime.length === 3 ? parseInt(totalTime[2], 10) : 0;
+
+                tabContent.innerHTML = `
+                    <div class="header-info">
+                        <div class="team-info">
+                            <div class="team-stats">
+                                <span>골드: ${game.sets[index].home.gold}</span>
+                                <span>포탑: ${game.sets[index].home.tower}</span>
+                                <span>바론: ${game.sets[index].home.baron}</span>
+                                <span>용: ${game.sets[index].home.dragon}</span>
+                            </div>
+                            <div class="first-events">
+                                ${game.sets[index].firstBlood === 'b' ? `<span class="firstBtn on">첫 킬</span>` : `<span class="firstBtn off">첫 킬</span>`}
+                                ${game.sets[index].first10Kill === 'b' ? `<span class="firstBtn on">첫 10킬</span>` : `<span class="firstBtn off">첫 10킬</span>`}
+                                ${game.sets[index].firstTower === 'b' ? `<span class="firstBtn on">첫 타워</span>` : `<span class="firstBtn off">첫 타워</span>`}
+                                ${game.sets[index].firstDragon === 'b' ? `<span class="firstBtn on">첫 용</span>` : `<span class="firstBtn off">첫 용</span>`}
+                                ${game.sets[index].firstBaron === 'b' ? `<span class="firstBtn on">첫 바론</span>` : `<span class="firstBtn off">첫 바론</span>`}
+                            </div>
+                        </div>
+                        <div class="team-match">
+                            <div class="team-logo">
+                                <img src="./../../assets/images/named_images/${game.home.img_path.split('/')[4]}" alt="${game.home.name}">
+                                <div class="score-info">
+                                    <span class="score ${game.sets[index].winner === 'a' ? 'highlight' : ''}">${game.sets[index].home.kill}</span>
+                                    <span> - </span>
+                                    <span class="score ${game.sets[index].winner === 'a' ? '' : 'highlight'}">${game.sets[index].away.kill}</span>
+                                </div>
+                                <img src="./../../assets/images/named_images/${game.away.img_path.split('/')[4]}" alt="${game.away.name}">
+                            </div>
+                            <div class="match-info">
+                                <div>
+                                    ${game.sets[index].winner
+                                        ? `${game.sets[index].winner === 'h' ? '<span class="score-detail-highlight">승</span>' : '<span class="score-detail">패</span>'}
+                                            <span>${game.sets[index].totalTime}</span>
+                                            ${game.sets[index].winner === 'a' ? '<span class="score-detail-highlight">승</span>' : '<span class="score-detail">패</span>'}`
+                                        : `<span id="dynamic-time-${index}">${game.sets[index].startTime}</span>`
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="team-info">
+                            <div class="team-stats">
+                                <span>골드: ${game.sets[index].away.gold}</span>
+                                <span>포탑: ${game.sets[index].away.tower}</span>
+                                <span>바론: ${game.sets[index].away.baron}</span>
+                                <span>용: ${game.sets[index].away.dragon}</span>
+                            </div>
+                            <div class="first-events">
+                                ${game.sets[index].firstBlood === 'r' ? `<span class="firstBtn on">첫 킬</span>` : `<span class="firstBtn off">첫 킬</span>`}
+                                ${game.sets[index].first10Kill === 'r' ? `<span class="firstBtn on">첫 10킬</span>` : `<span class="firstBtn off">첫 10킬</span>`}
+                                ${game.sets[index].firstTower === 'r' ? `<span class="firstBtn on">첫 타워</span>` : `<span class="firstBtn off">첫 타워</span>`}
+                                ${game.sets[index].firstDragon === 'r' ? `<span class="firstBtn on">첫 용</span>` : `<span class="firstBtn off">첫 용</span>`}
+                                ${game.sets[index].firstBaron === 'r' ? `<span class="firstBtn on">첫 바론</span>` : `<span class="firstBtn off">첫 바론</span>`}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="game-details">
+                        <div class="teams">
+                            <div class="team">
+                                <div class="team-header">${game.home.name_en}</div>
+                                ${sortedHomePlayers.map((player, idx) => `
+                                    <div class="player">
+                                        <div class="player-kda">${player.kill}/${player.death}/${player.assist}</div>
+
+                                        ${player.champion 
+                                            ? `<div class="player-champion"><img src="./../../assets/images/lol_champions/${player.champion?.img_path.split('/')[4]}" /></div>`
+                                            : `<div class="player-champion"><img src="./../../assets/images/lol_champions/League-of-Legends-Game-Logo.jpg" /></div>`
+                                        }
+                                        <div class="player-name">${player.player.nickname}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="positions">
+                                ${positionsKr.map(position => `
+                                    <div class="position">${position}</div>
+                                `).join('')}
+                            </div>
+                            <div class="team">
+                                <div class="team-header">${game.away.name_en}</div>
+                                ${sortedAwayPlayers.map((player, idx) => `
+                                    <div class="player">
+                                        <div class="player-kda">${player.kill}/${player.death}/${player.assist}</div>
+
+                                        ${player.champion 
+                                            ? `<div class="player-champion"><img src="./../../assets/images/lol_champions/${player.champion?.img_path.split('/')[4]}" /></div>`
+                                            : `<div class="player-champion"><img src="./../../assets/images/lol_champions/League-of-Legends-Game-Logo.jpg" /></div>`
+                                        }
+                                        <div class="player-name">${player.player.nickname}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <div class="bans">
+                            <div class="ban-list">
+                                ${game.sets[index].home.banPicks.map((ban) => {
+                                    if(ban) {
+                                        return `<img src="./../../assets/images/lol_champions/${ban?.img_path.split('/')[4]}" alt="${ban?.name}" />`
+                                    } else {
+                                        return `<img src="./../../assets/images/lol_champions/League-of-Legends-Game-Logo.jpg" />`
+                                    }
+                                }).join('')}
+                                <div class="bans-header">BAN</div>
+                                ${game.sets[index].away.banPicks.map((ban) => {
+                                    if(ban) {
+                                        return `<img src="./../../assets/images/lol_champions/${ban?.img_path.split('/')[4]}" alt="${ban?.name}" />`
+                                    } else {
+                                        return `<img src="./../../assets/images/lol_champions/League-of-Legends-Game-Logo.jpg" />`
+                                    }
+                                }).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                tabContents.appendChild(tabContent);
+    
+                const dynamicTimeElement = document.getElementById(`dynamic-time-${index}`);
+                if (dynamicTimeElement) {
+                    setInterval(() => {
+                        seconds++;
+                        if (seconds === 60) {
+                            seconds = 0;
+                            minutes++;
+                            if (minutes === 60) {
+                                minutes = 0;
+                                hours++;
+                            }
+                        }
+                        let timeString;
+                        if (hours > 0) {
+                            timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                        } else {
+                            timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                        }
+                        dynamicTimeElement.innerHTML = timeString;
+                    }, 1000);
+                }
+            }
+        });
+
+        gameRowWrap.appendChild(tabs);
+        gameRowWrap.appendChild(tabContents); // Append tab contents wrapper after tabs
+    }
+
+    return gameRowWrap;
 }
 
 async function getGameData() {
@@ -184,7 +426,7 @@ async function getGameData() {
     try {
         const res = await axios.get(dataUrl);
         const gameInfo = countEntries(res.data);
-    
+
         // DOM 업데이트 최소화
         const totalGameCnt = document.getElementById('total-game-cnt');
         const readyGameCnt = document.getElementById('ready-game-cnt');
@@ -278,4 +520,26 @@ function createTableErrorRow() {
     return row;
 }
 
+function openTab(evt, tabName) {
 
+    const gameId = tabName.split('-')[1];
+    var i, tabContent, tabLinks;
+
+    // Get all elements with matching data-tab attribute and hide them
+    tabContent = document.querySelectorAll(`.game-tab-content[data-tab^="game-${gameId}-"]`);
+    for (i = 0; i < tabContent.length; i++) {
+        tabContent[i].style.display = "none";
+        tabContent[i].classList.remove('active');
+    }
+
+    // Get all elements with matching data-tab attribute and remove the class "active"
+    tabLinks = document.querySelectorAll(`.game-tab-link[data-tab^="game-${gameId}-"]`);
+    for (i = 0; i < tabLinks.length; i++) {
+        tabLinks[i].className = tabLinks[i].className.replace(" active", "");
+    }
+
+    // Show the current tab, and add an "active" class to the button that opened the tab
+    document.querySelector(`.game-tab-content[data-tab="${tabName}"]`).style.display = "block";
+    document.querySelector(`.game-tab-content[data-tab="${tabName}"]`).classList.add('active');
+    evt.currentTarget.className += " active";
+}
