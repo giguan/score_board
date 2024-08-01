@@ -114,6 +114,7 @@ function countEntries(data) {
     return counts;;
 }
 
+let activeTabs = {};
 function createTableRow(game) {
 
 
@@ -221,10 +222,12 @@ function createTableRow(game) {
         const positions = ['TOP', 'JUNGLE', 'MID', 'AD', 'SUPPORT'];
 
         // Get previously active tab and content if they exist
-        const activeTab = document.querySelector('.game-tab-link.active');
-        const activeContent = document.querySelector('.game-tab-content.active');
-
-        console.log(game)
+        // const activeTab = document.querySelector('.game-tab-link.active');
+        // const activeContent = document.querySelector('.game-tab-content.active');
+        if (!activeTabs[game.gidx]) {
+            activeTabs[game.gidx] = `game-${game.gidx}-set-1`;
+        }
+        let activeTab = activeTabs[game.gidx];
 
         tabNames.forEach((tabName, index) => {
             const tab = document.createElement('button');
@@ -237,10 +240,14 @@ function createTableRow(game) {
             } else {
                 tab.addEventListener('click', (event) => openTab(event, `game-${game.gidx}-set-${index + 1}`));
                 
-                if (activeTab && activeTab.getAttribute('data-tab') === `game-${game.gidx}-set-${index + 1}`) {
+                // if (activeTab && activeTab.getAttribute('data-tab') === `game-${game.gidx}-set-${index + 1}`) {
+                //     tab.classList.add('active'); // Restore previously active tab
+                // } else if (!activeTab && index === 0) {
+                //     tab.classList.add('active'); // Set the first tab as active if none were active before
+                // }
+
+                if (activeTab === `game-${game.gidx}-set-${index + 1}`) {
                     tab.classList.add('active'); // Restore previously active tab
-                } else if (!activeTab && index === 0) {
-                    tab.classList.add('active'); // Set the first tab as active if none were active before
                 }
             }
             tabs.appendChild(tab);
@@ -249,11 +256,23 @@ function createTableRow(game) {
             tabContent.classList.add('game-tab-content');
             tabContent.setAttribute('data-tab', `game-${game.gidx}-set-${index + 1}`); // Set unique data-tab attribute for each tab content
             
-            if (activeContent && activeContent.getAttribute('data-tab') === `game-${game.gidx}-set-${index + 1}`) {
+            // if (activeContent && activeContent.getAttribute('data-tab') === `game-${game.gidx}-set-${index + 1}`) {
+            //     tabContent.classList.add('active'); // Restore previously active content
+            // } else if (!activeContent && index === 0) {
+            //     tabContent.classList.add('active'); // Set the first tab content as active if none were active before
+            // }
+
+            // if (activeTab === `game-${game.gidx}-set-${index + 1}`) {
+            //     tabContent.classList.add('active'); // Restore previously active content
+            // } else if (!activeTab && index === 0) {
+            //     tabContent.classList.add('active'); // Set the first tab content as active if none were active before
+            // }
+
+            if (activeTab === `game-${game.gidx}-set-${index + 1}`) {
                 tabContent.classList.add('active'); // Restore previously active content
-            } else if (!activeContent && index === 0) {
-                tabContent.classList.add('active'); // Set the first tab content as active if none were active before
             }
+
+            console.log(game)
 
             if (index < game.sets.length) {
                 const sortedHomePlayers = game.sets[index].home.players.sort((a, b) => positions.indexOf(a.position) - positions.indexOf(b.position));
@@ -323,11 +342,11 @@ function createTableRow(game) {
                             <div class="team">
                                 <div class="team-header">${game.home.name_en}</div>
                                 ${sortedHomePlayers.map((player, idx) => `
-                                    <div class="player">
+                                    <div class="player ${game.sets[index].mvp == player.player.pid ? 'mvp' : ''}">
                                         <div class="player-kda">${player.kill}/${player.death}/${player.assist}</div>
 
                                         ${player.champion 
-                                            ? `<div class="player-champion"><img src="./../../assets/images/lol_champions/${player.champion?.img_path.split('/')[4]}" /></div>`
+                                            ? `<div class="player-champion"><img src="./../../assets/images/lol_champions/${player.champion?.img_path.split('/')[4]}" alt="${player.champion?.name}" /></div>`
                                             : `<div class="player-champion"><img src="./../../assets/images/lol_champions/League-of-Legends-Game-Logo.jpg" /></div>`
                                         }
                                         <div class="player-name">${player.player.nickname}</div>
@@ -342,11 +361,11 @@ function createTableRow(game) {
                             <div class="team">
                                 <div class="team-header">${game.away.name_en}</div>
                                 ${sortedAwayPlayers.map((player, idx) => `
-                                    <div class="player">
+                                    <div class="player ${game.sets[index].mvp == player.player.pid ? 'mvp' : ''}">
                                         <div class="player-kda">${player.kill}/${player.death}/${player.assist}</div>
 
                                         ${player.champion 
-                                            ? `<div class="player-champion"><img src="./../../assets/images/lol_champions/${player.champion?.img_path.split('/')[4]}" /></div>`
+                                            ? `<div class="player-champion"><img src="./../../assets/images/lol_champions/${player.champion?.img_path.split('/')[4]}" alt="${player.champion?.name}" /></div>`
                                             : `<div class="player-champion"><img src="./../../assets/images/lol_champions/League-of-Legends-Game-Logo.jpg" /></div>`
                                         }
                                         <div class="player-name">${player.player.nickname}</div>
@@ -363,7 +382,7 @@ function createTableRow(game) {
                                         return `<img src="./../../assets/images/lol_champions/League-of-Legends-Game-Logo.jpg" />`
                                     }
                                 }).join('')}
-                                <div class="bans-header">BAN</div>
+                                <div class="bans-header">BAN<br>Picks</div>
                                 ${game.sets[index].away.banPicks.map((ban) => {
                                     if(ban) {
                                         return `<img src="./../../assets/images/lol_champions/${ban?.img_path.split('/')[4]}" alt="${ban?.name}" />`
@@ -542,4 +561,8 @@ function openTab(evt, tabName) {
     document.querySelector(`.game-tab-content[data-tab="${tabName}"]`).style.display = "block";
     document.querySelector(`.game-tab-content[data-tab="${tabName}"]`).classList.add('active');
     evt.currentTarget.className += " active";
+
+    // 현재 활성 탭을 저장
+    activeTabs[gameId] = tabName;
+
 }

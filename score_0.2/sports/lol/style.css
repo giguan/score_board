@@ -309,6 +309,41 @@
     margin-bottom: 5px;
 }
 
+/* Define general styles for the player row */
+.player {
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+    color: #ccc; /* 기본 텍스트 색상 */
+    position: relative; /* 상대 위치 설정 */
+}
+
+/* Special styles for the MVP player */
+.player.mvp {
+    background-color: #3c3c3c; /* 테마에 맞는 어두운 배경색 */
+    color: #ffcc00; /* 황금색 텍스트 */
+    font-weight: bold; /* 볼드 텍스트 */
+    box-shadow: 0 0 10px rgba(255, 204, 0, 0.8); /* 황금색 그림자 */
+    border-radius: 5px; /* 둥근 모서리 */
+    transition: transform 0.3s, box-shadow 0.3s; /* 부드러운 전환 효과 */
+}
+
+/* MVP badge absolute positioning */
+.player.mvp::before {
+    content: "MVP";
+    position: absolute;
+    top: -10px; /* 플레이어 카드 위쪽에 배치 */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ffcc00; /* 황금색 배경 */
+    color: #3c3c3c; /* 배경색과 대조되는 텍스트 색상 */
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: bold;
+    box-shadow: 0 0 5px rgba(255, 204, 0, 0.8); /* 약간의 그림자 */
+}
+
 .player-name, .player-kda {
     flex: 1;
     text-align: center;
