@@ -221,9 +221,6 @@ function createTableRow(game) {
         const positionsKr = [' ', '탑', '정글', '미드', '원딜', '서포트'];
         const positions = ['TOP', 'JUNGLE', 'MID', 'AD', 'SUPPORT'];
 
-        // Get previously active tab and content if they exist
-        // const activeTab = document.querySelector('.game-tab-link.active');
-        // const activeContent = document.querySelector('.game-tab-content.active');
         if (!activeTabs[game.gidx]) {
             activeTabs[game.gidx] = `game-${game.gidx}-set-1`;
         }
@@ -239,12 +236,6 @@ function createTableRow(game) {
                 tab.disabled = true; // Disable tab if the set does not exist
             } else {
                 tab.addEventListener('click', (event) => openTab(event, `game-${game.gidx}-set-${index + 1}`));
-                
-                // if (activeTab && activeTab.getAttribute('data-tab') === `game-${game.gidx}-set-${index + 1}`) {
-                //     tab.classList.add('active'); // Restore previously active tab
-                // } else if (!activeTab && index === 0) {
-                //     tab.classList.add('active'); // Set the first tab as active if none were active before
-                // }
 
                 if (activeTab === `game-${game.gidx}-set-${index + 1}`) {
                     tab.classList.add('active'); // Restore previously active tab
@@ -256,18 +247,6 @@ function createTableRow(game) {
             tabContent.classList.add('game-tab-content');
             tabContent.setAttribute('data-tab', `game-${game.gidx}-set-${index + 1}`); // Set unique data-tab attribute for each tab content
             
-            // if (activeContent && activeContent.getAttribute('data-tab') === `game-${game.gidx}-set-${index + 1}`) {
-            //     tabContent.classList.add('active'); // Restore previously active content
-            // } else if (!activeContent && index === 0) {
-            //     tabContent.classList.add('active'); // Set the first tab content as active if none were active before
-            // }
-
-            // if (activeTab === `game-${game.gidx}-set-${index + 1}`) {
-            //     tabContent.classList.add('active'); // Restore previously active content
-            // } else if (!activeTab && index === 0) {
-            //     tabContent.classList.add('active'); // Set the first tab content as active if none were active before
-            // }
-
             if (activeTab === `game-${game.gidx}-set-${index + 1}`) {
                 tabContent.classList.add('active'); // Restore previously active content
             }
@@ -278,10 +257,12 @@ function createTableRow(game) {
                 const sortedHomePlayers = game.sets[index].home.players.sort((a, b) => positions.indexOf(a.position) - positions.indexOf(b.position));
                 const sortedAwayPlayers = game.sets[index].away.players.sort((a, b) => positions.indexOf(a.position) - positions.indexOf(b.position));
 
-                let totalTime = game.sets[index].totalTime.split(':');
-                let hours = parseInt(totalTime[0], 10);
-                let minutes = parseInt(totalTime[1], 10);
-                let seconds = totalTime.length === 3 ? parseInt(totalTime[2], 10) : 0;
+                let startTime;
+                if (game.sets[index].sstatus === 2) {
+                    startTime = new Date(`1970-01-01T${game.sets[index].startTime}Z`).getTime(); // Assuming startTime is in HH:MM:SS format
+                } else {
+                    startTime = new Date('1970-01-01T00:00:00Z').getTime();
+                }
 
                 tabContent.innerHTML = `
                     <div class="header-info">
@@ -314,9 +295,9 @@ function createTableRow(game) {
                                 <div>
                                     ${game.sets[index].winner
                                         ? `${game.sets[index].winner === 'h' ? '<span class="score-detail-highlight">승</span>' : '<span class="score-detail">패</span>'}
-                                            <span>${game.sets[index].totalTime}</span>
+                                            <span>${game.sets[index].totalTime ? game.sets[index].totalTime : '00:00'}</span>
                                             ${game.sets[index].winner === 'a' ? '<span class="score-detail-highlight">승</span>' : '<span class="score-detail">패</span>'}`
-                                        : `<span id="dynamic-time-${index}">${game.sets[index].startTime}</span>`
+                                        : `<span id="dynamic-time-${game.gidx}-${index}">00:00</span>`
                                     }
                                 </div>
                             </div>
@@ -344,6 +325,7 @@ function createTableRow(game) {
                                 ${sortedHomePlayers.map((player, idx) => `
                                     <div class="player ${game.sets[index].mvp == player.player.pid ? 'mvp' : ''}">
                                         <div class="player-kda">${player.kill}/${player.death}/${player.assist}</div>
+                                        ${!player.champion && game.sets[index].sstatus === 1 ? `<div class="player-selecting">선택중</div>` : ''}
 
                                         ${player.champion 
                                             ? `<div class="player-champion"><img src="./../../assets/images/lol_champions/${player.champion?.img_path.split('/')[4]}" alt="${player.champion?.name}" /></div>`
@@ -363,6 +345,7 @@ function createTableRow(game) {
                                 ${sortedAwayPlayers.map((player, idx) => `
                                     <div class="player ${game.sets[index].mvp == player.player.pid ? 'mvp' : ''}">
                                         <div class="player-kda">${player.kill}/${player.death}/${player.assist}</div>
+                                        ${!player.champion && game.sets[index].sstatus === 1 ? `<div class="player-selecting">선택중</div>` : ''}
 
                                         ${player.champion 
                                             ? `<div class="player-champion"><img src="./../../assets/images/lol_champions/${player.champion?.img_path.split('/')[4]}" alt="${player.champion?.name}" /></div>`
@@ -396,28 +379,11 @@ function createTableRow(game) {
                 `;
 
                 tabContents.appendChild(tabContent);
-    
-                const dynamicTimeElement = document.getElementById(`dynamic-time-${index}`);
-                if (dynamicTimeElement) {
-                    setInterval(() => {
-                        seconds++;
-                        if (seconds === 60) {
-                            seconds = 0;
-                            minutes++;
-                            if (minutes === 60) {
-                                minutes = 0;
-                                hours++;
-                            }
-                        }
-                        let timeString;
-                        if (hours > 0) {
-                            timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                        } else {
-                            timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                        }
-                        dynamicTimeElement.innerHTML = timeString;
-                    }, 1000);
-                }
+
+                // const dynamicTimeElement = document.getElementById(`dynamic-time-${game.gidx}-${index}`);
+                // if (dynamicTimeElement && game.sets[index].sstatus === 2) {
+                //     updateDynamicTime(dynamicTimeElement, startTime);
+                // }
             }
         });
 
@@ -427,6 +393,23 @@ function createTableRow(game) {
 
     return gameRowWrap;
 }
+
+// function updateDynamicTime(element, startTime) {
+
+//     const updateTime = () => {
+//         const currentTime = new Date().getTime();
+//         const elapsedTime = currentTime - startTime;
+//         const hours = Math.floor(elapsedTime / (1000 * 60 * 60));
+//         const minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60));
+//         const seconds = Math.floor((elapsedTime % (1000 * 60)) / 1000);
+//         const timeString = `${hours > 0 ? hours.toString().padStart(2, '0') + ':' : ''}${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+//         console.log(timeString); // 디버깅용 로그
+//         element.innerText = timeString; // innerHTML 또는 innerText 설정
+//     };
+
+//     updateTime(); // 초기 호출
+//     setInterval(updateTime, 1000); // 1초마다 업데이트
+// }
 
 async function getGameData() {
     const dataUrl = `https://sports-api.named.com/v1.0/esports/lol/games?date=${requestDate}&status=ALL`;

@@ -344,7 +344,7 @@
     box-shadow: 0 0 5px rgba(255, 204, 0, 0.8); /* 약간의 그림자 */
 }
 
-.player-name, .player-kda {
+.player-name, .player-kda, .player-selecting {
     flex: 1;
     text-align: center;
 }

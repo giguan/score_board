@@ -3,10 +3,12 @@ let requestDate = getCurrentDate();
 
 let intervalCheck = false;
 
+const prevGameData = {}
+
 async function fetchDataPeriodically() {
     intervalCheck = true;
     await getGameData();
-    setTimeout(fetchDataPeriodically, 5000);
+    setTimeout(fetchDataPeriodically, 2500);
 }
 
 document.addEventListener('DOMContentLoaded', async function() {
@@ -84,15 +86,79 @@ function createField(game) {
 
     const statusClass = getStatusClass(game.gameStatus);
 
+    const previousData = prevGameData[game.id] || {};
+
+    const broadcastChanged = (previousData.broadcast?.playText || null) !== (game.broadcast?.playText || null);
+
+    const changes = {
+        ball: previousData.ball !== game.ball,
+        strike: previousData.strike !== game.strike,
+        out: previousData.out !== game.out,
+        firstBaseOccupied: previousData.firstBaseOccupied !== game.firstBaseOccupied,
+        secondBaseOccupied: previousData.secondBaseOccupied !== game.secondBaseOccupied,
+        thirdBaseOccupied: previousData.thirdBaseOccupied !== game.thirdBaseOccupied,
+        currentBatter: previousData.currentBatter !== game.currentBatter,
+        currentPitcher: previousData.currentPitcher !== game.currentPitcher,
+        broadcast: broadcastChanged
+    };
+
+    prevGameData[game.id] = {
+        ball: game.ball,
+        strike: game.strike,
+        out: game.out,
+        firstBaseOccupied: game.firstBaseOccupied,
+        secondBaseOccupied: game.secondBaseOccupied,
+        thirdBaseOccupied: game.thirdBaseOccupied,
+        currentBatter: game.currentBatter,
+        currentPitcher: game.currentPitcher,
+        broadcast: game.broadcast
+    };
+
     switch(statusClass) {
         case 'in-progress':
             return `
             <div class="field-cover">
-                <div>
-                    <span>스코어만 표기 됩니다</span>
+                <div class="broadcast-text-area">
+                    <img style="width: 20px; height: 20px;" class="text ${changes.broadcast ? 'changed-text' : ''}" src="./../../assets/images/volume-up.png" />
+                    <span class="text ${changes.broadcast ? 'changed-text' : ''}">${game.broadcast? game.broadcast.playText : ''}</span>
                 </div>
             </div>
-            <div class="field"></div>`
+            <div class="field">
+                <div class="base base1 ${game.firstBaseOccupied ? 'active' : ''}  ${changes.firstBaseOccupied ? 'changed-base' : ''}"></div>
+                <div class="base base2 ${game.secondBaseOccupied ? 'active' : ''} ${changes.secondBaseOccupied ? 'changed-base' : ''}"></div>
+                <div class="base base3 ${game.thirdBaseOccupied ? 'active' : ''} ${changes.thirdBaseOccupied ? 'changed-base' : ''}"></div>
+                <div class="count">
+                    <div class="ball">
+                        <span style="margin-right:2px;">B </span>
+                        ${[...Array(4)].map((_, i) => 
+                            `<span class="ball-outline-circle${i < game.ball ? ' active' : ''} ${changes.ball && i === game.ball - 1 ? 'changed-ball' : ''}"></span>`
+                        ).join('')}
+                    </div>
+                    <div class="strike">
+                        <span style="margin-right:2px;">S </span>
+                        ${[...Array(3)].map((_, i) => 
+                            `<span class="strike-outline-circle${i < game.strike ? ' active' : ''} ${changes.strike && i === game.strike - 1 ? 'changed-strike' : ''}"></span>`
+                        ).join('')}
+                    </div>
+                    <div class="out">
+                        <span style="margin-right:2px;">O </span>
+                        ${[...Array(3)].map((_, i) => 
+                            `<span class="out-outline-circle${i < game.out ? ' active' : ''} ${changes.out && i === game.out - 1 ? 'changed-out' : ''}"></span>`
+                        ).join('')}
+                    </div>
+                </div>
+                ${game.inningDivision === 'TOP' ? 
+                    `<div class="player team-name pitcher ">${game.teams.home.name}</div>
+                    <div class="player team-name batter ">${game.teams.away.name}</div>`
+                    :
+                    `<div class="player team-name pitcher">${game.teams.away.name}</div>
+                    <div class="player team-name batter">${game.teams.home.name}</div>`
+                }
+                <div class="player pitcher" data-name="투수이름">
+                    ${game.currentPitcher? game.currentPitcher.name : ' - '}
+                </div>
+                <div class="player batter" data-name="타자이름">${game.currentBatter? game.currentBatter.name : ' - '}</div>
+            </div>`
         case 'ready' : 
             return `
             <div class="field-cover">
@@ -160,7 +226,6 @@ function createField(game) {
                 <div class="field ${statusClass}"></div>
             `
     }
-
 }
 
 function createTableRow(game) {
@@ -196,7 +261,10 @@ function createTableRow(game) {
                 <div class="td">
                     <img width="55" height="55" src="./../../assets/images/named_images/${game.teams.away.imgPath.split('/')[4]}">
                 </div>
-                <span class="td" >${game.teams.away.name}</span>
+                <span class="td">
+                    <span class="awayspan">away</span>
+                    ${game.teams.away.name}
+                </span>
                 <span class="td ${awayScore > homeScore ? 'highlight' : ''}">
                 ${game.gameStatus === 'READY' 
                     ? `선발) ${game.teams.away.startPitcher 
@@ -209,7 +277,10 @@ function createTableRow(game) {
                 <div class="td">
                     <img width="55" height="55"  src="./../../assets/images/named_images/${game.teams.home.imgPath.split('/')[4]}">
                 </div>
-                <span class="td" >${game.teams.home.name}</span>
+                <span class="td">
+                    <span class="homespan">home</span>
+                    ${game.teams.home.name}
+                </span>
                 <span class="td ${homeScore > awayScore ? 'highlight' : ''}">
                 ${game.gameStatus === 'READY' 
                     ? `선발) ${game.teams.home.startPitcher 
@@ -369,7 +440,7 @@ async function getGameData() {
     try {
         const res = await axios.get(dataUrl);
         const gameInfo = countEntries(res.data);
-    
+
         // DOM 업데이트 최소화
         const totalGameCnt = document.getElementById('total-game-cnt');
         const readyGameCnt = document.getElementById('ready-game-cnt');

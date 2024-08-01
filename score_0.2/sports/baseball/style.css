@@ -23,14 +23,17 @@
 }
 
 .game-row-wrap .game-row .field-wrap {
+    color: #fff;
+    font-size: 0.8em;
+    width: 200px;
     position: relative;
     display: flex;
 }
 
-.game-row-wrap .game-row .field-wrap .field{
+.game-row-wrap .game-row .field-wrap .field {
     z-index: 1;
     position: relative;
-    width: 100%;
+    width: 200px;
     height: 100%;
     background-image: url('../../assets/images/baseball/bg_in_progress.png');
     background-size: cover; /* 이미지를 요소 크기에 맞게 확장 */
@@ -42,70 +45,130 @@
 
 .game-row-wrap .game-row .field-wrap .field .base {
     position: absolute;
-    width: 40px;
-    height: 40px;
-    background-color: rgba(255, 255, 255, 0.7);
-    border: 1px solid #000;
-    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+    background-color: rgba(255, 255, 255, 1);
     display: flex;
     justify-content: center;
     align-items: center;
     font-weight: bold;
+    transform: rotate(45deg);
+}
+
+.game-row-wrap .game-row .field-wrap .field .base.active {
+    background-color: red;
 }
 
 .game-row-wrap .game-row .field-wrap .field .base1 {
-    top: 60%; /* 1루의 Y축 위치 */
-    left: 70%; /* 1루의 X축 위치 */
+    top: 65%; /* 1루의 Y축 위치 */
+    left: 80%; /* 1루의 X축 위치 */
 }
 
 .game-row-wrap .game-row .field-wrap .field .base2 {
     top: 30%; /* 2루의 Y축 위치 */
-    left: 50%; /* 2루의 X축 위치 */
+    left: 48%; /* 2루의 X축 위치 */
 }
 
 .game-row-wrap .game-row .field-wrap .field .base3 {
-    top: 60%; /* 3루의 Y축 위치 */
-    left: 30%; /* 3루의 X축 위치 */
+    top: 65%; /* 3루의 Y축 위치 */
+    left: 15%; /* 3루의 X축 위치 */
 }
 
 .game-row-wrap .game-row .field-wrap .field .count {
     position: absolute;
-    top: 10%;
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: 00px; /* 아래쪽에 고정 */
+    right: 2px; /* 오른쪽에 고정 */
     display: flex;
-    gap: 10px;
+    flex-direction: column;
 }
 
 .game-row-wrap .game-row .field-wrap .field .count div {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
     display: flex;
-    justify-content: center;
     align-items: center;
+    font-size: 12px;
     font-weight: bold;
-    color: #fff;
+    color: #000;
+    border-radius: 5px;
 }
 
-.game-row-wrap .game-row .field-wrap .field .ball {
-    background-color: green;
+.game-row-wrap .game-row .field-wrap .field .ball .ball-outline-circle,
+.game-row-wrap .game-row .field-wrap .field .strike .strike-outline-circle,
+.game-row-wrap .game-row .field-wrap .field .out .out-outline-circle {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin: 1px; /* 마진을 오른쪽에서 왼쪽으로 변경 */
+    background-color: darkgray;
+    opacity: 0.8;
 }
 
-.game-row-wrap .game-row .field-wrap .field .strike {
+.game-row-wrap .game-row .field-wrap .field .ball .ball-outline-circle.active {
+    background-color: rgb(6, 228, 6);
+}
+
+.game-row-wrap .game-row .field-wrap .field .strike .strike-outline-circle.active {
     background-color: yellow;
 }
 
-.game-row-wrap .game-row .field-wrap .field .out {
+.game-row-wrap .game-row .field-wrap .field .out .out-outline-circle.active {
     background-color: red;
+}
+
+
+@keyframes base-blink {
+    0% { background-color: red; }
+    50% { background-color: transparent; }
+    100% { background-color: red; }
+}
+
+.changed-base {
+    animation: base-blink 1s infinite;
+}
+
+@keyframes ball-blink {
+    0% { background-color: rgb(6, 228, 6); }
+    50% { background-color: transparent; }
+    100% { background-color: rgb(6, 228, 6); }
+}
+
+.changed-ball {
+    animation: ball-blink 1s infinite;
+}
+
+@keyframes strike-blink {
+    0% { background-color: yellow; }
+    50% { background-color: transparent; }
+    100% { background-color: yellow; }
+}
+
+.changed-strike {
+    animation: strike-blink 1s infinite;
+}
+
+@keyframes out-blink {
+    0% { background-color: red; }
+    50% { background-color: transparent; }
+    100% { background-color: red; }
+}
+
+.changed-out {
+    animation: out-blink 1s infinite;
+}
+
+@keyframes text-blink {
+    0%, 100% { color: transparent; }
+    50% { color: #fff }
+}
+
+.changed-text {
+    animation: text-blink 1s infinite;
 }
 
 .game-row-wrap .game-row .field-wrap .field .player {
     position: absolute;
-    width: 60px;
+    width: 80px;
     height: 30px;
-    background-color: rgba(255, 255, 255, 0.7);
-    border: 1px solid #000;
+    background-color: rgba(90, 90, 90, 0.8);
     border-radius: 5px;
     display: flex;
     justify-content: center;
@@ -114,19 +177,47 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-size:10px;
 }
 
-.game-row-wrap .game-row .field-wrap .field .pitcher {
-    top: 40%; /* 투수 위치의 Y축 */
-    left: 50%; /* 투수 위치의 X축 */
+.game-row-wrap .game-row .field .player.team-name {
+    position: absolute;
+    width: 50px;
+    height: 15px;
+    background-color: yellow;
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.player.team-name.pitcher {
+    top: 42%;
+    z-index: 5;
+}
+
+.player.team-name.batter {
+    top: 73%;
+    z-index: 5;
+}
+
+.player.pitcher {
+    top: 50%; /* Adjusted for the team name */
+    left: 50%;
     transform: translateX(-50%);
 }
 
-.game-row-wrap .game-row .field-wrap .field .batter {
-    top: 80%; /* 타자 위치의 Y축 */
-    left: 50%; /* 타자 위치의 X축 */
+.player.batter {
+    top: 80%; /* Adjusted for the team name */
+    left: 50%;
     transform: translateX(-50%);
 }
+
 
 .game-row-wrap .game-row .field-wrap .field.ready{
     filter: grayscale(70%) brightness(1);
@@ -143,18 +234,30 @@
     flex:1;
     position: absolute;
     width: 100%;
-    height: 40%;
+    height: 30%;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 5;
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
+    
 }
 
 .game-row-wrap .game-row .field-wrap .field-cover img {
     width: 55px;
     height: 55px;
     /* background-color: #444444;  */
+}
+
+.game-row-wrap .game-row .field-wrap .field-cover .text {
+    padding: 10px;
+}
+
+.game-row-wrap .game-row .field-wrap .field-cover .broadcast-text-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .game-row-wrap .game-row .field-wrap .field-text{
@@ -168,6 +271,8 @@
     justify-content: flex-end;
     align-items: center;
 }
+
+
 
 .game-row-wrap .game-row .field-wrap .field-text.ready{
     height: 100%;
@@ -191,6 +296,8 @@
 }
 
 .game-row-wrap .game-row .field-wrap .field-cover .circle-wrap {
+    position: absolute;
+    top: 40%;
     width: 70px;
     height: 70px;
     border-radius: 50px;
@@ -206,21 +313,16 @@
     display: flex;
 }
 
-.game-row-wrap .game-row .field-wrap {
-    flex: 0.23; 
-    width:100%; 
-    color: #fff;
-}
-
 .game-row-wrap .team-info {
-    flex: 0.37; 
+    flex: 0.5; 
     width:100%; 
     display: flex; 
     flex-direction: column;
+    position: relative;
 }
 
 .game-row-wrap .team-info .tr{
-    flex: 0.3;
+    flex: 0.5;
     display: flex;
     border-bottom: 1px solid #444444; /* 기존의 #DDDDDD 대신 어두운 색상으로 변경 */
 }
@@ -232,7 +334,30 @@
     background-color: #444444; /* 이미지 배경색을 어둡게 변경 */
 }
 
+.game-row-wrap .team-info .homespan {
+    background-color: rgba(32, 32, 197, 0.7);
+    width: 40px;
+    text-align: center;
+    border-radius: 10px;
+    color: #fff;
+    position: absolute;
+    bottom: 10%;
+    font-size: 8px;
+}
+
+.game-row-wrap .team-info .awayspan {
+    background-color: rgba(228, 113, 18, 0.7);
+    width: 40px;
+    text-align: center;
+    border-radius: 10px;
+    color: #fff;
+    position: absolute;
+    bottom: 10%;
+    font-size: 8px;
+}
+
 .game-row-wrap .team-info .tr .td{
+    position: relative;
     flex:0.4; 
     display: flex; 
     justify-content: center; 
