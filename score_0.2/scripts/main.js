@@ -139,11 +139,11 @@ function createTableRow(game) {
     gameRow.innerHTML = `
         <div class="cell tr-icon league-icon"><img src=${getSportsIcon(game.sportsType)} alt="리그 아이콘"> ${game.league.shortName}</div>
         <div class="cell time-column">${formatDateTime(game.startDatetime).split(' ')[1]}</div>
-        <div class="cell team-column"><img class="team-icon" src="./assets/images/small_logo/${game.teams.home.imgPath.split('/')[4]}" alt="홈팀 아이콘"> ${game.teams.home.name}</div>
-        <div class="cell score-column ${homeScoreClass}">${homeScore}</div>
+        <div class="cell team-column home"><img class="team-icon" src="./assets/images/small_logo/${game.teams.home.imgPath.split('/')[4]}" alt="홈팀 아이콘"> ${game.teams.home.name}</div>
+        <div class="cell score-column home ${homeScoreClass}">${homeScore}</div>
         <div class="cell"><span class="status ${getStatusClass(game.gameStatus)}">${game.gameStatus === 'IN_PROGRESS' ? getPeriodText(game) : getStatusText(game.gameStatus)}</span></div>
-        <div class="cell score-column ${awayScoreClass}">${awayScore}</div>
-        <div class="cell team-column"><img class="team-icon" src="./assets/images/small_logo/${game.teams.away.imgPath.split('/')[4]}" alt="원정팀 아이콘"> ${game.teams.away.name}</div>
+        <div class="cell score-column away ${awayScoreClass}">${awayScore}</div>
+        <div class="cell team-column away"><img class="team-icon" src="./assets/images/small_logo/${game.teams.away.imgPath.split('/')[4]}" alt="원정팀 아이콘"> ${game.teams.away.name}</div>
     `;
 
     const prevCollapse = document.querySelector(`#collapse-${game.id}`)

@@ -29,7 +29,7 @@
 
 .game-row-wrap .game-row .field-wrap .field{
     z-index: 1;
-    position: absolute;
+    position: relative;
     width: 100%;
     height: 100%;
     background-image: url('../../assets/images/baseball/bg_in_progress.png');
@@ -38,6 +38,94 @@
     background-repeat: no-repeat; /* 이미지를 반복하지 않음 */
     box-sizing: border-box;
     background-color: #444444; /* 이미지 배경색을 어둡게 변경 */
+}
+
+.game-row-wrap .game-row .field-wrap .field .base {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border: 1px solid #000;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.game-row-wrap .game-row .field-wrap .field .base1 {
+    top: 60%; /* 1루의 Y축 위치 */
+    left: 70%; /* 1루의 X축 위치 */
+}
+
+.game-row-wrap .game-row .field-wrap .field .base2 {
+    top: 30%; /* 2루의 Y축 위치 */
+    left: 50%; /* 2루의 X축 위치 */
+}
+
+.game-row-wrap .game-row .field-wrap .field .base3 {
+    top: 60%; /* 3루의 Y축 위치 */
+    left: 30%; /* 3루의 X축 위치 */
+}
+
+.game-row-wrap .game-row .field-wrap .field .count {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+}
+
+.game-row-wrap .game-row .field-wrap .field .count div {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: #fff;
+}
+
+.game-row-wrap .game-row .field-wrap .field .ball {
+    background-color: green;
+}
+
+.game-row-wrap .game-row .field-wrap .field .strike {
+    background-color: yellow;
+}
+
+.game-row-wrap .game-row .field-wrap .field .out {
+    background-color: red;
+}
+
+.game-row-wrap .game-row .field-wrap .field .player {
+    position: absolute;
+    width: 60px;
+    height: 30px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border: 1px solid #000;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.game-row-wrap .game-row .field-wrap .field .pitcher {
+    top: 40%; /* 투수 위치의 Y축 */
+    left: 50%; /* 투수 위치의 X축 */
+    transform: translateX(-50%);
+}
+
+.game-row-wrap .game-row .field-wrap .field .batter {
+    top: 80%; /* 타자 위치의 Y축 */
+    left: 50%; /* 타자 위치의 X축 */
+    transform: translateX(-50%);
 }
 
 .game-row-wrap .game-row .field-wrap .field.ready{
