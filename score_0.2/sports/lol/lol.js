@@ -27,41 +27,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
     });
 
-    window.addEventListener('resize', () => {
-        
-        const tabs = document.querySelectorAll('.game-tabs');
-        const contents = document.querySelectorAll('.game-tab-contents');
-        const activeTab = document.querySelector('.game-tab-link.active');
-        const activeContent = document.querySelector('.game-tab-content.active');
-
-        if (window.innerWidth < 1100) {
-            tabs.forEach((tab) => {
-                tab.style.display = 'none';
-            });
-
-            contents.forEach((content) => {
-                content.style.display = 'none';
-            });
-        } else {
-            tabs.forEach((tab) => {
-                tab.style.display = 'flex';
-            });
-
-            contents.forEach((content) => {
-                content.style.display = 'block';
-            });
-
-            if (activeTab) {
-                activeTab.classList.add('active');
-            }
-
-            if (activeContent) {
-                activeContent.classList.add('active');
-                activeContent.style.display = 'block';
-            }
-        }
-    });
-
 });
 
 function getActiveButtonId() {
@@ -270,10 +235,10 @@ function createTableRow(game) {
                     <div class="header-info">
                         <div class="team-info">
                             <div class="team-stats">
-                                <span>골드: ${game.sets[index].home.gold}</span>
-                                <span>포탑: ${game.sets[index].home.tower}</span>
-                                <span>바론: ${game.sets[index].home.baron}</span>
-                                <span>용: ${game.sets[index].home.dragon}</span>
+                                <span>골드 ${game.sets[index].home.gold}</span>
+                                <span>포탑 ${game.sets[index].home.tower}</span>
+                                <span>바론 ${game.sets[index].home.baron}</span>
+                                <span>용 ${game.sets[index].home.dragon}</span>
                             </div>
                             <div class="first-events">
                                 ${game.sets[index].firstBlood === 'b' ? `<span class="firstBtn on">첫 킬</span>` : `<span class="firstBtn off">첫 킬</span>`}
@@ -306,10 +271,10 @@ function createTableRow(game) {
                         </div>
                         <div class="team-info">
                             <div class="team-stats">
-                                <span>골드: ${game.sets[index].away.gold}</span>
-                                <span>포탑: ${game.sets[index].away.tower}</span>
-                                <span>바론: ${game.sets[index].away.baron}</span>
-                                <span>용: ${game.sets[index].away.dragon}</span>
+                                <span>골드 ${game.sets[index].away.gold}</span>
+                                <span>포탑 ${game.sets[index].away.tower}</span>
+                                <span>바론 ${game.sets[index].away.baron}</span>
+                                <span>용 ${game.sets[index].away.dragon}</span>
                             </div>
                             <div class="first-events">
                                 ${game.sets[index].firstBlood === 'r' ? `<span class="firstBtn on">첫 킬</span>` : `<span class="firstBtn off">첫 킬</span>`}
@@ -507,7 +472,6 @@ function createTableErrorRow() {
 }
 
 function openTab(evt, tabName) {
-
     const gameId = tabName.split('-')[1];
     var i, tabContent, tabLinks;
 
@@ -531,5 +495,4 @@ function openTab(evt, tabName) {
 
     // 현재 활성 탭을 저장
     activeTabs[gameId] = tabName;
-
 }

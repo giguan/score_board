@@ -532,7 +532,16 @@ footer::before {
     .date-navigation .nav-btn, .filters span {
         padding: 10px;
         font-size: 16px;
-        margin: 5px 30px;
+        margin: 5px 10px;
+    }
+
+    .filters {
+        flex-wrap: nowrap;
+    }
+
+    .filters span {
+        padding: 0px;
+        font-size: 1em;
     }
 
     .score-table th, .score-table td {
@@ -572,12 +581,18 @@ footer::before {
 
     .date-navigation .nav-btn, .filters span {
         padding: 10px;
-        font-size: 14px;
+        font-size: 16px;
         margin: 5px 10px;
     }
 
-    .date-navigation .filters {
-        width: 65% !important;
+    .filters {
+        flex-wrap: nowrap;
+    }
+
+    .filters span {
+        padding: 0;
+        font-size: 0.7em;
+        margin:5px 5px;
     }
 
     .score-table th, .score-table td {

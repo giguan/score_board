@@ -214,9 +214,9 @@
     display: block;
 }
 
-.game-tab-content.active.resize {
+/* .game-tab-content.active.resize {
     display: none;
-}
+} */
 
 .header-info, .team-stats {
     display: flex;
@@ -380,6 +380,7 @@
 }
 
 .firstBtn {
+    text-align: center;
     border: 1px solid #9c9c9c;
     padding: 3px 5px;
 }
@@ -404,7 +405,28 @@
 
 /* Media Query for responsiveness */
 @media (max-width: 1100px) {
-    .game-tabs, .game-tab-contents {
+
+    .game-tabs {
+        display: flex
+    }
+
+    .game-tab-contents {
+        display: block;
+    }
+    
+    .first-events {
+        display: flex;
+    }
+
+    .first-events span {
+        width: 20px;
+    }
+
+    .bans {
+        margin: 0px;
+    }
+
+    .bans .bans-header {
         display: none;
     }
 }
@@ -413,10 +435,6 @@
 
     .game-row-wrap .game-row {
         flex-direction: column;
-    }
-
-    .game-row-wrap .game-row .field-wrap {
-        display: none;
     }
 
     .game-row-wrap .game-row .team-info {
@@ -431,8 +449,321 @@
         display: none;
     }
 
-    .game-tabs {
+    .game-tab-contents .header-info .team-match {
         display: none;
     }
 
 }
+
+@media (max-width: 575px) {
+    .teams .positions {
+        display: none;
+    }
+
+    .header-info .team-info {
+        margin: 0 5px;
+    }
+
+    /* 폰트 크기 조정 */
+    .game-row-wrap .team-info .tr .td,
+    .game-row-wrap .score .tr .td {
+        font-size: 0.6em;
+    }
+
+    /* 이미지 크기 조정 */
+    .game-row-wrap .team-info .tr img {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* 탭 버튼 크기 조정 */
+    .game-tab-link {
+        padding: 5px;
+        font-size: 0.8em;
+    }
+
+    /* 경기 세부 정보 레이아웃 조정 */
+    .header-info .team-logo img {
+        width: 30px;
+        height: 30px;
+    }
+
+    .team {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .score {
+        font-size: 1em;
+    }
+
+    .ban-list img {
+        width: 20px;
+        height: 20px;
+    }
+
+    .bans {
+        margin-top: 10px;
+    }
+
+    .first-events span {
+        width: 18px;
+    }
+
+    .firstBtn {
+        padding: 2px 3px;
+        margin: 0 3px;
+        font-size: 0.7em;
+    }
+
+    /* 상단 여백 조정 */
+    .game-row-wrap {
+        padding: 5px;
+    }
+
+    /* 테이블 행 높이 조정 */
+    .game-row-wrap .team-info .tr,
+    .game-row-wrap .score .tr {
+        height: 50px;
+    }
+
+    /* 박스 크기 조정 */
+    .game-row-wrap .team-info .tr .td {
+        padding: 2px;
+    }
+
+    /* MVP 뱃지 크기 조정 */
+    .player.mvp::before {
+        font-size: 10px;
+        padding: 1px 4px;
+    }
+
+    .player-champion img {
+        width: 20px;
+        height: 20px;
+    }
+
+    /* 주요 정보 숨기기 */
+    .game-tab-contents .header-info .team-match {
+        display: none;
+    }
+
+    .game-tab-contents .header-info .team-info {
+        margin-bottom: 10px;
+    }
+
+    .game-tab-contents .header-info .match-info {
+        margin-bottom: 10px;
+    }
+
+    /* 게임 상세 정보 레이아웃 조정 */
+    .game-details {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .game-details .teams {
+        flex-direction: column;
+    }
+
+    .game-details .team {
+        margin-bottom: 10px;
+    }
+
+    .bans .bans-header {
+        font-size: 0.8em;
+        padding: 3px 40px;
+    }
+
+    .bans {
+        margin-bottom: 10px;
+    }
+
+    .player {
+        padding: 0px;
+    }
+}
+
+@media (max-width: 490px) {
+    .teams .positions {
+        display: none;
+    }
+
+    .header-info .team-info {
+        margin: 0 5px;
+    }
+
+    /* 폰트 크기 조정 */
+    .game-row-wrap .team-info .tr .td,
+    .game-row-wrap .score .tr .td {
+        font-size: 0.5em;
+    }
+
+    /* 이미지 크기 조정 */
+    .game-row-wrap .team-info .tr img {
+        width: 35px;
+        height: 35px;
+    }
+
+    /* 탭 버튼 크기 조정 */
+    .game-tab-link {
+        padding: 3px;
+        font-size: 0.6em;
+    }
+
+    /* 경기 세부 정보 레이아웃 조정 */
+    .header-info .team-logo img {
+        width: 25px;
+        height: 25px;
+    }
+
+    .team {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+
+    .score {
+        font-size: 0.8em;
+    }
+
+    .score-detail-highlight {
+        font-size: 0.9em;
+        font-weight: bold;
+    }
+
+    .team-header {
+        font-size: 0.8em;
+    }
+
+    .ban-list img {
+        width: 15px;
+        height: 15px;
+    }
+
+    .bans {
+        margin-top: 5px;
+    }
+
+    .first-events span {
+        width: 13px;
+    }
+
+    .firstBtn {
+        padding: 1px 2px;
+        font-size: 0.7em;
+        margin-right: 3px;
+    }
+
+    /* 상단 여백 조정 */
+    .game-row-wrap {
+        padding: 5px;
+    }
+
+    /* 테이블 행 높이 조정 */
+    .game-row-wrap .team-info .tr,
+    .game-row-wrap .score .tr {
+        height: 50px;
+    }
+
+    /* 박스 크기 조정 */
+    .game-row-wrap .team-info .tr .td {
+        padding: 2px;
+    }
+
+    /* MVP 뱃지 크기 조정 */
+    .player.mvp::before {
+        font-size: 8px;
+        padding: 1px 2px;
+    }
+
+    .player-champion img {
+        width: 20px;
+        height: 20px;
+    }
+
+    /* 주요 정보 숨기기 */
+    .game-tab-contents .header-info .team-match {
+        display: none;
+    }
+
+    .game-tab-contents .header-info .team-info {
+        margin-bottom: 5px;
+    }
+
+    .game-tab-contents .header-info .match-info {
+        margin-bottom: 5px;
+    }
+
+    /* 게임 상세 정보 레이아웃 조정 */
+    .game-details {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .game-details .teams {
+        flex-direction: column;
+    }
+
+    .game-details .team {
+        margin-bottom: 5px;
+    }
+
+    .bans .bans-header {
+        font-size: 0.6em;
+        padding: 2px 30px;
+    }
+
+    .bans {
+        margin-bottom: 5px;
+    }
+
+    /* 추가된 CSS */
+    .header-info .team-info,
+    .header-info .match-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .header-info .team-info span,
+    .header-info .match-info span {
+        margin-right: 0; /* 마진 제거 */
+        margin-bottom: 5px; /* 아래쪽에 마진 추가 */
+        font-size: 0.7em; /* 폰트 크기 조정 */
+    }
+
+    .header-info .team-logo {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .header-info .team-logo img {
+        width: 20px;
+        height: 20px;
+    }
+
+    .header-info .score-info {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        font-size: 0.7em;
+    }
+
+    .team-stats .first-events span {
+        margin-right: 5px;
+        font-size: 0.7em;
+    }
+
+    .team-stats {
+        align-items: center;
+        width: 100%;
+        font-size: 0.7em;
+    }
+}
+
+
+
