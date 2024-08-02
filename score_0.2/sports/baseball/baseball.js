@@ -4,11 +4,12 @@ let requestDate = getCurrentDate();
 let intervalCheck = false;
 
 const prevGameData = {}
+const storeBroadCast = {}
 
 async function fetchDataPeriodically() {
     intervalCheck = true;
     await getGameData();
-    setTimeout(fetchDataPeriodically, 2500);
+    setTimeout(fetchDataPeriodically, 2000);
 }
 
 document.addEventListener('DOMContentLoaded', async function() {
@@ -246,9 +247,44 @@ function createTableRow(game) {
         awayScoreClass = 'highlight';
     }
 
+    if (!storeBroadCast[game.id]) {
+        storeBroadCast[game.id] = [];
+    } else {
+        const newBroadcast = game.broadcast;
+
+        if (newBroadcast && !storeBroadCast[game.id].some(broad => broad.playText === newBroadcast.playText)) {
+            storeBroadCast[game.id].unshift(newBroadcast);
+        }
+    }
+
     gameRow.innerHTML = `
-        <div class="field-wrap">
+        <div class="field-wrap ${game.gameStatus} ">
             ${createField(game)}
+            <div class="field-right-area">
+                <div class="special">
+                <div class="special-container">
+                    <span class="team-label">${game.special.firstBaseOnBall?.location}</span>
+                    <span class="specialBtn ${game.special.firstBaseOnBall ? game.special.firstBaseOnBall.location : ''} ">첫진루</span>
+                </div>
+                <div class="special-container">
+                    <span class="team-label">${game.special.firstHomerun?.location}</span>
+                    <span class="specialBtn ${game.special.firstHomerun ? game.special.firstHomerun.location : ''}">첫홈런</span>
+                </div>
+                <div class="special-container">
+                    <span class="team-label">${game.special.firstStrikeOut?.location}</span>
+                    <span class="specialBtn ${game.special.firstStrikeOut ? game.special.firstStrikeOut.location : ''}">첫삼진</span>
+                </div>
+            </div>
+                <div class="broad-area">
+                    <div class="broad-title">중계 기록</div>
+                    <div class="game-detail">
+                        ${storeBroadCast[game.id]?.map((broad) => {
+                            return `<div class="broad-text">${broad?.playText}</div>`
+                        }).join('')}
+                    </div>
+                </div>
+                
+            </div>
         </div>
 
         <div class="team-info">
@@ -440,6 +476,8 @@ async function getGameData() {
     try {
         const res = await axios.get(dataUrl);
         const gameInfo = countEntries(res.data);
+
+        console.log(gameInfo)
 
         // DOM 업데이트 최소화
         const totalGameCnt = document.getElementById('total-game-cnt');

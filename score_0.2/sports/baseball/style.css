@@ -25,7 +25,6 @@
 .game-row-wrap .game-row .field-wrap {
     color: #fff;
     font-size: 0.8em;
-    width: 200px;
     position: relative;
     display: flex;
 }
@@ -33,7 +32,7 @@
 .game-row-wrap .game-row .field-wrap .field {
     z-index: 1;
     position: relative;
-    width: 200px;
+    width: 182px;
     height: 100%;
     background-image: url('../../assets/images/baseball/bg_in_progress.png');
     background-size: cover; /* 이미지를 요소 크기에 맞게 확장 */
@@ -60,17 +59,17 @@
 }
 
 .game-row-wrap .game-row .field-wrap .field .base1 {
-    top: 65%; /* 1루의 Y축 위치 */
+    top: 63%; /* 1루의 Y축 위치 */
     left: 80%; /* 1루의 X축 위치 */
 }
 
 .game-row-wrap .game-row .field-wrap .field .base2 {
-    top: 30%; /* 2루의 Y축 위치 */
+    top: 32%; /* 2루의 Y축 위치 */
     left: 48%; /* 2루의 X축 위치 */
 }
 
 .game-row-wrap .game-row .field-wrap .field .base3 {
-    top: 65%; /* 3루의 Y축 위치 */
+    top: 63%; /* 3루의 Y축 위치 */
     left: 15%; /* 3루의 X축 위치 */
 }
 
@@ -233,7 +232,7 @@
 .game-row-wrap .game-row .field-wrap .field-cover{
     flex:1;
     position: absolute;
-    width: 100%;
+    width: 182px;
     height: 30%;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 5;
@@ -272,7 +271,9 @@
     align-items: center;
 }
 
-
+.game-row-wrap .game-row .field-wrap .field-right-area {
+    display: none;
+}
 
 .game-row-wrap .game-row .field-wrap .field-text.ready{
     height: 100%;
@@ -346,7 +347,7 @@
 }
 
 .game-row-wrap .team-info .awayspan {
-    background-color: rgba(228, 113, 18, 0.7);
+    background-color: #d8491e;
     width: 40px;
     text-align: center;
     border-radius: 10px;
@@ -374,7 +375,7 @@
 }
 
 .game-row-wrap .game-row .team-info .tr.th .td{
-    font-size: 1em;
+    font-size: 0.8em;
 }
 
 .game-row-wrap .game-row .team-info .tr.th,
@@ -393,7 +394,7 @@
     justify-content: center; 
     align-items: center;
     font-weight: bold;
-    font-size: 0.7em;
+    font-size: 0.6em;
     background-color: #2b2c34; /* 기존의 #F1F1F1 대신 어두운 색상으로 변경 */
     text-align: center;
     border: 1px solid #555555; /* 테두리 추가 */
@@ -424,7 +425,7 @@
     border-left: 1px solid #555555; /* 기존의 #DDDDDD 대신 어두운 색상으로 변경 */
     border-top: 1px solid #555555; /* 테두리 추가 */
     font-weight: bolder;
-    font-size:1em;
+    font-size:0.8em;
 }
 
 .game-row-wrap .game-row .score {
@@ -491,13 +492,134 @@
 
 @media (max-width: 768px) {
 
+
+    .game-row-wrap .game-row:hover {
+        transition: none;
+        transform: none;
+        box-shadow: none;
+    }
+
     .game-row-wrap .game-row {
         flex-direction: column;
     }
 
-    .game-row-wrap .game-row .field-wrap {
+    .game-row-wrap .game-row .field-wrap.IN_PROGRESS  {
+        width: 100%;
+        display: flex;
+    }
+
+    .game-row-wrap .game-row .field-wrap.READY,
+    .game-row-wrap .game-row .field-wrap.CANCEL,
+    .game-row-wrap .game-row .field-wrap.POSTPONED,
+    .game-row-wrap .game-row .field-wrap.DRAW,
+    .game-row-wrap .game-row .field-wrap.FINAL {
         display: none;
     }
+
+    .game-row-wrap .game-row .field-wrap .field {
+        background-size: auto;
+        width: 182px;
+        height: 200px;
+    }
+
+    .game-row-wrap .game-row .field-wrap .field-cover {
+        width: 182px;
+        flex: 1;
+    }
+
+    .game-row-wrap .game-row .field-wrap .field-right-area {
+        display: block;
+        flex:1;
+        height: 200px;
+        background-color: #444444;
+    }
+
+    .game-row-wrap .game-row .field-wrap .field-right-area .special {
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 5px;
+        position: relative; /* 부모 요소를 기준으로 자식 요소의 위치를 설정 */
+    }
+
+    .special-container {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .team-label {
+        position: absolute;
+        top: 0px; /* 버튼 위의 위치를 설정 */
+        font-weight: bold;
+        font-size:8px;
+        color: #fff;
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 2px 5px;
+        border-radius: 5px;
+
+    }
+
+    .game-row-wrap .game-row .field-wrap .field-right-area .special .specialBtn {
+        background-color: #4a90e2;
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 5px;
+        text-align: center;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-top: 10px; /* 팀 레이블과 간격을 두기 위해 여백 추가 */
+    }
+
+    .game-row-wrap .game-row .field-wrap .field-right-area .special .specialBtn.HOME {
+        background-color: #144e91
+    }
+
+    .game-row-wrap .game-row .field-wrap .field-right-area .special .specialBtn.AWAY {
+        background-color: #d8491e
+    }
+
+    .game-row-wrap .game-row .field-wrap .field-right-area .broad-area {
+        background-color: #222;
+        width: 95%;
+        border-radius: 10px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .game-row-wrap .game-row .field-wrap .field-right-area .broad-area .broad-title {
+        color: #fff;
+        font-weight: bold;
+        margin-bottom: 10px;
+        text-align: center;
+        font-size: 1.2em;
+        width: 100%;
+    }
+    
+    .game-row-wrap .game-row .field-wrap .field-right-area .broad-area .game-detail {
+        background-color: #333;
+        width: 100%;
+        height: 150px; 
+        overflow-y: auto;
+        padding: 10px;
+        box-sizing: border-box;
+        border-radius: 10px;
+    }
+    
+    .game-row-wrap .game-row .field-wrap .field-right-area .broad-area .broad-text {
+        background-color: #554d4d;
+        color: #fff;
+        width: 95%;
+        padding: 5px 10px;
+        margin: 3px 0;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
 
     .game-row-wrap .game-row .team-info {
         flex:1;
@@ -506,5 +628,43 @@
     .game-row-wrap .game-row .score {
         flex:1;
     }
+}
 
+@media (max-width: 460px) {
+
+    .game-row-wrap .game-row .field-wrap .field {
+        background-size: auto;
+        width: 182px;
+        height: 200px;
+    }
+
+    .game-row-wrap .game-row .field-wrap .field-cover {
+        width: 182px;
+        flex: 1;
+    }
+
+    .game-row-wrap .game-row .field-wrap .field-right-area {
+        flex:1;
+        height: 200px;
+    }
+
+    .game-row-wrap .game-row .field-wrap .field-right-area .special {
+        display: none;
+    }
+
+
+    .game-row-wrap .game-row .field-wrap .field-right-area .broad-area .game-detail {
+        height: 200px; 
+    }
+
+    .game-row-wrap .game-row .field-wrap .field-right-area .broad-area .broad-text {
+        background-color: #554d4d;
+        color: #fff;
+        width: 90%;
+        padding: 3px 5px;
+        margin: 3px 0;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
 }

@@ -115,6 +115,7 @@ function countEntries(data) {
 }
 
 let activeTabs = {};
+let gameTimer = {}
 function createTableRow(game) {
 
 
@@ -231,6 +232,7 @@ function createTableRow(game) {
             tab.classList.add('game-tab-link');
             tab.textContent = tabName;
             tab.setAttribute('data-tab', `game-${game.gidx}-set-${index + 1}`); // Set unique data-tab attribute for each tab
+
 
             if (index >= game.sets.length) {
                 tab.disabled = true; // Disable tab if the set does not exist
@@ -380,10 +382,9 @@ function createTableRow(game) {
 
                 tabContents.appendChild(tabContent);
 
-                // const dynamicTimeElement = document.getElementById(`dynamic-time-${game.gidx}-${index}`);
-                // if (dynamicTimeElement && game.sets[index].sstatus === 2) {
-                //     updateDynamicTime(dynamicTimeElement, startTime);
-                // }
+                setTimeout(() => {
+
+                }, 1000)
             }
         });
 
@@ -393,23 +394,6 @@ function createTableRow(game) {
 
     return gameRowWrap;
 }
-
-// function updateDynamicTime(element, startTime) {
-
-//     const updateTime = () => {
-//         const currentTime = new Date().getTime();
-//         const elapsedTime = currentTime - startTime;
-//         const hours = Math.floor(elapsedTime / (1000 * 60 * 60));
-//         const minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60));
-//         const seconds = Math.floor((elapsedTime % (1000 * 60)) / 1000);
-//         const timeString = `${hours > 0 ? hours.toString().padStart(2, '0') + ':' : ''}${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-//         console.log(timeString); // 디버깅용 로그
-//         element.innerText = timeString; // innerHTML 또는 innerText 설정
-//     };
-
-//     updateTime(); // 초기 호출
-//     setInterval(updateTime, 1000); // 1초마다 업데이트
-// }
 
 async function getGameData() {
     const dataUrl = `https://sports-api.named.com/v1.0/esports/lol/games?date=${requestDate}&status=ALL`;
