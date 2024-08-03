@@ -252,14 +252,20 @@ function createTableRow(game) {
                 <div class="td">
                     <img width="55" height="55" src="./../../assets/images/named_images/${game.teams.away.imgPath.split('/')[4]}">
                 </div>
-                <span class="td" >${game.teams.away.name}</span>
+                <span class="td" >
+                    <span class="awayspan">away</span>   
+                    ${game.teams.away.name}
+                </span>
                 <span class="td ${awayScore > homeScore ? 'highlight' : '' }">${awayScore}</span>
             </div>
             <div class="tr">
                 <div class="td">
                     <img width="55" height="55"  src="./../../assets/images/named_images/${game.teams.home.imgPath.split('/')[4]}">
                 </div>
-                <span class="td" >${game.teams.home.name}</span>
+                <span class="td" >
+                    <span class="homespan">home</span>  
+                    ${game.teams.home.name}
+                </span>
                 <span class="td ${homeScore > awayScore ? 'highlight' : ''}">${homeScore}</span>
             </div>
             <div class="tr th odds">

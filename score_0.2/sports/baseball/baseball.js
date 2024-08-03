@@ -477,8 +477,6 @@ async function getGameData() {
         const res = await axios.get(dataUrl);
         const gameInfo = countEntries(res.data);
 
-        console.log(gameInfo)
-
         // DOM 업데이트 최소화
         const totalGameCnt = document.getElementById('total-game-cnt');
         const readyGameCnt = document.getElementById('ready-game-cnt');

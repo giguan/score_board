@@ -15,7 +15,7 @@ async function fetchDataPeriodically() {
 
 document.addEventListener('DOMContentLoaded', async function() {
     await getGameData();
-    // fetchDataPeriodically();
+    fetchDataPeriodically();
 
     // Full calendar 관련
     getFullCalendar()
@@ -348,6 +348,8 @@ function getSportsIcon(sportsType) {
             return './assets/images/tabmenu_logo/basketball.png';
         case 'VOLLEYBALL': 
             return './assets/images/tabmenu_logo/volleyball.png';
+        case 'FOOTBALL' :
+            return'./assets/images/tabmenu_logo/rugby.png';
     }
 
 }

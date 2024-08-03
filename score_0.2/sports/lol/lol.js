@@ -2,6 +2,7 @@
 let requestDate = getCurrentDate();
 
 let intervalCheck = false;
+let gameTimers = {};
 
 async function fetchDataPeriodically() {
     intervalCheck = true;
@@ -104,14 +105,20 @@ function createTableRow(game) {
                         <div class="td">
                             <img width="55" height="55" src="./../../assets/images/named_images/${game.home.img_path.split('/')[4]}">
                         </div>
-                        <span class="td" >${game.home.name_en}</span>
+                        <span class="td" >
+                            <span class="homespan">home</span>    
+                            ${game.home.name_en}
+                        </span>
                         <span class="td ${game.homeScore > game.awayScore ? 'highlight' : '' }">${game.homeScore}</span>
                     </div>
                     <div class="tr">
                         <div class="td">
                             <img width="55" height="55"  src="./../../assets/images/named_images/${game.away.img_path.split('/')[4]}">
                         </div>
-                        <span class="td" >${game.away.name_en}</span>
+                        <span class="td" >
+                            <span class="awayspan">away</span>    
+                            ${game.away.name_en}
+                        </span>
                         <span class="td ${game.awayScore > game.homeScore ? 'highlight' : ''}">${game.awayScore}</span>
                     </div>
                     <div class="tr th odds">
@@ -218,17 +225,13 @@ function createTableRow(game) {
                 tabContent.classList.add('active'); // Restore previously active content
             }
 
-            console.log(game)
-
             if (index < game.sets.length) {
                 const sortedHomePlayers = game.sets[index].home.players.sort((a, b) => positions.indexOf(a.position) - positions.indexOf(b.position));
                 const sortedAwayPlayers = game.sets[index].away.players.sort((a, b) => positions.indexOf(a.position) - positions.indexOf(b.position));
 
-                let startTime;
-                if (game.sets[index].sstatus === 2) {
+                let startTime = new Date('1970-01-01T00:00:00Z').getTime();
+                if (game.sets[index].sstatus === 2 || game.sets[index].sstatus === 1) {
                     startTime = new Date(`1970-01-01T${game.sets[index].startTime}Z`).getTime(); // Assuming startTime is in HH:MM:SS format
-                } else {
-                    startTime = new Date('1970-01-01T00:00:00Z').getTime();
                 }
 
                 tabContent.innerHTML = `
@@ -264,7 +267,7 @@ function createTableRow(game) {
                                         ? `${game.sets[index].winner === 'h' ? '<span class="score-detail-highlight">승</span>' : '<span class="score-detail">패</span>'}
                                             <span>${game.sets[index].totalTime ? game.sets[index].totalTime : '00:00'}</span>
                                             ${game.sets[index].winner === 'a' ? '<span class="score-detail-highlight">승</span>' : '<span class="score-detail">패</span>'}`
-                                        : `<span id="dynamic-time-${game.gidx}-${index}">00:00</span>`
+                                        : `<span class="dynamic-timer" id="dynamic-time-${game.gidx}-${index}">${game.sets[index].sstatus === 1 ? '벤픽 중' : '진행 중'}</span>`
                                     }
                                 </div>
                             </div>
@@ -347,9 +350,21 @@ function createTableRow(game) {
 
                 tabContents.appendChild(tabContent);
 
-                setTimeout(() => {
-
-                }, 1000)
+                // if (game.sets[index].sstatus === 2 || game.sets[index].sstatus === 1) {
+                //     const dynamicTimeElement = tabContent.querySelector(`#dynamic-time-${game.gidx}-${index}`);
+                //     if (dynamicTimeElement) {
+                //         const updateTime = () => {
+                //             const currentTime = new Date().getTime();
+                //             const elapsedTime = currentTime - startTime;
+                //             const hours = Math.floor(elapsedTime / (1000 * 60 * 60));
+                //             const minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60));
+                //             const seconds = Math.floor((elapsedTime % (1000 * 60)) / 1000);
+                //             const timeString = `${hours > 0 ? hours.toString().padStart(2, '0') + ':' : ''}${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                //             dynamicTimeElement.innerHTML = `${game.sets[index].sstatus === 1 ? '벤픽중 ' : ''}${timeString}`;
+                //         };
+                //         gameTimers[`dynamic-time-${game.gidx}-${index}`] = setInterval(updateTime, 1000);
+                //     }
+                // }
             }
         });
 
