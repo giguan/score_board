@@ -368,9 +368,21 @@
     box-shadow: 0 0 5px rgba(255, 204, 0, 0.8); /* 약간의 그림자 */
 }
 
-.player-name, .player-kda, .player-selecting {
+.player-name, .player-kda {
     flex: 1;
     text-align: center;
+}
+
+.player-selecting {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 40px;
+    height: 20px;
+    background-color: darkgray;
+    border-radius: 15px;
+    color: #000;
+    font-size: 12px;
 }
 
 .player-champion img {

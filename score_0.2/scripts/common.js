@@ -4,6 +4,10 @@ function adjustDate(dateString, days) {
     return date.toISOString().split('T')[0]; // "YYYY-MM-DD" 형식으로 반환
 }
 
+const MAIN_URL = "https://fleco-api.champscore.com";
+const SUB_URL = "https://sports-api.named.com";
+const THUMB_URL = "https://thumb.champscore.com/";
+
 /** 
  * 현재 날짜 시간 yyyy-mm-dd로 받아온다.
  * 네임드 요청 URL 형식에 맞춤

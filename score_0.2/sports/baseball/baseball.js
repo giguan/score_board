@@ -87,78 +87,44 @@ function createField(game) {
 
     const statusClass = getStatusClass(game.gameStatus);
 
-    const previousData = prevGameData[game.id] || {};
+    // const previousData = prevGameData[game.id] || {};
 
-    const broadcastChanged = (previousData.broadcast?.playText || null) !== (game.broadcast?.playText || null);
+    // const broadcastChanged = (previousData.broadcast?.playText || null) !== (game.broadcast?.playText || null);
 
-    const changes = {
-        ball: previousData.ball !== game.ball,
-        strike: previousData.strike !== game.strike,
-        out: previousData.out !== game.out,
-        firstBaseOccupied: previousData.firstBaseOccupied !== game.firstBaseOccupied,
-        secondBaseOccupied: previousData.secondBaseOccupied !== game.secondBaseOccupied,
-        thirdBaseOccupied: previousData.thirdBaseOccupied !== game.thirdBaseOccupied,
-        currentBatter: previousData.currentBatter !== game.currentBatter,
-        currentPitcher: previousData.currentPitcher !== game.currentPitcher,
-        broadcast: broadcastChanged
-    };
+    // const changes = {
+    //     ball: previousData.ball !== game.ball,
+    //     strike: previousData.strike !== game.strike,
+    //     out: previousData.out !== game.out,
+    //     firstBaseOccupied: previousData.firstBaseOccupied !== game.firstBaseOccupied,
+    //     secondBaseOccupied: previousData.secondBaseOccupied !== game.secondBaseOccupied,
+    //     thirdBaseOccupied: previousData.thirdBaseOccupied !== game.thirdBaseOccupied,
+    //     currentBatter: previousData.currentBatter !== game.currentBatter,
+    //     currentPitcher: previousData.currentPitcher !== game.currentPitcher,
+    //     broadcast: broadcastChanged
+    // };
 
-    prevGameData[game.id] = {
-        ball: game.ball,
-        strike: game.strike,
-        out: game.out,
-        firstBaseOccupied: game.firstBaseOccupied,
-        secondBaseOccupied: game.secondBaseOccupied,
-        thirdBaseOccupied: game.thirdBaseOccupied,
-        currentBatter: game.currentBatter,
-        currentPitcher: game.currentPitcher,
-        broadcast: game.broadcast
-    };
+    // prevGameData[game.id] = {
+    //     ball: game.ball,
+    //     strike: game.strike,
+    //     out: game.out,
+    //     firstBaseOccupied: game.firstBaseOccupied,
+    //     secondBaseOccupied: game.secondBaseOccupied,
+    //     thirdBaseOccupied: game.thirdBaseOccupied,
+    //     currentBatter: game.currentBatter,
+    //     currentPitcher: game.currentPitcher,
+    //     broadcast: game.broadcast
+    // };
 
     switch(statusClass) {
         case 'in-progress':
             return `
             <div class="field-cover">
                 <div class="broadcast-text-area">
-                    <img style="width: 20px; height: 20px;" class="text ${changes.broadcast ? 'changed-text' : ''}" src="./../../assets/images/volume-up.png" />
-                    <span class="text ${changes.broadcast ? 'changed-text' : ''}">${game.broadcast? game.broadcast.playText : ''}</span>
+                    
+                    <span class="text">스코어만 제공됩니다.</span>
                 </div>
             </div>
-            <div class="field">
-                <div class="base base1 ${game.firstBaseOccupied ? 'active' : ''}  ${changes.firstBaseOccupied ? 'changed-base' : ''}"></div>
-                <div class="base base2 ${game.secondBaseOccupied ? 'active' : ''} ${changes.secondBaseOccupied ? 'changed-base' : ''}"></div>
-                <div class="base base3 ${game.thirdBaseOccupied ? 'active' : ''} ${changes.thirdBaseOccupied ? 'changed-base' : ''}"></div>
-                <div class="count">
-                    <div class="ball">
-                        <span style="margin-right:2px;">B </span>
-                        ${[...Array(4)].map((_, i) => 
-                            `<span class="ball-outline-circle${i < game.ball ? ' active' : ''} ${changes.ball && i === game.ball - 1 ? 'changed-ball' : ''}"></span>`
-                        ).join('')}
-                    </div>
-                    <div class="strike">
-                        <span style="margin-right:2px;">S </span>
-                        ${[...Array(3)].map((_, i) => 
-                            `<span class="strike-outline-circle${i < game.strike ? ' active' : ''} ${changes.strike && i === game.strike - 1 ? 'changed-strike' : ''}"></span>`
-                        ).join('')}
-                    </div>
-                    <div class="out">
-                        <span style="margin-right:2px;">O </span>
-                        ${[...Array(3)].map((_, i) => 
-                            `<span class="out-outline-circle${i < game.out ? ' active' : ''} ${changes.out && i === game.out - 1 ? 'changed-out' : ''}"></span>`
-                        ).join('')}
-                    </div>
-                </div>
-                ${game.inningDivision === 'TOP' ? 
-                    `<div class="player team-name pitcher ">${game.teams.home.name}</div>
-                    <div class="player team-name batter ">${game.teams.away.name}</div>`
-                    :
-                    `<div class="player team-name pitcher">${game.teams.away.name}</div>
-                    <div class="player team-name batter">${game.teams.home.name}</div>`
-                }
-                <div class="player pitcher" data-name="투수이름">
-                    ${game.currentPitcher? game.currentPitcher.name : ' - '}
-                </div>
-                <div class="player batter" data-name="타자이름">${game.currentBatter? game.currentBatter.name : ' - '}</div>
+            <div class="field"></div>
             </div>`
         case 'ready' : 
             return `
@@ -190,8 +156,8 @@ function createField(game) {
                     <div class="field-cover">
                         <div class="circle-wrap">
                             <img src="${game.result === 'WIN' 
-                                    ? `./../../assets/images/named_images/${game.teams.home.imgPath.split('/')[4]}` 
-                                    : `./../../assets/images/named_images/${game.teams.away.imgPath.split('/')[4]}`}"
+                                    ? `${THUMB_URL + game.teams.home.imgPath}` 
+                                    : `${THUMB_URL + game.teams.away.imgPath}`}"
                             alt="Team Logo">
                         </div>
                     </div>
@@ -260,31 +226,6 @@ function createTableRow(game) {
     gameRow.innerHTML = `
         <div class="field-wrap ${game.gameStatus} ">
             ${createField(game)}
-            <div class="field-right-area">
-                <div class="special">
-                <div class="special-container">
-                    <span class="team-label">${game.special.firstBaseOnBall?.location}</span>
-                    <span class="specialBtn ${game.special.firstBaseOnBall ? game.special.firstBaseOnBall.location : ''} ">첫진루</span>
-                </div>
-                <div class="special-container">
-                    <span class="team-label">${game.special.firstHomerun?.location}</span>
-                    <span class="specialBtn ${game.special.firstHomerun ? game.special.firstHomerun.location : ''}">첫홈런</span>
-                </div>
-                <div class="special-container">
-                    <span class="team-label">${game.special.firstStrikeOut?.location}</span>
-                    <span class="specialBtn ${game.special.firstStrikeOut ? game.special.firstStrikeOut.location : ''}">첫삼진</span>
-                </div>
-            </div>
-                <div class="broad-area">
-                    <div class="broad-title">중계 기록</div>
-                    <div class="game-detail">
-                        ${storeBroadCast[game.id]?.map((broad) => {
-                            return `<div class="broad-text">${broad?.playText}</div>`
-                        }).join('')}
-                    </div>
-                </div>
-                
-            </div>
         </div>
 
         <div class="team-info">
@@ -295,7 +236,7 @@ function createTableRow(game) {
             </div>
             <div class="tr">
                 <div class="td">
-                    <img width="55" height="55" src="./../../assets/images/named_images/${game.teams.away.imgPath.split('/')[4]}">
+                    <img width="55" height="55" src="${THUMB_URL + game.teams.away.imgPath}">
                 </div>
                 <span class="td">
                     <span class="awayspan">away</span>
@@ -311,7 +252,7 @@ function createTableRow(game) {
             </div>
             <div class="tr">
                 <div class="td">
-                    <img width="55" height="55"  src="./../../assets/images/named_images/${game.teams.home.imgPath.split('/')[4]}">
+                    <img width="55" height="55"  src="${THUMB_URL + game.teams.home.imgPath}">
                 </div>
                 <span class="td">
                     <span class="homespan">home</span>
@@ -460,7 +401,7 @@ function createTableRow(game) {
 }
 
 async function getGameData() {
-    const dataUrl = `https://sports-api.named.com/v1.0/sports/baseball/games?date=${requestDate}&status=ALL`;
+    const dataUrl = `${MAIN_URL}/v1.0/sports/baseball/games?date=${requestDate}&status=ALL`;
 
     // 날짜를 변경할때마다 바뀐 날짜 적용 
     document.querySelector('.date-display').innerHTML = requestDate;
@@ -474,7 +415,11 @@ async function getGameData() {
     }
 
     try {
-        const res = await axios.get(dataUrl);
+        const res = await axios.get(dataUrl, {
+            headers: {
+                'Accept-Language': 'ko'
+            }
+        });
         const gameInfo = countEntries(res.data);
 
         // DOM 업데이트 최소화

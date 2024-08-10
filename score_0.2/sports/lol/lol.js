@@ -315,7 +315,7 @@ function createTableRow(game) {
                                 ${sortedAwayPlayers.map((player, idx) => `
                                     <div class="player ${game.sets[index].mvp == player.player.pid ? 'mvp' : ''}">
                                         <div class="player-kda">${player.kill}/${player.death}/${player.assist}</div>
-                                        ${!player.champion && game.sets[index].sstatus === 1 ? `<div class="player-selecting">선택중</div>` : ''}
+                                        ${!player.champion && game.sets[index].sstatus === 1 ? `<span class="player-selecting">선택중</span>` : ''}
 
                                         ${player.champion 
                                             ? `<div class="player-champion"><img src="./../../assets/images/lol_champions/${player.champion?.img_path.split('/')[4]}" alt="${player.champion?.name}" /></div>`

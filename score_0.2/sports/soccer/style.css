@@ -22,6 +22,7 @@
 
 /* 기본 스타일 설정 */
 .score-table {
+    position: relative;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -30,17 +31,17 @@
 }
 
 .score-table .row {
+    position:relative;
     display: flex;
     justify-content: space-between;
     padding: 15px;
-    background: linear-gradient(135deg, #1D212A, #2B2C33);
+    background-color: #2c2c2c;
     border-radius: 10px;
     box-shadow: 0 10px 15px rgba(233, 71, 32, 0.1), 0 6px 6px rgba(233, 71, 32, 0.05);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     color: white;
     font-size: 0.9em;
     cursor: pointer;
-    position: relative;
 }
 
 .score-table .row::before {
@@ -50,9 +51,11 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom left, rgba(31, 79, 212, 0.1) 50%, rgba(44, 44, 44, 0.1) 50%);
+    background: linear-gradient(to bottom left, rgba(216, 63, 16, 0.1) 50%, rgba(44, 44, 44, 0.1) 50%);
     pointer-events: none;
 }
+
+
 
 .score-table .row:nth-child(odd) {
     background: linear-gradient(135deg, #2B2C33, #1D212A);
@@ -69,6 +72,10 @@
     overflow: hidden;
     white-space: nowrap;
     text-align: center;
+}
+
+.score-table .cell.team-column {
+    flex: 2;
 }
 
 .score-table .cell.score-column {
@@ -89,7 +96,7 @@
     display: inline-block;
     width: 60px;
     text-align: center;
-    padding: 2px 8px;
+    padding: 2px 4px;
     border-radius: 5px;
     font-weight: bold;
     color: white;
@@ -155,7 +162,7 @@
     padding: 10px;
     border-radius: 10px;
     margin-top: 10px;
-    width: 98%; /* 전체 폭을 차지하도록 설정 */
+    width: 97%; /* 전체 폭을 차지하도록 설정 */
 }
 
 /* 탭 메뉴 스타일 */
@@ -274,6 +281,7 @@
     color: #4CA35C;
 }
 
+/* Add this to your CSS file */
 .errorRow {
     background-color: #FF9728;
     color: #721c24;
@@ -287,100 +295,165 @@
 
 /* 반응형 스타일 */
 @media (max-width: 768px) {
-    .table-container {
-        overflow-y: scroll;
-    }
-
-    .score-table {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-        width: 100%;
-    }
-
-    .score-table .row {
-        position: relative;
-        width: 80%;
+    .scoreRow {
+        cursor: pointer;
+        width: 95%;
+        margin-bottom: 10px;
+        padding: 10px;
         display: flex;
         flex-direction: column;
-        align-items: flex-start; /* 좌측 정렬로 변경 */
+        align-items: center;
+    }
+
+    .row {
+        position: relative;
+        display: grid;
+        grid-gap: 5px;
+        width: 100%;
+        height: 150px; /* 적절한 높이 설정 */
         background: linear-gradient(135deg, #1D212A, #2B2C33);
         border-radius: 10px;
         box-shadow: 0 10px 15px rgba(233, 71, 32, 0.1), 0 6px 6px rgba(233, 71, 32, 0.05);
-        padding: 15px;
-        margin-bottom: 10px;
         color: white;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        overflow: hidden;
+        padding: 15px;
+        box-sizing: border-box;
     }
 
-    .score-table .cell {
-        display: block; /* 각 셀을 블록 요소로 변경 */
-        padding: 5px 0;
+    .cell {
+        font-size: 1em;
     }
 
-    .score-table .cell.team-column {
-        width: 100%;
-        text-align: right;
-    }
-
-    .score-table .cell,
-    .score-table .cell:nth-child(5) {
-        width: 100%;
-        text-align: center;
-        font-size: 1.2em;
-    }
-
-    .score-table .cell.score-column {
-        width: 100%;
-        text-align: center; /* 텍스트 우측 정렬 */
-    }
-
-    .score-table .cell:before {
-        content: attr(data-label);
-        font-weight: bold;
-        margin-right: 10px;
-        display: inline-block;
-    }
-
-    .score-table .cell.team-column img {
-        width: 35px;
-        height: 35px;
-    }
-
-    .score-table .row .cell.tr-icon {
-        width: 100%;
-        text-align: left;
-        font-size: 1.2em;
-    }
-
-    .score-table .row .cell:nth-child(2) {
-        font-size: 1.2em;
+    .league-icon {
         position: absolute;
-        width: 80%;
-        text-align: right;
+        grid-area: league;
+        display: flex;
+        align-items: center;
     }
 
+    .league-icon img {
+        width: 20px;
+        height: 20px;
+        margin-right: 5px;
+    }
+
+    .time-column {
+        position: absolute;
+        right: 20px;
+    }
+
+    .team-column.home {
+        position: absolute;
+        left: 20px;
+        top: 55px;
+    }
+
+    .team-column.away {
+        position: absolute;
+        left: 20px;
+        top: 110px;
+    }
+
+    .team-column img {
+        width: 25px;
+        height: 25px;
+        margin-right: 5px;
+    }
+
+    .team-column.home-team {
+        grid-area: homeTeam;
+    }
+
+    .score-column.home {
+        position: absolute;
+        top: 110px;
+        right: 10%; /* 상태바 가운데 정렬을 위해 50% 사용 */
+        text-align: center;
+        transform: translateX(50%); /* 오른쪽에서 중앙으로 이동 */
+    }
+    
     .status {
-        width: auto;
+        position: absolute;
+        top: 80px;
+        right: 10%; /* 상태바 가운데 정렬을 위해 50% 사용 */
+        text-align: center;
+        font-weight: bold;
+        transform: translateX(50%); /* 오른쪽에서 중앙으로 이동 */
     }
-
+    
+    .score-column.away {
+        position: absolute;
+        top: 55px;
+        right: 10%; /* 상태바 가운데 정렬을 위해 50% 사용 */
+        text-align: center;
+        transform: translateX(50%); /* 오른쪽에서 중앙으로 이동 */
+    }
 
     .collapse-content {
         display: none;
         background-color: #2c2c2c;
-        padding: 3px;
-        border-radius: 3px;
-        margin-top: 3px;
-        width: 90%; /* 전체 폭을 차지하도록 설정 */
+        padding: 10px;
+        border-radius: 10px;
+        margin-top: 10px;
+        width: 95%;
     }
 
-    .score-table .cell.team-column {
-        flex: 1;
+    .tab-menu {
         display: flex;
-        justify-content: center;
+        justify-content: space-around;
+        margin-bottom: 10px;
+    }
+
+    .tab {
+        flex: 1;
+        text-align: center;
+        padding: 5px;
+        background-color: #444;
+        cursor: pointer;
+        border-radius: 5px;
+        margin: 0 5px;
+    }
+
+    .tab.active {
+        background-color: #E94720;
+    }
+
+    .odds-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .odds-type {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .odds-values {
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+    }
+
+    .odds-item {
+        text-align: center;
+        flex: 1;
+    }
+
+    .odds-red {
+        color: red;
+    }
+
+    .odds-blue {
+        color: blue;
     }
 }
+
+
+
+
+
+
+
 
 @media (max-width: 480px) {
     .score-table {
@@ -394,7 +467,7 @@
     }
 
     .score-table .row {
-        width: 80%;
+        width: 85%;
     }
 
     .collapse-content {
@@ -403,7 +476,7 @@
         padding: 3px;
         border-radius: 3px;
         margin-top: 3px;
-        width: 86%; /* 전체 폭을 차지하도록 설정 */
+        width: 85%; /* 전체 폭을 차지하도록 설정 */
     }
 
     .score-table .cell.team-column {
@@ -415,4 +488,22 @@
     .score-table .cell.tr-icon.league-icon {
         width: 50%;
     }
+
+    .odds-values .odds-item {
+        font-size: 14px
+    }
+
+    .score-column.home {
+        right: 20%; /* 상태바 가운데 정렬을 위해 50% 사용 */
+    }
+    
+    .status {
+        right: 20%; /* 상태바 가운데 정렬을 위해 50% 사용 */
+    }
+    
+    .score-column.away {
+        right: 20%; /* 상태바 가운데 정렬을 위해 50% 사용 */
+    }
+
 }
+

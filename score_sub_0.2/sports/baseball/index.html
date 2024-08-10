@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스포츠 점수 메인</title>
+
+    <!--stylesheet-->
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="../../assets/styles/common.css">
+    
+    <!--font - Noto Sans KR-->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- axios -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <!-- full calendar -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js"></script>
+</head>
+<body>
+    <div class="background-container">
+        <img src="./assets/images/background.jpg" alt="Background Image" class="background-image">
+    </div>
+    <div class="container">
+        <header>   
+            <div class="header-container">
+                <div class="logo-container" style="display:flex; align-items: center;">
+                    <!-- <img src="./assets/images/goat_tv_logo.webp" alt="Goat Score Logo" class="logo"> -->
+                    <span style="font-family: Orbitron-Bold; font-size: 22px;">GOAT&nbsp;SCORE</span>
+                </div>
+            </div>
+        </header>
+        <nav>
+            <ul class="tabs">
+                <li><a href="./sports/baseball/index.html" class="tab-link active"><img src="./assets/images/tabmenu_logo/baseball.png" alt="Baseball"> 야구</a></li>
+                <li><a href="./sports/soccer/index.html" class="tab-link"><img src="./assets/images/tabmenu_logo/soccer.png" alt="Football"> 축구</a></li>
+                <li><a href="./score_sub/sports/basketball/index.html" class="tab-link active"><img src="./assets/images/tabmenu_logo/basketball.png" alt="Basketball"> 농구</a></li>
+            </ul>
+        <main>
+            <div class="date-navigation">
+                <button class="nav-btn" id="prev-day">◀</button>
+                <span class="date-display"></span>
+                <button class="nav-btn" id="next-day">▶</button>
+                <button class="nav-btn" id="show-calendar-btn">달력</button>
+                <button class="nav-btn" id="today-day">오늘</button>
+            </div>
+            
+            <div class="filters">
+                <span id="total-button" class="active">전체(<span id="total-game-cnt">119</span>)</span>
+                <span id="ready-button">대기중(<span id="ready-game-cnt">69</span>)</span>
+                <span id="inprogress-button">진행중(<span id="inprogress-game-cnt">10</span>)</span>
+                <span id="final-button">종료(<span id="final-game-cnt">39</span>)</span>
+            </div>
+            <hr class="divider">
+            <section class="content">
+                <div id="calendar-container">
+                    <button id="close-calendar-btn"></button>
+                    <div id="calendar"></div>
+                </div>
+                <div class="table-container">
+                    <div id="loading-spinner" class="loading-spinner"></div> <!-- 로딩 스피너 추가 -->
+                    
+                    <!-- 오류 메시지 표시 영역 추가 -->
+                    <div id="error-message" class="error-message" style="display: none;"></div>
+                    
+                    <div id="score-table" class="score-table">
+
+                    </div>
+            </section>
+        </main>
+        <footer>
+            <p>&copy; Copyright ⓒ 2024 by <strong>Goat-Score</strong> All Pictures cannot be copied without permission..</p>
+        </footer>
+    </div>
+
+    <script src="../../scripts/common.js"></script>
+    <script src="./baseball.js"></script>
+</body>
+</html>

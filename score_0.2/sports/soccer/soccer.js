@@ -128,11 +128,11 @@ function createTableRow(game) {
     gameRow.innerHTML = `
         <div class="cell tr-icon league-icon">${game.league.shortName}</div>
         <div class="cell time-column">${formatDateTime(game.startDatetime).split(' ')[1]}</div>
-        <div class="cell team-column">${game.teams.home.name}</div>
-        <div class="cell score-column ${homeScoreClass}">${homeScore}</div>
+        <div class="cell team-column home"><img class="team-icon" src="${THUMB_URL + game.teams.home.imgPath}" alt="홈팀 아이콘"> ${game.teams.home.name}</div>
+        <div class="cell score-column home ${homeScoreClass}">${homeScore}</div>
         <div class="cell"><span class="status ${getStatusClass(game.gameStatus)}">${game.gameStatus === 'IN_PROGRESS' ? getPeriodText(game) : getStatusText(game.gameStatus)}</span></div>
-        <div class="cell score-column ${awayScoreClass}">${awayScore}</div>
-        <div class="cell team-column">${game.teams.away.name}</div>
+        <div class="cell score-column away ${awayScoreClass}">${awayScore}</div>
+        <div class="cell team-column away"><img class="team-icon" src="${THUMB_URL + game.teams.away.imgPath}" alt="원정팀 아이콘"> ${game.teams.away.name}</div>
     `;
 
     row.appendChild(gameRow);
@@ -141,7 +141,7 @@ function createTableRow(game) {
 }
 
 async function getGameData() {
-    const dataUrl = `https://sports-api.named.com/v1.0/sports/soccer/games?date=${requestDate}&status=ALL`
+    const dataUrl = `${MAIN_URL}/v1.0/sports/soccer/games?date=${requestDate}&status=ALL`
 
     // 날짜를 변경할때마다 바뀐 날짜 적용 
     document.querySelector('.date-display').innerHTML = requestDate;
@@ -157,7 +157,11 @@ async function getGameData() {
     }
 
     try {
-        const res = await axios.get(dataUrl);
+        const res = await axios.get(dataUrl, {
+            headers: {
+                'Accept-Language': 'ko'
+            }
+        });
 
         const gameInfo = countEntries(res.data);
 

@@ -139,11 +139,12 @@ function createTableRow(game) {
     gameRow.innerHTML = `
         <div class="cell tr-icon league-icon"><img src=${getSportsIcon(game.sportsType)} alt="리그 아이콘"> ${game.league.shortName}</div>
         <div class="cell time-column">${formatDateTime(game.startDatetime).split(' ')[1]}</div>
-        <div class="cell team-column home"><img class="team-icon" src="./assets/images/small_logo/${game.teams.home.imgPath.split('/')[4]}" alt="홈팀 아이콘"> ${game.teams.home.name}</div>
+        <div class="cell team-column home"><img class="team-icon" src="${THUMB_URL + game.teams.home.imgPath}" alt="홈팀 아이콘"> ${game.teams.home.name}</div>
         <div class="cell score-column home ${homeScoreClass}">${homeScore}</div>
+
         <div class="cell"><span class="status ${getStatusClass(game.gameStatus)}">${game.gameStatus === 'IN_PROGRESS' ? getPeriodText(game) : getStatusText(game.gameStatus)}</span></div>
         <div class="cell score-column away ${awayScoreClass}">${awayScore}</div>
-        <div class="cell team-column away"><img class="team-icon" src="./assets/images/small_logo/${game.teams.away.imgPath.split('/')[4]}" alt="원정팀 아이콘"> ${game.teams.away.name}</div>
+        <div class="cell team-column away"><img class="team-icon" src="${THUMB_URL + game.teams.away.imgPath}" alt="원정팀 아이콘"> ${game.teams.away.name}</div>
     `;
 
     const prevCollapse = document.querySelector(`#collapse-${game.id}`)
@@ -379,7 +380,8 @@ function getActiveButtonId() {
 }
 
 async function getGameData() {
-    const dataUrl = `https://sports-api.named.com/v1.0/popular-games?date=${requestDate}&tomorrow-game-flag=true`;
+    // const dataUrl = `https://sports-api.named.com/v1.0/popular-games?date=${requestDate}&tomorrow-game-flag=true`;
+    const dataUrl = `${MAIN_URL}/v1.0/popular-games?date=${requestDate}&tomorrow-game-flag=true`;
 
     // 날짜를 변경할때마다 바뀐 날짜 적용 
     document.querySelector('.date-display').innerHTML = requestDate;
@@ -394,7 +396,11 @@ async function getGameData() {
     }
 
     try {
-        const res = await axios.get(dataUrl);
+        const res = await axios.get(dataUrl, {
+            headers: {
+                'Accept-Language': 'ko'
+            }
+        });
         const gameInfo = countEntries(res.data);
 
         // DOM 업데이트 최소화

@@ -137,8 +137,6 @@ function createTableRow(game) {
     gameRow.onclick = () => toggleCollapse(gameRow);
 
 
-    console.log(game)
-
     // gameRow.innerHTML = `
     //     <div class="cell tr-icon league-icon"><img src=${getSportsIcon(game.sportsType)} alt="리그 아이콘"> ${game.league.name.length > 4 ? game.league.name.substring(0, 4) + "..." : game.league.name}</div>
     //     <div class="cell">${formatDateTime(game.startDatetime).split(' ')[1]}</div>
