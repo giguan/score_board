@@ -128,11 +128,19 @@ function createTableRow(game) {
     gameRow.innerHTML = `
         <div class="cell tr-icon league-icon">${game.league.shortName}</div>
         <div class="cell time-column">${formatDateTime(game.startDatetime).split(' ')[1]}</div>
-        <div class="cell team-column home"><img class="team-icon" src="${THUMB_URL + game.teams.home.imgPath}" alt="홈팀 아이콘"> ${game.teams.home.name}</div>
+        <div class="cell team-column home">${
+            game.teams.home.imgPath 
+                ? `<img class="team-icon" src="${THUMB_URL + game.teams.home.imgPath}" alt="홈팀 아이콘"></img>`
+                : ''
+        }${game.teams.home.name}</div>
         <div class="cell score-column home ${homeScoreClass}">${homeScore}</div>
         <div class="cell"><span class="status ${getStatusClass(game.gameStatus)}">${game.gameStatus === 'IN_PROGRESS' ? getPeriodText(game) : getStatusText(game.gameStatus)}</span></div>
         <div class="cell score-column away ${awayScoreClass}">${awayScore}</div>
-        <div class="cell team-column away"><img class="team-icon" src="${THUMB_URL + game.teams.away.imgPath}" alt="원정팀 아이콘"> ${game.teams.away.name}</div>
+        <div class="cell team-column home">${
+            game.teams.away.imgPath 
+                ? `<img class="team-icon" src="${THUMB_URL + game.teams.away.imgPath}" alt="홈팀 아이콘"></img>`
+                : ''
+        }${game.teams.away.name}</div>
     `;
 
     row.appendChild(gameRow);

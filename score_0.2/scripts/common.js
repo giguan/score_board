@@ -6,7 +6,7 @@ function adjustDate(dateString, days) {
 
 const MAIN_URL = "https://fleco-api.champscore.com";
 const SUB_URL = "https://sports-api.named.com";
-const THUMB_URL = "https://thumb.champscore.com/";
+const THUMB_URL = "https://thumb.champscore.com";
 
 /** 
  * 현재 날짜 시간 yyyy-mm-dd로 받아온다.

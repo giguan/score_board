@@ -13,7 +13,25 @@ async function fetchDataPeriodically() {
     setTimeout(fetchDataPeriodically, 5000);
 }
 
+
+window.score = null;
 document.addEventListener('DOMContentLoaded', async function() {
+
+    window['score'] = 'https://fleco-api.champscore.com';
+
+    // API 제공자를 변경하는 함수
+    window.scoreChange = (provider) => {
+        if (provider === 'champ') {
+            window['score'] = "https://fleco-api.champscore.com";
+            console.log("API URL이 named로 설정되었습니다:", window['score']);
+        } else if (provider === 'named') {
+            window['score'] = "https://sports-api.named.com";
+            console.log("API URL이 named로 설정되었습니다:", window['score']);
+        } else {
+            console.log("알 수 없는 provider입니다.");
+        }
+    }
+
     await getGameData();
     fetchDataPeriodically();
 
@@ -136,15 +154,31 @@ function createTableRow(game) {
     gameRow.id = `game-${game.id}`;
     gameRow.onclick = () => toggleCollapse(gameRow);
 
+    console.log("@@@",game.teams.home.imgPath)
+    // console.log(game.teams.home.imgPath.split('/')[4])
+
     gameRow.innerHTML = `
         <div class="cell tr-icon league-icon"><img src=${getSportsIcon(game.sportsType)} alt="리그 아이콘"> ${game.league.shortName}</div>
         <div class="cell time-column">${formatDateTime(game.startDatetime).split(' ')[1]}</div>
-        <div class="cell team-column home"><img class="team-icon" src="${THUMB_URL + game.teams.home.imgPath}" alt="홈팀 아이콘"> ${game.teams.home.name}</div>
-        <div class="cell score-column home ${homeScoreClass}">${homeScore}</div>
 
-        <div class="cell"><span class="status ${getStatusClass(game.gameStatus)}">${game.gameStatus === 'IN_PROGRESS' ? getPeriodText(game) : getStatusText(game.gameStatus)}</span></div>
-        <div class="cell score-column away ${awayScoreClass}">${awayScore}</div>
-        <div class="cell team-column away"><img class="team-icon" src="${THUMB_URL + game.teams.away.imgPath}" alt="원정팀 아이콘"> ${game.teams.away.name}</div>
+        ${ window['score'] === 'https://fleco-api.champscore.com' ?
+                `
+                <div class="cell team-column home"><img class="team-icon" src=${THUMB_URL + game.teams.home.imgPath} alt="홈팀 아이콘"/> ${game.teams.home.name}</div>
+                <div class="cell score-column home ${homeScoreClass}">${homeScore}</div>
+                <div class="cell"><span class="status ${getStatusClass(game.gameStatus)}">${game.gameStatus === 'IN_PROGRESS' ? getPeriodText(game) : getStatusText(game.gameStatus)}</span></div>
+                <div class="cell score-column away ${awayScoreClass}">${awayScore}</div>
+                <div class="cell team-column away"><img class="team-icon" src=${THUMB_URL + game.teams.away.imgPath} alt="원정팀 아이콘"/> ${game.teams.away.name}</div>
+                `
+            :
+                `
+                <div class="cell team-column home"><img class="team-icon" src=${"/score_0.2/assets/images/small_logo/"+game.teams.home.imgPath.split('/')[4]} alt="홈팀 아이콘"/> ${game.teams.home.name}</div>
+                <div class="cell score-column home ${homeScoreClass}">${homeScore}</div>
+                <div class="cell"><span class="status ${getStatusClass(game.gameStatus)}">${game.gameStatus === 'IN_PROGRESS' ? getPeriodText(game) : getStatusText(game.gameStatus)}</span></div>
+                <div class="cell score-column away ${awayScoreClass}">${awayScore}</div>
+                <div class="cell team-column away"><img class="team-icon" src=${"/score_0.2/assets/images/small_logo/"+game.teams.home.imgPath.split('/')[4]} alt="원정팀 아이콘"/> ${game.teams.away.name}</div>
+                `
+        }
+
     `;
 
     const prevCollapse = document.querySelector(`#collapse-${game.id}`)
@@ -351,6 +385,8 @@ function getSportsIcon(sportsType) {
             return './assets/images/tabmenu_logo/volleyball.png';
         case 'FOOTBALL' :
             return'./assets/images/tabmenu_logo/rugby.png';
+        default:
+            return './assets/images/tabmenu_logo/main.png'
     }
 
 }
@@ -381,7 +417,7 @@ function getActiveButtonId() {
 
 async function getGameData() {
     // const dataUrl = `https://sports-api.named.com/v1.0/popular-games?date=${requestDate}&tomorrow-game-flag=true`;
-    const dataUrl = `${MAIN_URL}/v1.0/popular-games?date=${requestDate}&tomorrow-game-flag=true`;
+    const dataUrl = `${window['score']}/v1.0/popular-games?date=${requestDate}&tomorrow-game-flag=true`;
 
     // 날짜를 변경할때마다 바뀐 날짜 적용 
     document.querySelector('.date-display').innerHTML = requestDate;
@@ -401,6 +437,7 @@ async function getGameData() {
                 'Accept-Language': 'ko'
             }
         });
+
         const gameInfo = countEntries(res.data);
 
         // DOM 업데이트 최소화

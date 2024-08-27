@@ -12,7 +12,20 @@ async function fetchDataPeriodically() {
     setTimeout(fetchDataPeriodically, 2000);
 }
 
+async function getAbsenteePlayer() {
+
+    console.log("@@@@@@@@??/")
+
+    axios.get("https://reystream.tv/injury/data.php?sports=soccer&league=EPL")
+        .then((res) => {
+            console.log("@@@@@@@@@@@@@@@@@",res)
+        })
+}
+
 document.addEventListener('DOMContentLoaded', async function() {
+
+    await getAbsenteePlayer()
+
     await getGameData();
     fetchDataPeriodically();
 
