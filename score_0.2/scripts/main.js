@@ -154,7 +154,7 @@ function createTableRow(game) {
     gameRow.id = `game-${game.id}`;
     gameRow.onclick = () => toggleCollapse(gameRow);
 
-    // console.log(game.teams.home.imgPath.split('/')[4])
+    // console.log(`home : ${game.teams.home.imgPath} / away : ${game.teams.away.imgPath}`)
 
     gameRow.innerHTML = `
         <div class="cell tr-icon league-icon"><img src=${getSportsIcon(game.sportsType)} alt="리그 아이콘"> ${game.league.shortName}</div>
@@ -170,11 +170,11 @@ function createTableRow(game) {
                 `
             :
                 `
-                <div class="cell team-column home"><img class="team-icon" src="../assets/images/small_logo/"+${game.teams.home.imgPath.split('/')[4]} alt="홈팀 아이콘"/> ${game.teams.home.name}</div>
+                <div class="cell team-column home"><img class="team-icon" src="assets/images/small_logo/${game.teams.home.imgPath.split('/')[game.teams.home.imgPath.split('/').length -1]}" alt="홈팀 아이콘"/> ${game.teams.home.name}</div>
                 <div class="cell score-column home ${homeScoreClass}">${homeScore}</div>
                 <div class="cell"><span class="status ${getStatusClass(game.gameStatus)}">${game.gameStatus === 'IN_PROGRESS' ? getPeriodText(game) : getStatusText(game.gameStatus)}</span></div>
                 <div class="cell score-column away ${awayScoreClass}">${awayScore}</div>
-                <div class="cell team-column away"><img class="team-icon" src="../assets/images/small_logo/"+${game.teams.away.imgPath.split('/')[4]} alt="원정팀 아이콘"/> ${game.teams.away.name}</div>
+                <div class="cell team-column away"><img class="team-icon" src="assets/images/small_logo/${game.teams.away.imgPath.split('/')[game.teams.away.imgPath.split('/').length -1]}" alt="원정팀 아이콘"/> ${game.teams.away.name}</div>
                 `
         }
 
